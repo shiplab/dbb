@@ -1,0 +1,141 @@
+<div class="app" id="app">
+  <header class="topbar">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 21 7 12 12 3 7Z" fill="var(--accent)"/><path d="M3 7v10l9 5V12Z" fill="var(--accent)" opacity=".68"/><path d="M21 7v10l-9 5V12Z" fill="var(--accent)" opacity=".4"/></svg>
+      <span>DBB Block Editor</span>
+    </div>
+    <input id="projName" class="projname" type="text" aria-label="Project name" spellcheck="false">
+    <div class="spacer"></div>
+    <button class="btn" id="btnUndo" title="Undo (Ctrl+Z)">Undo</button>
+    <button class="btn" id="btnRedo" title="Redo (Ctrl+Y)">Redo</button>
+    <span class="sep"></span>
+    <button class="btn" id="btnNew" title="Start an empty project with the Levander groups">New</button>
+    <select class="btn" id="exampleSel" aria-label="Load an example" title="Load an example project"><option value="">Examples…</option></select>
+    <button class="btn" id="btnHelp" title="How to build a design">How to</button>
+    <button class="btn" id="btnOpen" title="Open a project .json file">Open</button>
+    <button class="btn primary" id="btnSave" title="Save the project as .json">Save</button>
+    <input type="file" id="fileIn" accept=".json,application/json" hidden>
+  </header>
+
+  <main class="main">
+    <aside class="panel left" aria-label="Library and hierarchy">
+      <div class="ph">Shape library</div>
+      <div class="lib" id="lib"></div>
+      <div class="newbar">
+        <label>New blocks in <select id="newGroup" aria-label="Group for new blocks"></select></label>
+        <label>Requirement <select id="newReq" aria-label="Requirement for new blocks"></select></label>
+      </div>
+      <div class="ph">Hierarchy <span class="spacer"></span>
+        <button class="btn sm" id="btnShowAll" title="Show every group and block">Show all</button>
+        <button class="btn sm" id="btnAddGroup">+ Group</button>
+      </div>
+      <div class="tree" id="tree"></div>
+    </aside>
+
+    <section class="center" aria-label="Workplane and tables">
+      <div class="vtools">
+        <div class="seg" role="group" aria-label="Transform mode">
+          <button class="btn on" data-mode="translate" title="Move (W)">Move</button>
+          <button class="btn" data-mode="rotate" title="Rotate (E)">Rotate</button>
+          <button class="btn" data-mode="scale" title="Scale (R)">Scale</button>
+        </div>
+        <label>Snap
+          <select id="snapSel" aria-label="Snap step">
+            <option value="0">Off</option>
+            <option value="0.1">0.1 m</option>
+            <option value="0.25">0.25 m</option>
+            <option value="0.5" selected>0.5 m</option>
+            <option value="1">1 m</option>
+            <option value="2">2 m</option>
+            <option value="5">5 m</option>
+          </select>
+        </label>
+        <button class="btn" id="btnXray" aria-pressed="false" title="Make blocks see-through">See-through</button>
+        <div class="spacer"></div>
+        <div class="seg" role="group" aria-label="Camera views">
+          <button class="btn" data-view="iso" title="Perspective (1)">3D</button>
+          <button class="btn" data-view="top" title="Plan view (2)">Plan</button>
+          <button class="btn" data-view="side" title="Profile, bow to the right (3)">Profile</button>
+          <button class="btn" data-view="front" title="Bow view (4)">Bow</button>
+          <button class="btn" data-view="fit" title="Fit all (F)">Fit</button>
+        </div>
+      </div>
+
+      <div class="viewport" id="viewport">
+        <div class="vp-empty" id="vpEmpty" hidden><div>No blocks yet. Drag a shape from the library onto the workplane, or click one to add it.</div></div>
+        <div class="hud" id="hud" aria-live="off"></div>
+        <div class="keys">W move &middot; E rotate &middot; R scale (resize) &middot; Ctrl+D duplicate &middot; Del delete &middot; F fit</div>
+      </div>
+
+      <div class="drawer" id="drawer">
+        <div class="drawer-head">
+          <div class="tabs" role="tablist">
+            <button class="tab" role="tab" id="tabBtn-summary" data-tab="summary" aria-selected="true">Summary</button>
+            <button class="tab" role="tab" id="tabBtn-reqs" data-tab="reqs" aria-selected="false">Requirements <span class="badge" id="reqBadge" hidden></span></button>
+            <button class="tab" role="tab" id="tabBtn-blocks" data-tab="blocks" aria-selected="false">Blocks</button>
+          </div>
+          <div class="spacer"></div>
+          <label class="csv-opt">CSV separator
+            <select id="csvDelim" aria-label="CSV separator"><option value=",">comma</option><option value=";">semicolon</option></select>
+          </label>
+          <button class="btn sm" id="btnCsv">Export CSV</button>
+          <button class="btn sm" id="btnDrawer" aria-label="Collapse tables" aria-expanded="true" title="Collapse or expand the tables">&#9662;</button>
+        </div>
+        <div class="drawer-body">
+          <div id="tab-summary" role="tabpanel">
+            <div class="env" id="env"></div>
+            <div class="tblwrap"><table class="tbl" id="sumTbl"></table></div>
+          </div>
+          <div id="tab-reqs" role="tabpanel" hidden>
+            <div class="tblwrap"><table class="tbl" id="reqTbl"></table></div>
+            <div class="addrow"><button class="btn sm" id="btnAddReq">+ Requirement</button></div>
+          </div>
+          <div id="tab-blocks" role="tabpanel" hidden>
+            <div class="tblwrap"><table class="tbl" id="blkTbl"></table></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="panel right" aria-label="Selected block">
+      <div class="ph">Selected block</div>
+      <div class="empty-note" id="propsEmpty">Click a block in the 3D view or in the hierarchy to edit it.</div>
+      <form class="props" id="propsForm" hidden onsubmit="return false">
+        <label class="f"><span>Name</span><input type="text" data-f="name" spellcheck="false"></label>
+        <label class="f"><span>Shape</span><select data-f="shape"></select></label>
+        <label class="f"><span>Group</span><select data-f="group"></select></label>
+        <label class="f"><span>Requirement</span><select data-f="req"></select></label>
+        <div class="grp"><b>Size (m)</b>
+          <div class="f3">
+            <label class="f"><span>L</span><input type="number" step="0.1" min="0.05" data-f="size" data-i="0"></label>
+            <label class="f"><span>B</span><input type="number" step="0.1" min="0.05" data-f="size" data-i="1"></label>
+            <label class="f"><span>H</span><input type="number" step="0.1" min="0.05" data-f="size" data-i="2"></label>
+          </div>
+        </div>
+        <div class="grp"><b>Centre (m)</b>
+          <div class="f3">
+            <label class="f"><span>X</span><input type="number" step="0.5" data-f="pos" data-i="0"></label>
+            <label class="f"><span>Y</span><input type="number" step="0.5" data-f="pos" data-i="1"></label>
+            <label class="f"><span>Z</span><input type="number" step="0.5" data-f="pos" data-i="2"></label>
+          </div>
+        </div>
+        <div class="grp"><b>Rotation (&deg;)</b>
+          <div class="f3">
+            <label class="f"><span>X</span><input type="number" step="15" data-f="rot" data-i="0"></label>
+            <label class="f"><span>Y</span><input type="number" step="15" data-f="rot" data-i="1"></label>
+            <label class="f"><span>Z</span><input type="number" step="15" data-f="rot" data-i="2"></label>
+          </div>
+        </div>
+        <dl class="readout" id="pOut"></dl>
+        <label class="check"><input type="checkbox" data-f="areaon"> Type in the area myself</label>
+        <label class="f" id="areaRow"><span>Area (m&sup2;)</span><input type="number" step="0.1" min="0" data-f="area"></label>
+        <div class="actions">
+          <button type="button" class="btn sm" id="pDup">Duplicate</button>
+          <button type="button" class="btn sm" id="pHide">Hide</button>
+          <button type="button" class="btn sm" id="pDel">Delete</button>
+        </div>
+      </form>
+    </aside>
+  </main>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>

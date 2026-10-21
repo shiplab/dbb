@@ -1,0 +1,8 @@
+{
+  "name": "dbb",
+  "version": "1.0.0",
+  "description": "DBB Block Editor: a small 3D editor for teaching the Design Building Block approach",
+  "private": true,
+  "scripts": { "build": "node build.js", "test": "node dev/test-core.js" },
+  "devDependencies": { "three": "0.147.0" }
+}

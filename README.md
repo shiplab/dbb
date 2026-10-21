@@ -4,27 +4,32 @@
 
 **Open the app: https://shiplab.github.io/dbb/**
 
-![DBB Block Editor with the simplified R/V Gunnerus example](screenshot.png)
+![DBB Block Editor with the feeder container ship example](screenshot.png)
+
+> **For educational use only.** The hulls are illustrative parametric shapes, not real lines. Weights, hydrostatics, trim, heel and stability are simplified estimates, and stability covers small angles only. The results must not be used for design approval, class or flag-state documentation, or any safety-critical decision. The software is provided as it is, without warranty.
 
 ## What it is
 
-The DBB approach builds a ship design from physical blocks (volumes and areas) that are grouped by function and linked to requirements. This app is a deliberately simple "Tinkercad for DBB". You place and shape blocks in 3D, give each one a group, a requirement and a density, and the tables sum up volume, area, weight and centres of gravity. An illustrative hull and its hydrostatics give a first check.
+The DBB approach builds a ship design from physical blocks (volumes and areas) that are grouped by function and linked to requirements. This app is a deliberately simple "Tinkercad for DBB". You place and shape blocks in 3D, give each one a group, a requirement and a density, and the tables sum up volume, area, weight and centres of gravity. An illustrative hull, floating at the weight, gives a first check of draught, trim, heel and initial stability.
 
-It is an editor and calculator for the early stage. The hulls are illustrative shapes, hydrostatics and weights are indicative, and there is no stability analysis. In a course it fits after Systems Based Ship Design (SBSD): the spaces that come out of the system breakdown become the first blocks.
+It is an editor and calculator for the early stage. In a course it fits after Systems Based Ship Design (SBSD): the spaces that come out of the system breakdown become the first blocks.
 
 ## What it does
 
-- **3D blocks** from seven primitive shapes (box, cylinder, half-cylinder, cone, pyramid, wedge, sphere). Move, rotate and scale them with the gizmo, or type exact size, position and rotation. Snapping aligns block faces.
+- **3D blocks** from seven primitive shapes (box, cylinder, half-cylinder, cone, pyramid, wedge, sphere). Move, rotate and scale them with the gizmo, or type exact size, position and rotation. Snapping aligns block faces. The right panel shows the selected block or hull and gives its width back to the 3D view when nothing is selected.
 - **Free groups.** The default is the offshore support vessel breakdown by Levander (task related systems and ship systems). Groups can be renamed, recoloured, nested, added and deleted.
 - **Requirements** with the shall/should convention. Each has a metric (volume, area, length, beam or height), a direction (at least or at most) and two target values. Volume and area requirements count the blocks tagged with them; length, beam and height come from the overall envelope.
-- **Illustrative hulls** (optional, one or more): press **+ Hull**. Types: offshore vessel, research vessel, cargo ship, slender demihull and barge. A second **+ Hull** adds a mirrored copy for a catamaran. Each hull is fitted around the blocks below the main deck (its *depth*); blocks above it stay outside. The hull can be moved, scaled and reshaped with sliders (flat bottom, bilge, flare, parallel body, bow, stern).
-- **Draught and water.** One draught for the whole vessel, shown as a flat water surface. The hydrostatics are calculated at the draught: displaced volume, displacement, LWL, BWL, Cb, Cp, Cm, Cwp, Awp, LCB, KB, LCF and TPC, with an editable water density.
+- **Illustrative hulls** (optional, one or more): press **+ Hull**. Types: offshore vessel, research vessel, cargo ship, slender demihull and barge. A second **+ Hull** adds a mirrored copy for a catamaran. Each hull is fitted around the blocks below the main deck (its *depth*); blocks above it stay outside. The hull can be moved, scaled and reshaped with sliders (flat bottom, bilge, flare, parallel body, bow, stern). Hull and water colours can be chosen.
+- **Draught and water.** One draught for the whole vessel, shown as a water surface. The hydrostatics are calculated at the draught: displaced volume, displacement, LWL, BWL, Cb, Cp, Cm, Cwp, Awp, LCB, KB, LCF and TPC, with an editable water density.
+- **Float.** With **Float** on, the draught, trim and heel follow the weight as you move blocks. The trim and heel are an exact tilted water plane on the hull shapes, drawn in 3D with draught marks and a live readout.
+- **Initial stability.** KB, BM (from the waterplane of all hulls, so multihulls are handled), KM and GM, transverse and longitudinal. Blocks can be marked **Free surface** (partly filled liquid tanks) and the correction is subtracted from GM. A few basic checks are shown: GM at least 0.15 m, static heel at most 5 degrees and trim at most 1% of the length. These are guides, not a stability assessment.
 - **Blocks against hulls.** For every block, requirement and total, the app estimates how much volume lies outside the hulls, and the volume and area requirements also show the part inside.
-- **Mass and centres of gravity.** Density is set per group (a subgroup follows its parent) and can be overridden per block, with a fill percentage for tanks or a typed mass. The centre of gravity of each block is the centroid of its shape. Hull steel, piping and cabling are taken as a share of the displacement (25% to begin with), spread over the hull volume. The Summary compares total weight with displacement: margin, LCG, TCG, VCG and LCG minus LCB.
-- **Tables** that update as you edit. *Summary* has three sections: Overview (area, volume, density, mass and centres of gravity by group), Hull (hull table and hydrostatics) and Weight (balance against displacement). *Requirements* shows "Meets should", "Meets shall" or "Not met". *Blocks* lists every block, with switchable column sets (Geometry, Mass, Hull), sortable columns, and editable density and fill.
-- **Save and open** projects as JSON. **Export** any table as CSV. Nothing is stored in the browser, so save before you leave.
-- **Examples** from the menu, each with only the groups it uses: Simple (5 blocks), Catamaran (9 blocks, 2 hulls), Trimaran (10 blocks, 3 hulls), R/V Gunnerus (15 blocks, simplified, the default) and PSV (20 blocks).
-- **How to** in the app: a quick start, all keyboard shortcuts, a glossary of the terms used, and an About tab. Table headings also explain themselves on hover.
+- **Mass and centres of gravity.** Density is set per group (a subgroup follows its parent) and can be overridden per block, with a fill percentage for tanks or a typed mass. The centre of gravity of each block is the centroid of its shape. Hull steel, piping and cabling are taken as a share of the displacement, spread over the hull volume. The weight balance compares total weight with displacement: margin, LCG, TCG, VCG and LCG minus LCB.
+- **Summary with an assessment.** The Summary tab opens with chips for requirements, weight and hull, floating and stability, then a list of problems, notes and what passes, each linking to where to look. Below it are the geometry and the hulls.
+- **Tables** that update as you edit. *Requirements* shows "Meets should", "Meets shall" or "Not met". *Blocks* lists every block, with switchable column sets (Geometry, Mass, Hull), sortable columns, and editable density and fill. *Hydrostatics* holds the floating condition, the weight balance, the weight by group (densities can be edited here), the initial stability and the hull hydrostatics. The tables panel can be resized by dragging.
+- **Save and open** projects as JSON. **CSV** exports the table you are viewing, and **XLSX** exports the whole project as an Excel workbook (Summary, Project, Output, Blocks, Weight, Hydrostatics, Requirements) with the group colours, and formulas for the block masses and totals. Nothing is stored in the browser, so save before you leave.
+- **Examples** from the menu, each with only the groups it uses: Simple (5 blocks), Catamaran (9 blocks, 2 hulls), Trimaran (10 blocks, 3 hulls), R/V Gunnerus (15 blocks, simplified), PSV (20 blocks), Container ship, feeder (19 blocks, the default), Tanker, double hull (22 blocks) and Bulk carrier, handysize (19 blocks).
+- **How to** in the app: a quick start, all keyboard shortcuts, a glossary of the terms used, and an About tab with the disclaimer. Table headings also explain themselves on hover.
 
 ## How to use it
 
@@ -35,8 +40,9 @@ It is an editor and calculator for the early stage. The hulls are illustrative s
 5. **Add blocks** by clicking a shape or dragging it onto the workplane (dropping onto a block places it on top).
 6. **Shape them.** Select a block and use **Move**, **Rotate** or **Scale**. To resize, choose Scale and drag the small coloured cubes, or type L, B and H in the right panel.
 7. **Add a hull (optional).** Press **+ Hull**, then click the hull row to edit it. While a hull is selected the blocks are dimmed. Set the draught, open **Shape** for the sliders, and press **Fit to blocks** after moving blocks. The eye next to **Hierarchy** hides all blocks, to look at the hulls alone.
-8. **Add weight.** Set a density per group in the Summary Overview, and override it on a block in the right panel or the Blocks tab. The structure share is set in the Weight section.
-9. **Read the tables**, then iterate until the requirements are met, and **Save** the project as JSON.
+8. **Add weight.** In the **Hydrostatics** tab set a density per group, and override it on a block in the right panel or the Blocks tab, with a fill percentage for tanks or a typed mass. Tick **Free surface** on a part-filled liquid tank. The structure share is set in the same tab.
+9. **Float it.** Press **Float** in the toolbar and move blocks: the draught, trim and heel follow, and GM is shown in the readout.
+10. **Read the Summary**, follow its links to the details, iterate until the requirements are met, and **Save** the project as JSON or export it to Excel.
 
 Coordinates: X forward from the aft end, Y to port, Z up from the baseline, in metres.
 
@@ -53,7 +59,7 @@ Coordinates: X forward from the aft end, Y to port, Z up from the baseline, in m
 
 ## Notes on the examples
 
-The R/V Gunnerus example uses the main dimensions and the space areas and tank volumes published at [shiplab.github.io/gunnerus](https://shiplab.github.io/gunnerus/). The block positions are approximate and are not taken from the drawings. The PSV, catamaran and trimaran examples are illustrative. The example hulls are fitted automatically around the blocks, so the Gunnerus hull is a little longer than the real vessel. Densities, fills and draughts in the examples are chosen to give sensible weight margins; they are not measured data.
+The R/V Gunnerus example uses the main dimensions and the space areas and tank volumes published at [shiplab.github.io/gunnerus](https://shiplab.github.io/gunnerus/). The block positions are approximate and are not taken from the drawings. The PSV, catamaran, trimaran, container ship, tanker and bulk carrier examples are illustrative. The hulls of the smaller examples are fitted automatically around the blocks, so the Gunnerus hull is a little longer than the real vessel; in the container ship, tanker and bulk carrier the blocks are fitted to the hull instead. Densities, fills and draughts in the examples are chosen so that each floats level with a sensible weight margin; they are not measured data.
 
 ## Citation
 

@@ -32,6 +32,9 @@ html,body{margin:0;height:100%}body{font:14px system-ui,sans-serif}
   --edge: #172033;
   --label: #46566a;
   --sel: #ff2e93;
+  --hull: #3a6fb0;
+  --hull-line: #2d5a96;
+  --water: #1f9bd1;
   --font-ui: 'Barlow', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-cond: 'Barlow Condensed', 'Barlow', system-ui, sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
@@ -59,6 +62,9 @@ html,body{margin:0;height:100%}body{font:14px system-ui,sans-serif}
     --edge: #0a0f17;
     --label: #8da0b8;
     --sel: #ff5ca8;
+    --hull: #7fb0f0;
+    --hull-line: #8fbcf4;
+    --water: #4cc2f0;
     color-scheme: dark;
   }
 }
@@ -84,6 +90,9 @@ html,body{margin:0;height:100%}body{font:14px system-ui,sans-serif}
   --edge: #0a0f17;
   --label: #8da0b8;
   --sel: #ff5ca8;
+  --hull: #7fb0f0;
+  --hull-line: #8fbcf4;
+  --water: #4cc2f0;
   color-scheme: dark;
 }
 
@@ -130,7 +139,7 @@ button { cursor: pointer; }
 .main { display: grid; grid-template-columns: 300px minmax(0, 1fr) 290px; gap: 10px; min-height: 0; }
 .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
 .ph { display: flex; align-items: center; gap: 6px; padding: 8px 10px 6px; font: 600 12.5px/1 var(--font-cond); letter-spacing: 0.09em; text-transform: uppercase; color: var(--fg-dim); }
-.center { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; min-height: 0; min-width: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.center { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto; min-height: 0; min-width: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
 
 /* ---------- library ---------- */
 .lib { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 2px 10px 8px; }
@@ -269,12 +278,80 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
   .btn, .tile, .brow { transition: background-color 0.12s, border-color 0.12s; }
 }
 [hidden]{display:none!important}
-.dialog.help{max-width:620px;max-height:86vh;overflow:auto}
+.dialog.help{width:min(720px,100%);max-width:720px;height:min(86vh,680px);max-height:86vh;overflow:hidden}
+.helptabs{border-bottom:1px solid var(--line);flex:none}
+.helpbody{flex:1 1 auto;min-height:0;overflow:auto;padding-right:4px}
+.helpfoot{flex:none;border-top:1px solid var(--line);padding-top:8px}
+.helpfoot .note{margin:0 0 8px}
+.aboutp{margin:0 0 10px!important;font-size:13.5px!important;line-height:1.55;color:var(--fg)!important}
+.keytbl{width:100%;border-collapse:collapse;font-size:13px;margin:4px 0 10px}
+.keytbl th{text-align:left;font:600 11px var(--font-cond);letter-spacing:.09em;text-transform:uppercase;color:var(--fg-dim);padding:4px 8px;border-bottom:1px solid var(--line)}
+.keytbl td{padding:5px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.keytbl td:first-child{white-space:nowrap;width:1%}
+kbd{font:12px var(--font-mono);padding:1px 6px;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;background:var(--bg)}
+.gloss{margin:4px 0 10px;display:grid;grid-template-columns:minmax(120px,max-content) 1fr;gap:6px 14px;font-size:13px;line-height:1.45}
+.gloss dt{font-weight:600}
+.gloss dd{margin:0;color:var(--fg-dim)}
+@media (max-width:560px){.gloss{grid-template-columns:1fr;gap:0}.gloss dd{margin-bottom:8px}}
 .dialog.help ol{margin:0 0 12px;padding-left:20px;display:flex;flex-direction:column;gap:8px;line-height:1.45}
 .dialog.help .note{margin:0 0 12px;color:var(--fg-dim);font-size:12px}
 .dialog.help h3{margin:6px 0 0;font:600 13px var(--font-cond);letter-spacing:.06em;text-transform:uppercase;color:var(--fg-dim)}
 .dialog.help .refs{margin:0 0 4px;padding-left:18px;font-size:12.5px;line-height:1.45;display:flex;flex-direction:column;gap:4px}
 .topbar select{width:auto;height:30px;padding:0 8px;cursor:pointer}
+
+/* ---------- hull panel ---------- */
+/* ---------- hulls ---------- */
+.hsep { margin-top: 6px; padding: 8px 10px 4px; border-top: 1px solid var(--line); font: 600 12.5px/1 var(--font-cond); letter-spacing: 0.09em; text-transform: uppercase; color: var(--fg-dim); }
+.hnote { padding: 4px 10px 8px; font-size: 12.5px; }
+.hullsw { background: var(--hull); border-radius: 50%; border-color: var(--hull-line); }
+.props .note { margin: 0; font-size: 12px; line-height: 1.4; color: var(--fg-dim); }
+.props .warn { margin: 0; padding: 6px 8px; font-size: 12px; line-height: 1.4; background: var(--warn-bg); color: var(--warn); border-radius: 4px; }
+.hullenv { padding-top: 4px; }
+
+.hydrohead { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; padding: 8px 12px 2px; }
+.hydrotitle { font: 600 11px var(--font-cond); letter-spacing: 0.09em; text-transform: uppercase; color: var(--fg-dim); }
+.hydrohead label { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--fg-dim); }
+.hydrohead input { width: 72px; }
+.hydrohead .hnote { flex: 1 1 260px; min-width: 0; }
+#hydroTbl td, #hullTbl td, #wtTbl td, #sumTbl td, #blkTbl td { white-space: nowrap; }
+#sumTbl td input, #blkTbl td input { width: 64px; text-align: right; }
+#wtTbl td small { color: var(--fg-dim); font-size: 11px; margin-left: 6px; }
+#wtTbl td.bad, .env b.bad { color: var(--warn); }
+.subbar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding: 6px 12px 4px; }
+.subbar .subl { font: 600 11px var(--font-cond); letter-spacing: 0.09em; text-transform: uppercase; color: var(--fg-dim); }
+.subbar .hnote { flex: 1 1 260px; min-width: 0; padding: 0; }
+th.sortable { cursor: pointer; user-select: none; white-space: nowrap; }
+th.sortable:hover { color: var(--fg); }
+th.sortable .srt { display: inline-block; width: 10px; margin-left: 2px; color: var(--accent); }
+#blkTbl td:first-child, #blkTbl th:first-child { position: sticky; left: 0; z-index: 1; background: var(--panel); }
+#blkTbl tr.sel td:first-child, #blkTbl tr.pick.sel:hover td:first-child { background: var(--accent-soft); }
+.f3 input[readonly] { color: var(--fg-dim); background: transparent; border-color: transparent; }
+.grp .check { margin-top: 8px; }
+
+.shapebox { border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px 8px; margin: 2px 0 8px; }
+.shapebox summary { cursor: pointer; font: 600 11px var(--font-cond); letter-spacing: 0.09em; text-transform: uppercase; color: var(--fg-dim); }
+.shapebox .shgrp { font: 600 11px var(--font-cond); letter-spacing: 0.09em; text-transform: uppercase; color: var(--fg-dim); margin: 10px 0 2px; }
+.shrow { display: grid; grid-template-columns: 104px minmax(0, 1fr) 46px; align-items: center; gap: 8px; font-size: 12.5px; padding: 1px 0; }
+.shrow input[type=range] { width: 100%; margin: 0; accent-color: var(--accent); }
+.shrow output { font: 500 12px var(--font-mono); text-align: right; }
+.shrow.set label { color: var(--accent); font-weight: 600; }
+.shapebtns { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 10px; }
+.shapebtns span { font: 600 11px var(--font-cond); letter-spacing: 0.09em; text-transform: uppercase; color: var(--fg-dim); }
+.ph.hier { gap: 4px; } .ph.hier .btn.sm { padding-left: 7px; padding-right: 7px; }
+.ph.hier { letter-spacing: 0.05em; padding-right: 6px; } .ph.hier .btn.sm { padding-left: 5px; padding-right: 5px; }
+
+#hullOut .rh { font: 600 11px var(--font-cond); letter-spacing: 0.09em; text-transform: uppercase; color: var(--fg-dim); margin: 2px 0 4px; }
+#hullOut .rh small { font: 400 11px var(--font-mono); letter-spacing: 0; text-transform: none; }
+.readout.r4 { grid-template-columns: auto 1fr auto 1fr; gap: 3px 8px; }
+.readout.r4 dt { font-size: 12px; }
+.readout.r4 dd { font-size: 12px; }
+.readout.r4 dt:nth-of-type(2n) { padding-left: 6px; }
+
+.props .rh { font: 600 11px var(--font-cond); letter-spacing: 0.09em; text-transform: uppercase; color: var(--fg-dim); margin: 10px 0 4px; }
+.props .rh small { font: 400 11px var(--font-mono); letter-spacing: 0; text-transform: none; }
+.readout dd.bad { color: var(--bad, #c0392b); font-weight: 600; }
+td.bad { color: var(--bad, #c0392b); font-weight: 600; }
+#blkTbl tr.pick:hover td:first-child { background: var(--panel-2); }
 
 </style>
 </head>
@@ -306,9 +383,10 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
         <label>New blocks in <select id="newGroup" aria-label="Group for new blocks"></select></label>
         <label>Requirement <select id="newReq" aria-label="Requirement for new blocks"></select></label>
       </div>
-      <div class="ph">Hierarchy <span class="spacer"></span>
+      <div class="ph hier">Hierarchy <button class="ic" id="btnBlocksEye" type="button" aria-pressed="false" title="Hide all blocks (view only)"></button> <span class="spacer"></span>
         <button class="btn sm" id="btnShowAll" title="Show every group and block">Show all</button>
         <button class="btn sm" id="btnAddGroup">+ Group</button>
+        <button class="btn sm" id="btnAddHull" title="Add a hull around the blocks (a second one adds a mirrored copy)">+ Hull</button>
       </div>
       <div class="tree" id="tree"></div>
     </aside>
@@ -335,17 +413,17 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
         <div class="spacer"></div>
         <div class="seg" role="group" aria-label="Camera views">
           <button class="btn" data-view="iso" title="Perspective (1)">3D</button>
-          <button class="btn" data-view="top" title="Plan view (2)">Plan</button>
-          <button class="btn" data-view="side" title="Profile, bow to the right (3)">Profile</button>
-          <button class="btn" data-view="front" title="Bow view (4)">Bow</button>
-          <button class="btn" data-view="fit" title="Fit all (F)">Fit</button>
+          <button class="btn" data-view="top" title="Top view, from above (2)">Top</button>
+          <button class="btn" data-view="side" title="Side view, bow to the right (3)">Side</button>
+          <button class="btn" data-view="front" title="Front view, from the bow (4)">Front</button>
+          <button class="btn" data-view="fit" title="Fit all (F or 5)">Fit</button>
         </div>
       </div>
 
       <div class="viewport" id="viewport">
         <div class="vp-empty" id="vpEmpty" hidden><div>No blocks yet. Drag a shape from the library onto the workplane, or click one to add it.</div></div>
         <div class="hud" id="hud" aria-live="off"></div>
-        <div class="keys">W move &middot; E rotate &middot; R scale (resize) &middot; Ctrl+D duplicate &middot; Del delete &middot; F fit</div>
+        <div class="keys">W move &middot; E rotate &middot; R scale (resize) &middot; Ctrl+D duplicate &middot; Del delete &middot; H hide &middot; F fit</div>
       </div>
 
       <div class="drawer" id="drawer">
@@ -365,13 +443,48 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
         <div class="drawer-body">
           <div id="tab-summary" role="tabpanel">
             <div class="env" id="env"></div>
-            <div class="tblwrap"><table class="tbl" id="sumTbl"></table></div>
+            <div class="subbar"><span class="seg" id="sumSub" role="tablist" aria-label="Summary sections">
+              <button class="btn sm on" data-sub="overview">Overview</button>
+              <button class="btn sm" data-sub="hull">Hull</button>
+              <button class="btn sm" data-sub="weight">Weight</button>
+            </span></div>
+            <div id="sub-overview">
+              <div class="tblwrap"><table class="tbl" id="sumTbl"></table></div>
+              <div class="hnote">Density is set per group, in t/m&sup3;. A subgroup follows its parent unless it has its own, and a block can override it. Mass = density &times; volume &times; fill. LCG, TCG and VCG are the centres of gravity: x from the aft end, y to port, z above the baseline.</div>
+            </div>
+            <div id="sub-hull" hidden>
+              <div class="empty-note" id="hullNone" hidden>No hull yet. Press + Hull in the hierarchy to fit one around the blocks.</div>
+              <div class="env hullenv" id="hullEnv" hidden></div>
+              <div class="tblwrap"><table class="tbl" id="hullTbl" hidden></table></div>
+              <div class="hydrohead" id="hydroHead" hidden>
+                <span class="hydrotitle">Hydrostatics</span>
+                <label>Water density <input id="rhoIn" type="number" step="0.001" min="0.9" max="1.3" inputmode="decimal"> t/m&sup3;</label>
+                <span class="hnote">Upright, at each hull's draught. Indicative: the hulls are illustrative shapes. x from the aft end, KB above the baseline.</span>
+              </div>
+              <div class="tblwrap"><table class="tbl" id="hydroTbl" hidden></table></div>
+            </div>
+            <div id="sub-weight" hidden>
+              <div class="hydrohead" id="wtHead">
+                <span class="hydrotitle">Weight balance</span>
+                <label>Structure and outfitting <input id="structIn" type="number" step="1" min="0" max="100" inputmode="decimal"> % of displacement</label>
+                <span class="hnote">Hull steel, piping and cabling are taken as a share of the displacement at the draught, spread over the hull volume. Indicative.</span>
+              </div>
+              <div class="tblwrap"><table class="tbl" id="wtTbl"></table></div>
+            </div>
           </div>
           <div id="tab-reqs" role="tabpanel" hidden>
             <div class="tblwrap"><table class="tbl" id="reqTbl"></table></div>
             <div class="addrow"><button class="btn sm" id="btnAddReq">+ Requirement</button></div>
           </div>
           <div id="tab-blocks" role="tabpanel" hidden>
+            <div class="subbar"><span class="subl">Columns</span>
+              <span class="seg" id="blkSets">
+                <button class="btn sm on" data-set="geo" aria-pressed="true">Geometry</button>
+                <button class="btn sm on" data-set="mass" aria-pressed="true">Mass</button>
+                <button class="btn sm on" data-set="hull" aria-pressed="true">Hull</button>
+              </span>
+              <span class="hnote">Click a column title to sort, again to reverse, a third time for the original order. Density and fill can be edited here.</span>
+            </div>
             <div class="tblwrap"><table class="tbl" id="blkTbl"></table></div>
           </div>
         </div>
@@ -379,8 +492,52 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
     </section>
 
     <aside class="panel right" aria-label="Selected block">
-      <div class="ph">Selected block</div>
-      <div class="empty-note" id="propsEmpty">Click a block in the 3D view or in the hierarchy to edit it.</div>
+      <div class="ph" id="propsTitle">Selected block</div>
+      <div class="empty-note" id="propsEmpty">Click a block in the 3D view, or a block or hull in the hierarchy, to edit it.</div>
+      <form class="props" id="hullPropsForm" hidden onsubmit="return false">
+        <label class="f"><span>Name</span><input type="text" data-hf="name" spellcheck="false"></label>
+        <label class="f"><span>Hull type</span><select data-hf="type"></select></label>
+        <p class="note">Illustrative hull, not real lines. Blocks above the main deck (such as the accommodation) do not need to be inside. Depth is measured to the main deck; draught is the waterline below it, and the hydrostatics are calculated at the draught.</p>
+        <div class="grp"><b>Size (m)</b>
+          <div class="f3">
+            <label class="f"><span>Length</span><input type="number" step="0.5" min="1" data-hf="loa"></label>
+            <label class="f"><span>Beam</span><input type="number" step="0.1" min="0.5" data-hf="beam"></label>
+            <label class="f"><span>Depth</span><input type="number" step="0.1" min="0.5" data-hf="depth" title="Depth to the main deck, from the baseline"></label>
+          </div>
+        </div>
+        <div class="grp"><b>Draught (m), same for all hulls</b>
+          <div class="f3">
+            <label class="f"><span>Draught T</span><input type="number" step="0.1" min="0.1" data-hf="draught" title="Waterline height above the baseline. One draught for the whole vessel, at most the deepest hull"></label>
+            <label class="f"><span>T / depth</span><input type="text" id="hfTD" readonly tabindex="-1"></label>
+            <label class="f"><span>Freeboard</span><input type="text" id="hfFB" readonly tabindex="-1"></label>
+          </div>
+          <label class="check"><input type="checkbox" data-hf="waterline"> Show the water surface in the 3D view</label>
+        </div>
+        <div class="grp"><b>Position (m)</b>
+          <div class="f3">
+            <label class="f"><span>Aft end X</span><input type="number" step="0.5" data-hf="x"></label>
+            <label class="f"><span>Y offset</span><input type="number" step="0.5" data-hf="y"></label>
+          </div>
+        </div>
+        <details class="shapebox" id="hullShape">
+          <summary>Shape</summary>
+          <div id="shapeRows"></div>
+          <div class="shapebtns">
+            <span>Stern</span>
+            <button type="button" class="btn sm" data-stern="transom">Transom</button>
+            <button type="button" class="btn sm" data-stern="rounded">Rounded</button>
+            <button type="button" class="btn sm" data-stern="cruiser">Cruiser</button>
+            <button type="button" class="btn sm" id="shapeReset" title="Back to the values of the hull type">Reset shape</button>
+          </div>
+        </details>
+        <div class="actions">
+          <button type="button" class="btn sm" id="hfFit" title="Resize the hull around the blocks below the main deck">Fit to blocks</button>
+          <button type="button" class="btn sm" id="hfAuto" title="Guess the depth (main deck level) from the blocks, then fit">Auto depth</button>
+        </div>
+        <div id="hullOut"></div>
+        <p class="warn" id="hullWarn" hidden></p>
+        <div class="actions"><button type="button" class="btn sm" id="hfDel">Delete hull</button></div>
+      </form>
       <form class="props" id="propsForm" hidden onsubmit="return false">
         <label class="f"><span>Name</span><input type="text" data-f="name" spellcheck="false"></label>
         <label class="f"><span>Shape</span><select data-f="shape"></select></label>
@@ -408,8 +565,18 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
           </div>
         </div>
         <dl class="readout" id="pOut"></dl>
+        <div class="rh" id="pHullHead" hidden>Against the hulls <small>estimate</small></div>
+        <dl class="readout" id="pHull" hidden></dl>
         <label class="check"><input type="checkbox" data-f="areaon"> Type in the area myself</label>
         <label class="f" id="areaRow"><span>Area (m&sup2;)</span><input type="number" step="0.1" min="0" data-f="area"></label>
+        <div class="grp"><b>Mass</b>
+          <div class="f3">
+            <label class="f"><span>Density t/m&sup3;</span><input type="number" step="0.05" min="0" data-f="density" title="Leave empty to use the group density (shown in grey)"></label>
+            <label class="f"><span>Fill %</span><input type="number" step="5" min="0" max="100" data-f="fill" title="How full the space is, for tanks and stores"></label>
+          </div>
+          <label class="check"><input type="checkbox" data-f="masson"> Type in the mass myself</label>
+          <label class="f" id="massRow"><span>Mass (t)</span><input type="number" step="0.1" min="0" data-f="mass"></label>
+        </div>
         <div class="actions">
           <button type="button" class="btn sm" id="pDup">Duplicate</button>
           <button type="button" class="btn sm" id="pHide">Hide</button>
@@ -432,7 +599,7 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
   var T = root.THREE;
   var D2R = Math.PI / 180;
   var FORMAT = 'dbb-block-editor';
-  var VERSION = 1;
+  var VERSION = 2;
 
   /* ---------- shape library ----------
      Every shape fits a unit bounding box centred on the origin (Z up).
@@ -459,6 +626,21 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
 
   var geomCache = {};
   var edgeCache = {};
+
+  /* Is the point (u, v, w), in the block's unit cube [-0.5, 0.5]^3, inside the unit shape? Matches makeGeometry (axis along local z for
+     cylinder, cone and pyramid with the apex at +z; half cylinder and wedge are extruded along local y). */
+  function shapeContains(kind, u, v, w, eps) {
+    eps = eps || 0;
+    switch (kind) {
+      case 'cylinder': return u * u + v * v <= 0.25 + eps;
+      case 'sphere':   return u * u + v * v + w * w <= 0.25 + eps;
+      case 'cone':     { var r = 0.5 * (0.5 - w); return w >= -0.5 - eps && Math.sqrt(u * u + v * v) <= r + eps; }
+      case 'pyramid':  { var s = 0.5 * (0.5 - w); return w >= -0.5 - eps && Math.max(Math.abs(u), Math.abs(v)) <= s + eps; }
+      case 'halfcyl':  { var q = (w + 0.5); return w >= -0.5 - eps && (u * u) / 0.25 + q * q <= 1 + eps; }
+      case 'wedge':    return w >= -0.5 - eps && w <= u + eps;
+      default:         return true;
+    }
+  }
 
   function makeGeometry(kind) {
     if (geomCache[kind]) return geomCache[kind];
@@ -598,15 +780,15 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
   function defaultGroups() {
     return [
       { id: 'g_task',   name: 'Task related systems',      color: '#9aa3b0', parent: null,     visible: true },
-      { id: 'g_cargo',  name: 'Cargo spaces',              color: '#e0603c', parent: 'g_task', visible: true },
-      { id: 'g_ah',     name: 'Anchor handling and towing', color: '#f2a93b', parent: 'g_task', visible: true },
-      { id: 'g_oc',     name: 'Offshore construction',     color: '#8e63c9', parent: 'g_task', visible: true },
+      { id: 'g_cargo',  name: 'Cargo spaces',              color: '#e0603c', parent: 'g_task', visible: true, density: 0.6 },
+      { id: 'g_ah',     name: 'Anchor handling and towing', color: '#f2a93b', parent: 'g_task', visible: true, density: 0.4 },
+      { id: 'g_oc',     name: 'Offshore construction',     color: '#8e63c9', parent: 'g_task', visible: true, density: 0.4 },
       { id: 'g_ship',   name: 'Ship systems',              color: '#9aa3b0', parent: null,     visible: true },
-      { id: 'g_struct', name: 'Ship structure',            color: '#8c97a8', parent: 'g_ship', visible: true },
-      { id: 'g_outfit', name: 'Ship outfitting',           color: '#2fa7b8', parent: 'g_ship', visible: true },
-      { id: 'g_acc',    name: 'Accommodation',             color: '#4fae6a', parent: 'g_ship', visible: true },
-      { id: 'g_mach',   name: 'Machinery',                 color: '#e9cf3a', parent: 'g_ship', visible: true },
-      { id: 'g_tanks',  name: 'Tanks and voids',           color: '#3f72d6', parent: 'g_ship', visible: true }
+      { id: 'g_struct', name: 'Ship structure',            color: '#8c97a8', parent: 'g_ship', visible: true, density: 0.15 },
+      { id: 'g_outfit', name: 'Ship outfitting',           color: '#2fa7b8', parent: 'g_ship', visible: true, density: 0.15 },
+      { id: 'g_acc',    name: 'Accommodation',             color: '#4fae6a', parent: 'g_ship', visible: true, density: 0.12 },
+      { id: 'g_mach',   name: 'Machinery',                 color: '#e9cf3a', parent: 'g_ship', visible: true, density: 0.4 },
+      { id: 'g_tanks',  name: 'Tanks and voids',           color: '#3f72d6', parent: 'g_ship', visible: true, density: 0.85 }
     ];
   }
 
@@ -692,11 +874,99 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
     return { rows: rows, total: total, envelope: envelope(model) };
   }
 
+  /* ---------- mass and centres of gravity ----------
+     Mass of a block = density x volume x fill. The density comes from the block, else its group, else the parent groups, else a default.
+     A block may also carry a typed mass. The centre of gravity is the centroid of the shape, rotated and scaled with the block.
+     Structure and outfitting (hull steel, piping, cabling) is a share of the displacement, spread evenly over the hull volume. */
+  var DEFAULT_DENSITY = 0.3, DEFAULT_STRUCT_PCT = 25;
+  /* centroid of each unit shape, in its unit cube (see makeGeometry): apex shapes have it a quarter of the height above the base */
+  var SHAPE_CENTROID = {
+    box: [0, 0, 0], cylinder: [0, 0, 0], sphere: [0, 0, 0],
+    halfcyl: [0, 0, -0.5 + 4 / (3 * Math.PI)], cone: [0, 0, -0.25], pyramid: [0, 0, -0.25], wedge: [1 / 6, 0, -1 / 6]
+  };
+
+  function blockCentroid(b) {
+    var c = SHAPE_CENTROID[b.shape] || [0, 0, 0];
+    var v = new T.Vector3(c[0], c[1], c[2]).applyMatrix4(blockMatrix(b));
+    return [v.x, v.y, v.z];
+  }
+
+  /* density of a group: its own value, else the nearest parent's, else the default; own tells which it was */
+  function groupDensity(model, id) {
+    var map = groupMap(model), g = map[id], first = g, guard = 0;
+    while (g && guard++ < 50) {
+      if (typeof g.density === 'number' && isFinite(g.density)) return { value: g.density, own: g === first };
+      g = g.parent ? map[g.parent] : null;
+    }
+    return { value: DEFAULT_DENSITY, own: false };
+  }
+
+  function blockMass(model, b) {
+    var vol = blockVolume(b), fill = typeof b.fill === 'number' && isFinite(b.fill) ? Math.min(100, Math.max(0, b.fill)) : 100;
+    var gd = groupDensity(model, b.group);
+    var d = typeof b.density === 'number' && isFinite(b.density) ? b.density : gd.value;
+    var typed = typeof b.massOverride === 'number' && isFinite(b.massOverride);
+    return { mass: typed ? Math.max(0, b.massOverride) : d * vol * fill / 100, density: d, fill: fill, volume: vol, typed: typed, ownDensity: d !== gd.value || typeof b.density === 'number', groupDensity: gd.value };
+  }
+
+  /* hull volume up to the main deck: its volume and centroid (x from the aft end of the model, y centreline, z above the baseline) */
+  function hullCentroid(h) {
+    var nz = 48, nu = 160, dz = h.depth / nz, V = 0, Mx = 0, Mz = 0;
+    for (var j = 0; j < nz; j++) {
+      var t = (j + 0.5) / nz, r = hullXRange(h, t), len = r[1] - r[0];
+      for (var i = 0; i < nu; i++) {
+        var dv = 2 * hullHalf(h, (i + 0.5) / nu, t) * len / nu * dz;
+        V += dv; Mx += dv * (r[0] + (i + 0.5) / nu * len); Mz += dv * (j + 0.5) * dz;
+      }
+    }
+    return V > 0 ? { V: V, x: Mx / V, y: h.y || 0, z: Mz / V } : { V: 0, x: h.x + h.loa / 2, y: h.y || 0, z: h.depth / 2 };
+  }
+
+  function weightSummary(model) {
+    var own = {};
+    model.groups.forEach(function (g) { own[g.id] = { n: 0, m: 0, mx: 0, my: 0, mz: 0 }; });
+    var tot = { n: 0, m: 0, mx: 0, my: 0, mz: 0 };
+    model.blocks.forEach(function (b) {
+      var q = blockMass(model, b), c = blockCentroid(b), o = own[b.group];
+      if (o) { o.n++; o.m += q.mass; o.mx += q.mass * c[0]; o.my += q.mass * c[1]; o.mz += q.mass * c[2]; }
+      tot.n++; tot.m += q.mass; tot.mx += q.mass * c[0]; tot.my += q.mass * c[1]; tot.mz += q.mass * c[2];
+    });
+    function fin(a) {
+      return { n: a.n, mass: a.m, lcg: a.m > 0 ? a.mx / a.m : null, tcg: a.m > 0 ? a.my / a.m : null, vcg: a.m > 0 ? a.mz / a.m : null };
+    }
+    var rows = groupOrder(model).map(function (r) {
+      var a = { n: 0, m: 0, mx: 0, my: 0, mz: 0 };
+      descendantIds(model, r.group.id).forEach(function (id) {
+        var o = own[id]; if (!o) return;
+        a.n += o.n; a.m += o.m; a.mx += o.mx; a.my += o.my; a.mz += o.mz;
+      });
+      return { group: r.group, depth: r.depth, total: fin(a), density: groupDensity(model, r.group.id) };
+    });
+    var pct = typeof model.structPct === 'number' && isFinite(model.structPct) ? Math.min(100, Math.max(0, model.structPct)) : DEFAULT_STRUCT_PCT;
+    var hd = modelHydro(model), st = { n: 0, m: 0, mx: 0, my: 0, mz: 0 };
+    if (hd) hd.hulls.forEach(function (e) {
+      var ms = pct / 100 * e.h.disp;
+      if (!(ms > 0)) return;
+      var c = hullCentroid(e.hull);
+      st.m += ms; st.mx += ms * c.x; st.my += ms * c.y; st.mz += ms * c.z;
+    });
+    var all = { n: tot.n, m: tot.m + st.m, mx: tot.mx + st.mx, my: tot.my + st.my, mz: tot.mz + st.mz };
+    var out = { rows: rows, blocks: fin(tot), struct: fin(st), pct: pct, total: fin(all), hasHull: !!hd,
+      disp: hd ? hd.total.disp : null, lcb: hd ? hd.total.LCB : null, tcb: hd ? hd.total.TCB : null, kb: hd ? hd.total.KB : null,
+      margin: null, marginPct: null, lcgMinusLcb: null };
+    if (hd && hd.total.disp > 0) {
+      out.margin = hd.total.disp - all.m;
+      out.marginPct = 100 * out.margin / hd.total.disp;
+      if (out.total.lcg != null) out.lcgMinusLcb = out.total.lcg - hd.total.LCB;
+    }
+    return out;
+  }
+
   /* ---------- requirements ---------- */
   function tol(thr) { return 1e-6 * Math.max(1, Math.abs(thr)); }
 
   function evaluateRequirements(model, summary) {
-    var env = (summary || summarize(model)).envelope;
+    var env = (summary || summarize(model)).envelope, hc = hullCheck(model);
     return model.requirements.map(function (r) {
       var achieved = 0, n = 0;
       if (r.metric === 'volume' || r.metric === 'area') {
@@ -714,13 +984,27 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
         if (thr == null) return null;
         return r.sense === 'max' ? achieved <= thr + tol(thr) : achieved >= thr - tol(thr);
       }
-      var okShall = ok(r.shall), okShould = ok(r.should);
-      var status;
-      if (r.shall == null && r.should == null) status = 'none';
-      else if (okShould === true) status = 'should';
-      else if (okShall === true) status = 'shall';
-      else status = 'fail';
-      return { req: r, achieved: achieved, n: n, status: status };
+      function statusOf(val) {
+        var s = r.sense === 'max';
+        function o(thr) { return thr == null ? null : (s ? val <= thr + tol(thr) : val >= thr - tol(thr)); }
+        if (r.shall == null && r.should == null) return 'none';
+        if (o(r.should) === true) return 'should';
+        if (o(r.shall) === true) return 'shall';
+        return 'fail';
+      }
+      var status = statusOf(achieved);
+      // what is left once only the part of each block inside the hulls counts (estimate; volume and area requirements)
+      var insideVal = null, statusIn = null;
+      if (hc && (r.metric === 'volume' || r.metric === 'area')) {
+        insideVal = 0;
+        model.blocks.forEach(function (b) {
+          if (b.req !== r.id) return;
+          var q = hc.byId[b.id], full = r.metric === 'volume' ? blockVolume(b) : blockArea(b);
+          insideVal += q ? full * (1 - q.shareBlock) : full;
+        });
+        statusIn = statusOf(insideVal);
+      }
+      return { req: r, achieved: achieved, n: n, status: status, inside: insideVal, statusInside: statusIn };
     });
   }
 
@@ -728,7 +1012,7 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
 
   /* ---------- project model ---------- */
   function emptyProject(name) {
-    return { app: FORMAT, version: VERSION, name: name || 'Untitled design', groups: defaultGroups(), requirements: [], blocks: [] };
+    return { app: FORMAT, version: VERSION, name: name || 'Untitled design', groups: defaultGroups(), requirements: [], blocks: [], hulls: [], rho: 1.025, draught: null, waterline: true, structPct: DEFAULT_STRUCT_PCT };
   }
 
   function mkBlock(id, name, shape, group, req, x0, x1, y0, y1, z0, z1) {
@@ -736,9 +1020,25 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
       id: id, name: name, shape: shape, group: group, req: req,
       position: [(x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2],
       size: [x1 - x0, y1 - y0, z1 - z0],
-      rotation: [0, 0, 0], areaOverride: null, hidden: false
+      rotation: [0, 0, 0], areaOverride: null, hidden: false, density: null, fill: 100, massOverride: null
     };
   }
+
+  /* Examples keep only the groups they use (and the parents of those): New still starts from the full Levander set. */
+  function pruneGroups(m) {
+    var used = {};
+    m.blocks.forEach(function (b) { used[b.group] = true; });
+    var gm = groupMap(m), keep = {};
+    Object.keys(used).forEach(function (id) {
+      var g = gm[id], guard = 0;
+      while (g && guard++ < 50) { keep[g.id] = true; g = g.parent ? gm[g.parent] : null; }
+    });
+    m.groups = m.groups.filter(function (g) { return keep[g.id]; });
+    return m;
+  }
+  /* mass settings of an example: group densities, and per block density, fill or typed mass */
+  function gdens(m, id, d) { m.groups.forEach(function (g) { if (g.id === id) g.density = d; }); }
+  function tune(m, id, patch) { m.blocks.forEach(function (b) { if (b.id === id) for (var k in patch) b[k] = patch[k]; }); }
 
   /* Very small teaching example: 5 blocks, 3 requirements. */
   function simpleExample() {
@@ -755,6 +1055,69 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
       mkBlock('b4', 'Accommodation',   'box', 'g_acc',    'r_acc',   20, 30, -4, 4, 4, 7),
       mkBlock('b5', 'Wheelhouse',      'box', 'g_outfit', null,      22, 28, -3, 3, 7, 9.4)
     ];
+    m.hulls = [addHullTo(m, fitHull(m, 'cargo', 4, 2.4))];
+    tune(m, 'b1', { fill: 50 });                       // hold half full
+    tune(m, 'b3', { fill: 98 });
+    pruneGroups(m);
+    return m;
+  }
+
+  /* Small catamaran, about 24 m: two slender demihulls with machinery, tanks and crew cabins, and a cross-deck saloon above. */
+  function catamaranExample() {
+    var m = emptyProject('Catamaran example');
+    m.requirements = [
+      { id: 'r_pax',  name: 'Passenger saloon area', metric: 'area',   sense: 'min', shall: 150, should: 190 },
+      { id: 'r_fuel', name: 'Fuel oil volume',       metric: 'volume', sense: 'min', shall: 25,  should: 35 },
+      { id: 'r_loa',  name: 'Overall length',        metric: 'length', sense: 'max', shall: 26,  should: 24 },
+      { id: 'r_beam', name: 'Overall beam',          metric: 'beam',   sense: 'max', shall: 14,  should: 13 }
+    ];
+    var B = [];
+    [['P', 4.1, 5.9], ['S', -5.9, -4.1]].forEach(function (s, i) {
+      var k = i * 3;
+      B.push(mkBlock('b' + (k + 1), 'Engine room ' + s[0],  'box', 'g_mach',  null,     2, 9,    s[1], s[2], 0.4, 3));
+      B.push(mkBlock('b' + (k + 2), 'Fuel oil tank ' + s[0], 'box', 'g_tanks', 'r_fuel', 9, 15,   s[1], s[2], 0.4, 3));
+      B.push(mkBlock('b' + (k + 3), 'Crew cabins ' + s[0],  'box', 'g_acc',   null,     15, 21,   s[1], s[2], 0.4, 3));
+    });
+    B.push(mkBlock('b7', 'Aft working deck',  'box', 'g_cargo',  null,    0, 6,   -6.6, 6.6, 3.2, 3.5));
+    B.push(mkBlock('b8', 'Passenger saloon',  'box', 'g_acc',    'r_pax', 6, 21,  -6.6, 6.6, 3.2, 6.2));
+    B.push(mkBlock('b9', 'Wheelhouse',        'box', 'g_outfit', null,    14, 19, -3, 3,     6.2, 8.6));
+    m.blocks = B;
+    m.hulls = [];
+    [5, -5].forEach(function (y) { m.hulls.push(addHullTo(m, fitHull(m, 'demihull', 3, 1.6, { y: y, beam: 3.2 }))); });
+    gdens(m, 'g_mach', 0.25); gdens(m, 'g_acc', 0.04); gdens(m, 'g_outfit', 0.06);   // light craft: lightly built spaces
+    m.structPct = 15;                                   // aluminium hull
+    tune(m, 'b2', { fill: 60 }); tune(m, 'b5', { fill: 60 });
+    pruneGroups(m);
+    return m;
+  }
+
+  /* Small trimaran, about 36 m: a main hull with the machinery and accommodation, two small outriggers with tanks, and a cross deck above. */
+  function trimaranExample() {
+    var m = emptyProject('Trimaran example');
+    m.requirements = [
+      { id: 'r_acc',  name: 'Accommodation area', metric: 'area',   sense: 'min', shall: 150, should: 200 },
+      { id: 'r_fuel', name: 'Fuel oil volume',    metric: 'volume', sense: 'min', shall: 25,  should: 35 },
+      { id: 'r_loa',  name: 'Overall length',     metric: 'length', sense: 'max', shall: 40,  should: 37 },
+      { id: 'r_beam', name: 'Overall beam',       metric: 'beam',   sense: 'max', shall: 14,  should: 13 }
+    ];
+    var B = [];
+    B.push(mkBlock('b1', 'Steering and waterjet room', 'box', 'g_mach',   null,     1, 6,   -1.3, 1.3, 0.4, 3.5));
+    B.push(mkBlock('b2', 'Engine room',                'box', 'g_mach',   null,     6, 16,  -1.3, 1.3, 0.4, 3.5));
+    B.push(mkBlock('b3', 'Fuel oil tank',              'box', 'g_tanks',  'r_fuel', 16, 22, -1.3, 1.3, 0.4, 3.5));
+    B.push(mkBlock('b4', 'Crew cabins',                'box', 'g_acc',    'r_acc',  22, 30, -1.3, 1.3, 0.4, 3.5));
+    B.push(mkBlock('b5', 'Bow thruster room',          'box', 'g_outfit', null,     30, 34, -1.3, 1.3, 0.4, 3.5));
+    B.push(mkBlock('b6', 'Ballast tank P',             'box', 'g_tanks',  null,     14, 26, 4.7, 5.7,  0.4, 3.5));
+    B.push(mkBlock('b7', 'Ballast tank S',             'box', 'g_tanks',  null,     14, 26, -5.7, -4.7, 0.4, 3.5));
+    B.push(mkBlock('b8', 'Aft working deck',           'box', 'g_cargo',  null,     0, 10,  -6.4, 6.4, 3.7, 4));
+    B.push(mkBlock('b9', 'Accommodation and mess',     'box', 'g_acc',    'r_acc',  10, 28, -6, 6,     3.7, 6.7));
+    B.push(mkBlock('b10', 'Wheelhouse',                'box', 'g_outfit', null,     22, 27, -2.5, 2.5, 6.7, 9.1));
+    m.blocks = B;
+    m.hulls = [addHullTo(m, fitHull(m, 'demihull', 3.5, 2.0, { y: 0, beam: 3.6 }))];
+    [5.2, -5.2].forEach(function (y) { m.hulls.push(addHullTo(m, fitHull(m, 'demihull', 3.5, 0.9, { y: y, beam: 1.6 }))); });
+    gdens(m, 'g_mach', 0.3); gdens(m, 'g_acc', 0.04); gdens(m, 'g_outfit', 0.06);
+    m.structPct = 15;
+    tune(m, 'b3', { fill: 90 }); tune(m, 'b6', { fill: 50 }); tune(m, 'b7', { fill: 50 });
+    pruneGroups(m);
     return m;
   }
 
@@ -793,6 +1156,10 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
     B.push(mkBlock('b14', 'A-deck: day room and galley', 'box', 'g_acc',    null,     12.9, 19, -4.2, 4.2, 6.6, 8.9));
     B.push(mkBlock('b15', 'Wheelhouse',                  'box', 'g_outfit', null,     14, 18, -2.5, 2.5, 8.9, 11.4));
     m.blocks = B;
+    m.hulls = [addHullTo(m, fitHull(m, 'research', 4.6, 2.5))];
+    tune(m, 'b1', { massOverride: 140 });              // engine room: weight typed in
+    tune(m, 'b6', { fill: 90 }); tune(m, 'b7', { fill: 90 }); tune(m, 'b8', { fill: 80 });
+    pruneGroups(m);
     return m;
   }
 
@@ -835,6 +1202,10 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
     B.push(mkBlock('b19', 'Cabins B-deck',         'box',      'g_acc',    'r_cabin', 52, 66, -7.5, 7.5, 10.3, 13.1));
     B.push(mkBlock('b20', 'Mess and galley',       'box',      'g_acc',    null,     52, 62, -7, 7, 13.1, 15.9));
     m.blocks = B;
+    m.hulls = [addHullTo(m, fitHull(m, 'osv', 7.9, 5.5))];
+    tune(m, 'b2', { fill: 80 }); tune(m, 'b3', { fill: 80 });   // liquid cargo tanks part full
+    tune(m, 'b10', { fill: 95 });
+    pruneGroups(m);
     return m;
   }
 
@@ -847,7 +1218,7 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
     if (!Array.isArray(raw.blocks) && !Array.isArray(raw.groups)) throw new Error('No groups or blocks found in this file.');
     if (raw.version && raw.version > VERSION) warnings.push('File version ' + raw.version + ' is newer than this editor. Some data may be ignored.');
 
-    var model = { app: FORMAT, version: VERSION, name: typeof raw.name === 'string' && raw.name.trim() ? raw.name.trim() : 'Untitled design', groups: [], requirements: [], blocks: [] };
+    var model = { app: FORMAT, version: VERSION, name: typeof raw.name === 'string' && raw.name.trim() ? raw.name.trim() : 'Untitled design', groups: [], requirements: [], blocks: [], hulls: [] };
 
     // groups
     var seen = {};
@@ -860,7 +1231,8 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
         name: typeof g.name === 'string' && g.name.trim() ? g.name : 'Group ' + (i + 1),
         color: isHex(g.color) ? g.color : '#8c97a8',
         parent: typeof g.parent === 'string' ? g.parent : null,
-        visible: g.visible !== false
+        visible: g.visible !== false,
+        density: typeof g.density === 'number' && isFinite(g.density) ? Math.max(0, g.density) : null
       });
     });
     if (!model.groups.length) { model.groups = defaultGroups(); warnings.push('No groups in file. Levander groups were added.'); }
@@ -910,10 +1282,32 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
         req: typeof b.req === 'string' && rseen[b.req] ? b.req : null,
         position: pos, size: size, rotation: rot,
         areaOverride: b.areaOverride === null || b.areaOverride === undefined ? null : Math.max(0, num(b.areaOverride, 0)),
-        hidden: b.hidden === true
+        hidden: b.hidden === true,
+        density: typeof b.density === 'number' && isFinite(b.density) ? Math.max(0, b.density) : null,
+        fill: typeof b.fill === 'number' && isFinite(b.fill) ? Math.min(100, Math.max(0, b.fill)) : 100,
+        massOverride: typeof b.massOverride === 'number' && isFinite(b.massOverride) ? Math.max(0, b.massOverride) : null
       });
     });
     if (dropped) warnings.push(dropped + ' unreadable block entries were skipped.');
+    var rr = typeof raw.waterDensity === 'number' ? raw.waterDensity : raw.rho;
+    model.rho = typeof rr === 'number' && isFinite(rr) ? Math.min(1.3, Math.max(0.9, rr)) : 1.025;
+    var rawHulls = Array.isArray(raw.hulls) ? raw.hulls : (raw.hull && typeof raw.hull === 'object' ? [raw.hull] : []);
+    var hseen = {};
+    rawHulls.slice(0, 8).forEach(function (H) {
+      if (!H || typeof H !== 'object') return;
+      if (!HULL_TYPES[H.type]) { warnings.push('A hull of unknown type was ignored.'); return; }
+      var id = typeof H.id === 'string' && H.id && !hseen[H.id] ? H.id : uid('h', hseen);
+      hseen[id] = true;
+      var depth = Math.max(0.5, num(H.depth, 4));
+      model.hulls.push({ id: id, name: typeof H.name === 'string' && H.name.trim() ? H.name : HULL_TYPES[H.type].label, type: H.type,
+        x: num(H.x, 0), y: num(H.y, 0), loa: Math.max(1, num(H.loa, 30)), beam: Math.max(0.5, num(H.beam, 8)), depth: depth,
+        draught: Math.min(depth, Math.max(0.1, num(H.draught, depth * 0.6))), visible: H.visible !== false });
+      var shp = cleanShape(H.shape); if (shp) model.hulls[model.hulls.length - 1].shape = shp;
+    });
+    model.draught = typeof raw.draught === 'number' && isFinite(raw.draught) ? raw.draught : (model.hulls[0] ? model.hulls[0].draught : null);
+    model.waterline = raw.waterline !== false;
+    model.structPct = typeof raw.structurePercent === 'number' && isFinite(raw.structurePercent) ? Math.min(100, Math.max(0, raw.structurePercent)) : DEFAULT_STRUCT_PCT;
+    syncDraught(model);
     return { model: model, warnings: warnings };
   }
 
@@ -949,14 +1343,26 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
       axes: 'x forward from the aft end, y to port from the centreline, z up from the baseline; positions are block centres; rotation is Euler XYZ in degrees',
       taxonomy: 'Levander system based design (editable)',
       shapes: SHAPE_ORDER.map(function (k) { return { id: k, label: SHAPES[k].label, volumeFactor: r4(SHAPES[k].vf), planFactor: r4(SHAPES[k].plan) }; }),
-      groups: model.groups.map(function (g) { return { id: g.id, name: g.name, color: g.color, parent: g.parent, visible: g.visible !== false }; }),
+      groups: model.groups.map(function (g) { return { id: g.id, name: g.name, color: g.color, parent: g.parent, visible: g.visible !== false, density: typeof g.density === 'number' ? r4(g.density) : null }; }),
       requirements: model.requirements.map(function (r) { return { id: r.id, name: r.name, metric: r.metric, sense: r.sense, shall: r.shall, should: r.should }; }),
+      waterDensity: model.rho || 1.025,
+      draught: model.draught == null ? null : r4(model.draught),
+      waterline: model.waterline !== false,
+      structurePercent: typeof model.structPct === 'number' ? r4(model.structPct) : DEFAULT_STRUCT_PCT,
+      weight: (function () { var w = weightSummary(model); return { unit: 't', blocks: r4(w.blocks.mass), structureAndOutfitting: r4(w.struct.mass), total: r4(w.total.mass), lcg: w.total.lcg == null ? null : r4(w.total.lcg), tcg: w.total.tcg == null ? null : r4(w.total.tcg), vcg: w.total.vcg == null ? null : r4(w.total.vcg), displacement: w.disp == null ? null : r4(w.disp), margin: w.margin == null ? null : r4(w.margin) }; })(),
+      hulls: model.hulls.map(function (h) {
+        var hy = hullHydro(h, h.draught, model.rho);
+        return { id: h.id, name: h.name, type: h.type, x: r4(h.x), y: r4(h.y), loa: r4(h.loa), beam: r4(h.beam), depth: r4(h.depth), draught: r4(h.draught), visible: h.visible !== false, shape: cleanShape(h.shape) || undefined,
+          computed: { volumeToDeck: r4(hullVolumeTo(h, h.depth)), displacedVolume: r4(hullVolumeTo(h, h.draught)),
+            hydrostatics: { lwl: r4(hy.LWL), bwl: r4(hy.BWL), cb: r4(hy.Cb), cp: r4(hy.Cp), cm: r4(hy.Cm), cwp: r4(hy.Cwp), waterplaneArea: r4(hy.Awp), lcb: r4(hy.LCB), kb: r4(hy.KB), lcf: r4(hy.LCF), tpc: r4(hy.TPC) } } };
+      }),
       blocks: model.blocks.map(function (b) {
         return {
           id: b.id, name: b.name, shape: b.shape, group: b.group, req: b.req,
           position: b.position.map(r4), size: b.size.map(r4), rotation: b.rotation.map(r4),
           areaOverride: b.areaOverride == null ? null : r4(b.areaOverride), hidden: !!b.hidden,
-          computed: { volume: r4(blockVolume(b)), area: r4(blockArea(b)) }
+          density: typeof b.density === 'number' ? r4(b.density) : null, fill: typeof b.fill === 'number' ? r4(b.fill) : 100, massOverride: typeof b.massOverride === 'number' ? r4(b.massOverride) : null,
+          computed: (function () { var q = blockMass(model, b), c = blockCentroid(b); return { volume: r4(blockVolume(b)), area: r4(blockArea(b)), density: r4(q.density), mass: r4(q.mass), cg: c.map(r4) }; })()
         };
       })
     };
@@ -979,26 +1385,62 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
 
   function summaryCSV(model, delim) {
     var s = summarize(model);
-    var rows = [['System', 'Level', 'Blocks', 'Area (m2)', 'Volume (m3)', 'Volume share (%)']];
-    s.rows.forEach(function (r) {
-      rows.push([r.group.name, r.depth + 1, r.total.n, r4(r.total.area), r4(r.total.vol), s.total.vol > 0 ? r4(100 * r.total.vol / s.total.vol) : 0]);
+    var ws = weightSummary(model), wn = function (v) { return v == null ? '' : r4(v); };
+    var rows = [['System', 'Level', 'Blocks', 'Area (m2)', 'Volume (m3)', 'Volume share (%)', 'Density (t/m3)', 'Block mass (t)', 'LCG x (m)', 'TCG y (m)', 'VCG z (m)']];
+    s.rows.forEach(function (r, i) {
+      var w = ws.rows[i];
+      rows.push([r.group.name, r.depth + 1, r.total.n, r4(r.total.area), r4(r.total.vol), s.total.vol > 0 ? r4(100 * r.total.vol / s.total.vol) : 0,
+        r4(w.density.value), r4(w.total.mass), wn(w.total.lcg), wn(w.total.tcg), wn(w.total.vcg)]);
     });
-    rows.push(['Gross total', '', s.total.n, r4(s.total.area), r4(s.total.vol), s.total.vol > 0 ? 100 : 0]);
+    rows.push(['Gross total', '', s.total.n, r4(s.total.area), r4(s.total.vol), s.total.vol > 0 ? 100 : 0, '', r4(ws.blocks.mass), wn(ws.blocks.lcg), wn(ws.blocks.tcg), wn(ws.blocks.vcg)]);
+    rows.push([]);
+    rows.push(['Weight', 'Share', '', '', '', '', '', 'Mass (t)', 'LCG x (m)', 'TCG y (m)', 'VCG z (m)']);
+    rows.push(['Blocks', '', '', '', '', '', '', r4(ws.blocks.mass), wn(ws.blocks.lcg), wn(ws.blocks.tcg), wn(ws.blocks.vcg)]);
+    rows.push(['Structure and outfitting (share of displacement)', r4(ws.pct) + '%', '', '', '', '', '', r4(ws.struct.mass), wn(ws.struct.lcg), wn(ws.struct.tcg), wn(ws.struct.vcg)]);
+    rows.push(['Total weight', '', '', '', '', '', '', r4(ws.total.mass), wn(ws.total.lcg), wn(ws.total.tcg), wn(ws.total.vcg)]);
+    if (ws.hasHull) {
+      rows.push(['Displacement at the draught (t)', '', '', '', '', '', '', wn(ws.disp), wn(ws.lcb), wn(ws.tcb), wn(ws.kb)]);
+      rows.push(['Margin: displacement minus weight (t)', ws.marginPct == null ? '' : r4(ws.marginPct) + '%', '', '', '', '', '', wn(ws.margin)]);
+      rows.push(['LCG minus LCB (m, positive = weight forward of the buoyancy)', '', '', '', '', '', '', '', wn(ws.lcgMinusLcb)]);
+    }
     rows.push([]);
     rows.push(['Overall dimensions', '', '', '', '', '']);
     var e = s.envelope;
     rows.push(['Length (X)', 'm', '', '', e ? r4(e.length) : 0, '']);
     rows.push(['Beam (Y)', 'm', '', '', e ? r4(e.beam) : 0, '']);
     rows.push(['Height (Z)', 'm', '', '', e ? r4(e.height) : 0, '']);
+    var hc = hullCheck(model);
+    if (hc) {
+      rows.push([]);
+      rows.push(['Hulls (illustrative)', 'Type', 'Length (m)', 'Beam (m)', 'Depth to main deck (m)', 'Draught (m)', 'Y offset (m)', 'Volume to main deck (m3)', 'Displaced volume (m3)']);
+      hc.hulls.forEach(function (e) {
+        var h = e.hull;
+        rows.push([h.name, HULL_TYPES[h.type].label, r4(h.loa), r4(h.beam), r4(h.depth), r4(h.draught), r4(h.y), r4(e.volDeck), r4(e.volDraught)]);
+      });
+      rows.push(['All hulls', '', '', '', '', '', '', r4(hc.volDeck), r4(hc.volDraught)]);
+      var hd = modelHydro(model);
+      rows.push([]);
+      rows.push(['Hydrostatics (illustrative hulls, upright, water density t/m3 = ' + r4(hd.total.rho) + ')', 'LWL (m)', 'BWL (m)', 'Draught (m)', 'Volume (m3)', 'Displacement (t)', 'Cb', 'Cp', 'Cm', 'Cwp', 'Waterplane area (m2)', 'LCB x (m)', 'KB (m)', 'LCF x (m)', 'TPC (t/cm)']);
+      hd.hulls.forEach(function (e) {
+        var q = e.h;
+        rows.push([e.hull.name, r4(q.LWL), r4(q.BWL), r4(q.T), r4(q.V), r4(q.disp), r4(q.Cb), r4(q.Cp), r4(q.Cm), r4(q.Cwp), r4(q.Awp), r4(q.LCB), r4(q.KB), r4(q.LCF), r4(q.TPC)]);
+      });
+      var tq = hd.total;
+      rows.push(['All hulls', '', '', '', r4(tq.V), r4(tq.disp), '', '', '', '', r4(tq.Awp), r4(tq.LCB), r4(tq.KB), r4(tq.LCF), r4(tq.TPC)]);
+      rows.push(['Transverse centre of buoyancy y (m, to port)', '', '', '', '', '', '', '', '', '', '', r4(tq.TCB)]);
+      rows.push(['Block volume below main deck (m3)', '', '', '', '', '', '', r4(hc.blocksBelow), '']);
+      rows.push(['Block volume outside hulls, estimate (m3)', '', '', '', '', '', '', r4(hc.outside), '']);
+    }
     return toCSV(rows, delim);
   }
 
   function requirementsCSV(model, delim) {
-    var rows = [['Requirement', 'Metric', 'Unit', 'Sense', 'Shall', 'Should', 'Achieved', 'Linked blocks', 'Status']];
+    var rows = [['Requirement', 'Metric', 'Unit', 'Sense', 'Shall', 'Should', 'Achieved', 'Linked blocks', 'Status', 'Inside hulls, estimate', 'Status inside hulls']];
     evaluateRequirements(model).forEach(function (e) {
       var r = e.req;
       rows.push([r.name, METRICS[r.metric].label, METRICS[r.metric].unit, r.sense === 'max' ? 'at most' : 'at least',
-        r.shall == null ? '' : r.shall, r.should == null ? '' : r.should, r4(e.achieved), e.n, STATUS_LABEL[e.status]]);
+        r.shall == null ? '' : r.shall, r.should == null ? '' : r.should, r4(e.achieved), e.n, STATUS_LABEL[e.status],
+        e.inside == null ? '' : r4(e.inside), e.statusInside ? STATUS_LABEL[e.statusInside] : '']);
     });
     return toCSV(rows, delim);
   }
@@ -1006,27 +1448,436 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
   function blocksCSV(model, delim) {
     var rmap = {};
     model.requirements.forEach(function (r) { rmap[r.id] = r.name; });
-    var rows = [['Id', 'Name', 'Group path', 'Group', 'Requirement', 'Shape', 'X (m)', 'Y (m)', 'Z (m)', 'Length (m)', 'Beam (m)', 'Height (m)', 'Rot X (deg)', 'Rot Y (deg)', 'Rot Z (deg)', 'Volume (m3)', 'Area (m2)', 'Area overridden']];
-    var gm = groupMap(model);
+    var rows = [['Id', 'Name', 'Group path', 'Group', 'Requirement', 'Shape', 'X (m)', 'Y (m)', 'Z (m)', 'Length (m)', 'Beam (m)', 'Height (m)', 'Rot X (deg)', 'Rot Y (deg)', 'Rot Z (deg)', 'Volume (m3)', 'Area (m2)', 'Area overridden', 'Volume below main deck (m3)', 'Volume outside hulls, estimate (m3)', 'Outside share of block (%)', 'Density (t/m3)', 'Fill (%)', 'Mass (t)', 'Mass typed', 'CG x (m)', 'CG y (m)', 'CG z (m)']];
+    var gm = groupMap(model), hc = hullCheck(model);
     model.blocks.forEach(function (b) {
+      var q = blockMass(model, b), cg = blockCentroid(b);
       rows.push([b.id, b.name, groupPath(model, b.group), gm[b.group] ? gm[b.group].name : '', b.req ? rmap[b.req] : '', SHAPES[b.shape].label,
         r4(b.position[0]), r4(b.position[1]), r4(b.position[2]), r4(b.size[0]), r4(b.size[1]), r4(b.size[2]),
-        r4(b.rotation[0]), r4(b.rotation[1]), r4(b.rotation[2]), r4(blockVolume(b)), r4(blockArea(b)), b.areaOverride != null ? 'yes' : 'no']);
+        r4(b.rotation[0]), r4(b.rotation[1]), r4(b.rotation[2]), r4(blockVolume(b)), r4(blockArea(b)), b.areaOverride != null ? 'yes' : 'no',
+        hc ? r4(hc.byId[b.id].below) : '', hc ? r4(hc.byId[b.id].out) : '', hc ? r4(100 * hc.byId[b.id].shareBlock) : '',
+        r4(q.density), r4(q.fill), r4(q.mass), q.typed ? 'yes' : 'no', r4(cg[0]), r4(cg[1]), r4(cg[2])]);
     });
     return toCSV(rows, delim);
   }
 
+  /* ---------- hull (illustrative parametric hulls; not real lines) ----------
+     A hull is {id, name, type, x, y, loa, beam, depth, draught, visible}: x is the aft end, y the centreline offset (a catamaran has two),
+     depth is the main deck (m above the baseline). A model has a list of hulls: model.hulls.
+     Shape comes from the preset table: plan form (stern and bow taper), section fullness, stem rake and flare. */
+  var HULL_TYPES = {
+    osv:      { label: 'Offshore vessel',   ps: 0.94, ua: 0.08, a: 0.7, ub: 0.86, pb: 0.00, c: 2.6, rake: 0.03,  flare: 0.14, fb: 0.85, m: 5.0, sternRake: 0.000, dr: 0.70 },
+    research: { label: 'Research vessel',   ps: 0.88, ua: 0.12, a: 0.8, ub: 0.82, pb: 0.00, c: 2.0, rake: 0.045, flare: 0.16, fb: 0.60, m: 3.4, sternRake: 0.015, dr: 0.55 },
+    cargo:    { label: 'Cargo ship',        ps: 0.92, ua: 0.08, a: 0.8, ub: 0.88, pb: 0.00, c: 2.4, rake: 0.02,  flare: 0.08, fb: 0.85, m: 5.0, sternRake: 0.000, dr: 0.70 },
+    demihull: { label: 'Slender demihull',  ps: 0.70, ua: 0.10, a: 0.8, ub: 0.80, pb: 0.00, c: 1.8, rake: 0.06,  flare: 0.05, fb: 0.30, m: 2.2, sternRake: 0.010, dr: 0.60 },
+    barge:    { label: 'Barge',             ps: 1.00, ua: 0.02, a: 1.0, ub: 0.94, pb: 0.60, c: 3.0, rake: 0.03,  flare: 0.00, fb: 0.90, m: 6.0, sternRake: 0.000, dr: 0.50 }
+  };
+  var HULL_ORDER = ['osv', 'research', 'cargo', 'demihull', 'barge'];
+
+  /* Shape sliders. A hull may carry h.shape = { key: value }, overrides of its type's parameters. 'par' is the length of the
+     parallel body (fraction of the length): the bow entrance starts at ua + par. Edit h.shape by replacing the object. */
+  var SHAPE_SPEC = [
+    { key: 'fb',        group: 'Section', label: 'Flat bottom',    min: 0,    max: 1,    step: 0.01,  pct: true, hint: '0 = V section, 100 = flat bottom' },
+    { key: 'm',         group: 'Section', label: 'Bilge hardness', min: 1,    max: 10,   step: 0.1,   hint: 'low = soft, high = square bilge' },
+    { key: 'flare',     group: 'Section', label: 'Bow flare',      min: 0,    max: 0.4,  step: 0.01,  pct: true },
+    { key: 'par',       group: 'Plan',    label: 'Parallel body',  min: 0.05, max: 0.9,  step: 0.01,  pct: true, hint: 'share of the length with constant section' },
+    { key: 'c',         group: 'Plan',    label: 'Bow fullness',   min: 1,    max: 6,    step: 0.1,   hint: '1 = sharp, high = full bow' },
+    { key: 'pb',        group: 'Plan',    label: 'Stem width',     min: 0,    max: 1,    step: 0.01,  pct: true, hint: 'beam at the stem, 0 = pointed' },
+    { key: 'rake',      group: 'Plan',    label: 'Stem rake',      min: 0,    max: 0.15, step: 0.005, pct: true },
+    { key: 'ps',        group: 'Stern',   label: 'Transom width',  min: 0,    max: 1,    step: 0.01,  pct: true, hint: '0 = pointed stern' },
+    { key: 'ua',        group: 'Stern',   label: 'Stern run',      min: 0.02, max: 0.4,  step: 0.01,  pct: true, hint: 'length of the taper towards the stern' },
+    { key: 'sternRake', group: 'Stern',   label: 'Stern rake',     min: 0,    max: 0.1,  step: 0.005, pct: true, hint: 'cut-up of the keel aft (cruiser stern)' }
+  ];
+  var STERN_PRESETS = {
+    transom: { ps: 0.9,  ua: 0.08, sternRake: 0 },
+    rounded: { ps: 0.35, ua: 0.14, sternRake: 0.01 },
+    cruiser: { ps: 0,    ua: 0.18, sternRake: 0.04 }
+  };
+  var PCACHE = typeof WeakMap === 'function' ? new WeakMap() : null;
+
+  /* effective parameters of a hull: its type's values with the shape overrides on top */
+  function hullP(h) {
+    var base = HULL_TYPES[h.type] || HULL_TYPES.osv, sh = h.shape;
+    if (!sh) return base;
+    var e = PCACHE && PCACHE.get(sh);
+    if (e && e.base === base) return e.P;
+    var P = {}, k;
+    for (k in base) P[k] = base[k];
+    P.par = base.ub - base.ua;
+    SHAPE_SPEC.forEach(function (s) {
+      if (typeof sh[s.key] === 'number' && isFinite(sh[s.key])) P[s.key] = Math.min(s.max, Math.max(s.min, sh[s.key]));
+    });
+    P.ub = Math.min(0.97, P.ua + P.par);
+    if (PCACHE) PCACHE.set(sh, { base: base, P: P });
+    return P;
+  }
+
+  function hullParams(h) {
+    var P = hullP(h), q = {};
+    for (var k in P) q[k] = P[k];
+    if (q.par === undefined) q.par = P.ub - P.ua;
+    return q;
+  }
+
+  /* keep only known, numeric, in-range shape values; null when nothing is overridden */
+  function cleanShape(sh) {
+    if (!sh || typeof sh !== 'object') return null;
+    var out = {}, n = 0;
+    SHAPE_SPEC.forEach(function (s) {
+      if (typeof sh[s.key] === 'number' && isFinite(sh[s.key])) { out[s.key] = Math.min(s.max, Math.max(s.min, sh[s.key])); n++; }
+    });
+    return n ? out : null;
+  }
+
+  function hullXRange(h, t) {
+    var P = hullP(h);
+    return [h.x + P.sternRake * h.loa * (1 - t), h.x + h.loa - P.rake * h.loa * (1 - t)];
+  }
+
+  /* half-breadth (m) at plan fraction u (0 aft, 1 forward) and height fraction t (0 keel, 1 deck) */
+  function hullHalf(h, u, t) {
+    var P = hullP(h), p, sb = 0;
+    if (u < P.ua && P.ua > 0) p = P.ps + (1 - P.ps) * Math.pow(u / P.ua, P.a);
+    else if (u > P.ub) { sb = (u - P.ub) / (1 - P.ub); p = 1 - (1 - P.pb) * Math.pow(sb, P.c); }
+    else p = 1;
+    var fb = P.fb * (1 - sb);
+    var f = fb + (1 - fb) * (1 - Math.pow(1 - t, P.m));
+    var y = 0.5 * h.beam * p * f * (1 + P.flare * Math.pow(sb, 1.2) * t);
+    return Math.min(y, 0.5 * h.beam);
+  }
+
+  function hullContains(h, x, y, z) {
+    if (z < 0 || z > h.depth) return false;
+    var t = z / h.depth, r = hullXRange(h, t);
+    if (x < r[0] || x > r[1]) return false;
+    return Math.abs(y - (h.y || 0)) <= hullHalf(h, (x - r[0]) / (r[1] - r[0]), t);
+  }
+
+  function hullVolumeTo(h, zcut) {
+    zcut = Math.max(0, Math.min(zcut, h.depth));
+    var nz = 64, nu = 240, dz = zcut / nz, sum = 0;
+    for (var j = 0; j < nz; j++) {
+      var t = (j + 0.5) * dz / h.depth, r = hullXRange(h, t), len = r[1] - r[0];
+      for (var i = 0; i < nu; i++) sum += 2 * hullHalf(h, (i + 0.5) / nu, t) * len / nu * dz;
+    }
+    return sum;
+  }
+
+  /* Hydrostatics of one hull at draught T (clamped to the depth), upright, in the hull's own coordinates.
+     Midpoint integration over 48 layers x 240 plan strips. LWL and BWL are taken at the waterline; Am is the largest
+     immersed section area (stations at fixed x). x is measured from the aft end of the model (x = 0). */
+  function hullHydro(h, T, rho) {
+    rho = rho || 1.025;
+    T = Math.max(0, Math.min(T == null ? h.draught : T, h.depth));
+    var out = { T: T, V: 0, LWL: 0, BWL: 0, Am: 0, Awp: 0, LCB: 0, KB: 0, LCF: 0, Cb: 0, Cp: 0, Cm: 0, Cwp: 0, disp: 0, TPC: 0 };
+    if (T <= 1e-9) return out;
+    var nz = 64, nu = 240, dz = T / nz, V = 0, Mx = 0, Mz = 0, j, i;
+    for (j = 0; j < nz; j++) {
+      var z = (j + 0.5) * dz, t = z / h.depth, r = hullXRange(h, t), len = r[1] - r[0];
+      for (i = 0; i < nu; i++) {
+        var dv = 2 * hullHalf(h, (i + 0.5) / nu, t) * len / nu * dz;
+        V += dv; Mx += dv * (r[0] + (i + 0.5) / nu * len); Mz += dv * z;
+      }
+    }
+    var tw = T / h.depth, rw = hullXRange(h, tw), lw = rw[1] - rw[0], awp = 0, mf = 0, bw = 0;
+    for (i = 0; i < nu; i++) {
+      var yw = 2 * hullHalf(h, (i + 0.5) / nu, tw), da = yw * lw / nu;
+      awp += da; mf += da * (rw[0] + (i + 0.5) / nu * lw); if (yw > bw) bw = yw;
+    }
+    // largest section: stations at fixed x across the whole length
+    var x0 = h.x, x1 = h.x + h.loa, nx = 160, am = 0, k;
+    for (k = 0; k < nx; k++) {
+      var x = x0 + (k + 0.5) / nx * (x1 - x0), a = 0;
+      for (j = 0; j < nz; j++) {
+        var zz = (j + 0.5) * dz, tt = zz / h.depth, rr = hullXRange(h, tt);
+        if (x < rr[0] || x > rr[1]) continue;
+        a += 2 * hullHalf(h, (x - rr[0]) / (rr[1] - rr[0]), tt) * dz;
+      }
+      if (a > am) am = a;
+    }
+    out.V = V; out.LWL = lw; out.BWL = bw; out.Am = am; out.Awp = awp;
+    out.LCB = Mx / V; out.KB = Mz / V; out.LCF = awp > 0 ? mf / awp : 0;
+    out.disp = rho * V; out.TPC = rho * awp / 100;
+    var box = lw * bw * T;
+    out.Cb = box > 0 ? V / box : 0;
+    out.Cp = am * lw > 0 ? V / (am * lw) : 0;
+    out.Cm = bw * T > 0 ? am / (bw * T) : 0;
+    out.Cwp = lw * bw > 0 ? awp / (lw * bw) : 0;
+    return out;
+  }
+
+  /* Hydrostatics of all hulls together, each at its own draught: volumes and areas add, centres are weighted
+     (LCB, KB, TCB by volume; LCF by waterplane area). TCB is the transverse centre of buoyancy (y, to port). */
+  function modelHydro(model) {
+    var rho = model.rho || 1.025, hulls = model.hulls || [];
+    if (!hulls.length) return null;
+    var list = hulls.map(function (h) { return { hull: h, h: hullHydro(h, h.draught, rho) }; });
+    var tot = { V: 0, disp: 0, Awp: 0, TPC: 0, LCB: 0, KB: 0, LCF: 0, TCB: 0, rho: rho };
+    list.forEach(function (e) {
+      var q = e.h, y = e.hull.y || 0;
+      tot.V += q.V; tot.Awp += q.Awp; tot.TPC += q.TPC;
+      tot.LCB += q.V * q.LCB; tot.KB += q.V * q.KB; tot.TCB += q.V * y; tot.LCF += q.Awp * q.LCF;
+    });
+    tot.disp = rho * tot.V;
+    if (tot.V > 0) { tot.LCB /= tot.V; tot.KB /= tot.V; tot.TCB /= tot.V; }
+    if (tot.Awp > 0) tot.LCF /= tot.Awp;
+    return { hulls: list, total: tot };
+  }
+
+  /* How much of each block (below the deck line) lies outside every hull: estimate from a 5x5x5 sample grid.
+     A sample counts as inside when any hull contains it. Returns null when the model has no hulls. */
+  var hcMemo = { key: '', val: null }, hcQuick = false;
+  /* while something is being dragged the check runs at a coarse resolution, to stay smooth */
+  function setQuickCheck(on) { hcQuick = !!on; }
+  function hullCheck(model, N) {
+    var hulls = model.hulls || [];
+    if (!hulls.length) return null;
+    var memo = !N;                       // the default resolution is cached; the quick fit searches are not
+    N = N || (hcQuick ? 8 : 24);
+    var key = '';
+    if (memo) {
+      key = JSON.stringify([N, hulls.map(function (h) { return [h.type, h.shape || 0, h.x, h.y, h.loa, h.beam, h.depth, h.draught]; }),
+        model.blocks.map(function (b) { return [b.id, b.shape, b.position, b.size, b.rotation]; })]);
+      if (hcMemo.key === key && hcMemo.val.model === model.blocks) return hcMemo.val.res;
+    }
+    var maxDepth = 0;
+    hulls.forEach(function (h) { maxDepth = Math.max(maxDepth, h.depth); });
+    var v = new T.Vector3(), below = 0, out = 0, per = [], byId = {};
+    model.blocks.forEach(function (b) {
+      var m = blockMatrix(b), tot = 0, bd = 0, od = 0;
+      if (blockWorldBox(b).min[2] > maxDepth) { byId[b.id] = { vol: blockVolume(b), below: 0, out: 0, shareBelow: 0, shareBlock: 0, aboveDeck: true }; return; }
+      for (var i = 0; i < N; i++) for (var j = 0; j < N; j++) for (var k = 0; k < N; k++) {
+        var lu = (i + 0.5) / N - 0.5, lv = (j + 0.5) / N - 0.5, lw = (k + 0.5) / N - 0.5;
+        if (b.shape !== 'box' && !shapeContains(b.shape, lu, lv, lw)) continue;      // only the points that are inside the shape
+        v.set(lu, lv, lw).applyMatrix4(m);
+        tot++;
+        if (v.z <= maxDepth) {
+          bd++;
+          var inside = false;
+          for (var q = 0; q < hulls.length && !inside; q++) inside = hullContains(hulls[q], v.x, v.y, v.z);
+          if (!inside) od++;
+        }
+      }
+      if (!tot) tot = 1;
+      var vol = blockVolume(b), vb = vol * bd / tot, vo = vol * od / tot;
+      below += vb; out += vo;
+      byId[b.id] = { vol: vol, below: vb, out: vo, shareBelow: vb > 0 ? vo / vb : 0, shareBlock: vol > 0 ? vo / vol : 0, aboveDeck: bd === 0 };
+      if (vo > 1e-9) per.push({ block: b, out: vo, share: vb > 0 ? vo / vb : 0 });
+    });
+    per.sort(function (a, b) { return b.out - a.out; });
+    var list = hulls.map(function (h) { return { hull: h, volDeck: hullVolumeTo(h, h.depth), volDraught: hullVolumeTo(h, h.draught) }; });
+    var volDeck = 0, volDraught = 0;
+    list.forEach(function (e) { volDeck += e.volDeck; volDraught += e.volDraught; });
+    var res = {
+      hulls: list, volDeck: volDeck, volDraught: volDraught,
+      blocksBelow: below, outside: out, inside: below - out,
+      fill: volDeck > 0 ? (below - out) / volDeck : 0,
+      per: per, byId: byId
+    };
+    if (memo) hcMemo = { key: key, val: { model: model.blocks, res: res } };
+    return res;
+  }
+
+  /* hulls get an id and a name when they are added to a model */
+  function addHullTo(model, h) {
+    if (!h) return null;
+    var taken = {};
+    (model.hulls || []).forEach(function (x) { taken[x.id] = true; });
+    h.id = uid('h', taken);
+    h.name = HULL_TYPES[h.type].label + ((model.hulls || []).some(function (x) { return x.type === h.type; }) ? ' ' + (model.hulls.length + 1) : '');
+    h.visible = true;
+    delete h.waterline;
+    // one waterline for the whole vessel: the first hull sets the draught, later hulls take it
+    if (!(model.hulls || []).length || model.draught == null) model.draught = h.draught; else h.draught = model.draught;
+    return h;
+  }
+
+  /* The sea is flat, so all hulls float at one draught (model.draught). It cannot exceed the deepest hull. */
+  function syncDraught(model) {
+    var hs = model.hulls || [];
+    if (!hs.length) return;
+    var maxDepth = 0;
+    hs.forEach(function (h) { maxDepth = Math.max(maxDepth, h.depth); });
+    if (model.draught == null || !isFinite(model.draught)) model.draught = hs[0].draught;
+    model.draught = Math.min(maxDepth, Math.max(0.1, model.draught));
+    hs.forEach(function (h) { h.draught = model.draught; });
+  }
+
+  /* Copy of a hull for the other side of the centreline (catamaran). A hull sitting on the centreline is moved out to
+     +gap and the copy goes to -gap; otherwise the copy is the mirror image. Mutates src.y when needed; returns the copy. */
+  function mirrorHull(model, src) {
+    var c = JSON.parse(JSON.stringify(src));
+    var gap = Math.max(src.beam * 1.6, 2);
+    if (Math.abs(src.y) < 1e-6) { src.y = gap; c.y = -gap; }
+    else {
+      c.y = -src.y;
+      if (model.hulls.some(function (h) { return h !== src && Math.abs(h.y - c.y) < 0.05 && Math.abs(h.x - c.x) < 0.05; })) {
+        var far = 0; model.hulls.forEach(function (h) { far = Math.max(far, Math.abs(h.y)); });
+        c.y = far + src.beam * 3.2;
+      }
+    }
+    c.y = r2(c.y); src.y = r2(src.y);
+    delete c.id; delete c.name;
+    c.name = src.name + ' (copy)';
+    var taken = {};
+    model.hulls.forEach(function (x) { taken[x.id] = true; });
+    c.id = uid('h', taken);
+    c.visible = true;
+    return c;
+  }
+
+  /* deck line guess: top of the highest level whose plan footprint is at least half of the largest */
+  function autoDeckLine(model) {
+    var bx = model.blocks.map(function (b) { var w = blockWorldBox(b); return { lo: w.min[2], hi: w.max[2], a: blockPlanArea(b) }; });
+    if (!bx.length) return 0;
+    var lv = [];
+    bx.forEach(function (b) { lv.push(b.lo, b.hi); });
+    lv.sort(function (a, b) { return a - b; });
+    lv = lv.filter(function (v, i) { return i === 0 || v - lv[i - 1] > 1e-6; });
+    var foot = [], mx = 0;
+    for (var i = 0; i < lv.length - 1; i++) {
+      var mid = 0.5 * (lv[i] + lv[i + 1]), f = 0;
+      bx.forEach(function (b) { if (b.lo <= mid && b.hi > mid) f += b.a; });
+      foot.push(f); if (f > mx) mx = f;
+    }
+    var deck = lv[lv.length - 1];
+    var kk = -1;
+    for (var k = foot.length - 1; k >= 0; k--) if (foot[k] >= 0.5 * mx) { deck = lv[k + 1]; kk = k + 1; break; }
+    while (kk >= 0 && kk + 1 < lv.length && lv[kk + 1] - deck <= 0.15 * deck) { kk++; deck = lv[kk]; }   // snap to a block top just above
+    return deck;
+  }
+
+  function r2(v) { return Math.round(v * 100) / 100; }
+
+  /* Hull around the blocks below the deck line; null when there are none to fit.
+     Without `target`, all blocks are used and the hull is centred on them. With target {y, beam} (a model with several
+     hulls), only blocks whose centre lies within that hull's side-to-side span are used and y and beam are kept.
+     The hull is then lengthened at the bow (up to 30%) until the bow taper clears the blocks. */
+  function fitHull(model, type, deck, draught, target, shape) {
+    if (!HULL_TYPES[type]) type = 'osv';
+    shape = cleanShape(shape);
+    var P = hullP({ type: type, shape: shape }), xmin = Infinity, xmax = -Infinity, ylo = Infinity, yhi = -Infinity, subset = [];
+    model.blocks.forEach(function (b) {
+      var w = blockWorldBox(b);
+      if (w.min[2] >= deck - 1e-6) return;
+      if (target && Math.abs(b.position[1] - target.y) > target.beam / 2 + 0.3) return;
+      subset.push(b);
+      xmin = Math.min(xmin, w.min[0]); xmax = Math.max(xmax, w.max[0]);
+      ylo = Math.min(ylo, w.min[1]); yhi = Math.max(yhi, w.max[1]);
+    });
+    if (!subset.length) return null;
+    var depth = r2(deck), best = null, bestOut = Infinity;
+    var yc = target ? target.y : r2((ylo + yhi) / 2), beam = target ? target.beam : r2(yhi - ylo + 0.4);
+    for (var e = 0; e <= 0.3001; e += 0.02) {
+      var keelLen = (xmax - xmin + 0.6) * (1 + e);
+      var loa = keelLen / (1 - P.sternRake - P.rake);
+      var h = { type: type, x: r2(xmin - 0.3 - P.sternRake * loa), y: yc, loa: r2(loa), beam: beam, depth: depth,
+        draught: draught != null ? Math.min(draught, depth) : Math.round(depth * P.dr * 10) / 10 };
+      if (shape) h.shape = shape;
+      var hc = hullCheck({ hulls: [h], blocks: subset }, 9);
+      var frac = hc.blocksBelow > 0 ? hc.outside / hc.blocksBelow : 0;
+      if (frac < bestOut - 1e-9) { bestOut = frac; best = h; }
+      if (frac <= 0.025) { best = h; break; }
+    }
+    return best;
+  }
+
+  function makeHullGeometry(h, nu, nt) {
+    nu = nu || 64; nt = nt || 10;
+    var pos = [], idx = [], us = [], i, j;
+    for (i = 0; i <= nu; i++) us.push(0.5 * (1 - Math.cos(Math.PI * i / nu)));
+    var W = nu + 1;
+    for (var side = 1; side >= -1; side -= 2) {
+      for (j = 0; j <= nt; j++) {
+        var t = Math.pow(j / nt, 1.5), r = hullXRange(h, t);
+        for (i = 0; i <= nu; i++) pos.push(r[0] + us[i] * (r[1] - r[0]), (h.y || 0) + side * hullHalf(h, us[i], t), t * h.depth);
+      }
+    }
+    function P(i, j) { return j * W + i; }
+    function S(i, j) { return (nt + 1) * W + j * W + i; }
+    for (j = 0; j < nt; j++) for (i = 0; i < nu; i++) {
+      idx.push(P(i, j), P(i + 1, j), P(i + 1, j + 1), P(i, j), P(i + 1, j + 1), P(i, j + 1));
+      idx.push(S(i, j), S(i + 1, j + 1), S(i + 1, j), S(i, j), S(i, j + 1), S(i + 1, j + 1));
+    }
+    for (i = 0; i < nu; i++) idx.push(P(i, 0), P(i + 1, 0), S(i + 1, 0), P(i, 0), S(i + 1, 0), S(i, 0));
+    for (j = 0; j < nt; j++) idx.push(P(0, j), P(0, j + 1), S(0, j + 1), P(0, j), S(0, j + 1), S(0, j));
+    for (j = 0; j < nt; j++) idx.push(P(nu, j), P(nu, j + 1), S(nu, j + 1), P(nu, j), S(nu, j + 1), S(nu, j));
+    var g = new T.BufferGeometry();
+    g.setAttribute('position', new T.Float32BufferAttribute(pos, 3));
+    g.setIndex(idx);
+    g.computeVertexNormals();
+    return g;
+  }
+
+  /* section lines, sheer/keel lines and the waterline, as line-segment position arrays */
+  function makeHullLines(h) {
+    var nt = 12, nu = 80, sec = [], wl = [], i, j;
+    function pt(u, t, side) { var r = hullXRange(h, t); return [r[0] + u * (r[1] - r[0]), (h.y || 0) + side * hullHalf(h, u, t), t * h.depth]; }
+    function poly(arr, pts) { for (var k = 0; k < pts.length - 1; k++) arr.push.apply(arr, pts[k].concat(pts[k + 1])); }
+    for (var s = 0; s <= 10; s++) {
+      var u = s / 10 * 0.999, pts = [];
+      for (j = nt; j >= 0; j--) pts.push(pt(u, Math.pow(j / nt, 1.5), -1));
+      for (j = 0; j <= nt; j++) pts.push(pt(u, Math.pow(j / nt, 1.5), 1));
+      poly(sec, pts);
+    }
+    [0, 1].forEach(function (t) {
+      [-1, 1].forEach(function (side) {
+        var pts = [];
+        for (i = 0; i <= nu; i++) pts.push(pt(0.5 * (1 - Math.cos(Math.PI * i / nu)), t, side));
+        poly(sec, pts);
+      });
+    });
+    var tw = Math.min(1, Math.max(0, h.draught / h.depth));
+    var loop = [];
+    for (i = 0; i <= nu; i++) loop.push(pt(0.5 * (1 - Math.cos(Math.PI * i / nu)), tw, 1));
+    for (i = nu; i >= 0; i--) loop.push(pt(0.5 * (1 - Math.cos(Math.PI * i / nu)), tw, -1));
+    loop.push(loop[0]);
+    poly(wl, loop);
+    return { sections: sec, waterline: wl };
+  }
+
+  /* A hull name that follows its type: "Barge", "Barge 2", "Barge (copy)". A name the user typed is left alone. */
+  function hullNameFor(name, newType) {
+    var labels = HULL_ORDER.map(function (k) { return HULL_TYPES[k].label; });
+    var m = /^(.*?)((?: \d+)?(?: \(copy\))?)$/.exec(String(name || ''));
+    if (m && labels.indexOf(m[1]) >= 0) return HULL_TYPES[newType].label + m[2];
+    return name;
+  }
+
+  /* The water surface: one flat rectangle at the draught for the whole vessel, reaching far beyond the hulls. */
+  function waterExtent(model) {
+    var hs = model.hulls || [], x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity, maxLoa = 0;
+    hs.forEach(function (h) {
+      x0 = Math.min(x0, h.x - 0.1 * h.loa); x1 = Math.max(x1, h.x + h.loa);
+      y0 = Math.min(y0, (h.y || 0) - h.beam / 2); y1 = Math.max(y1, (h.y || 0) + h.beam / 2); maxLoa = Math.max(maxLoa, h.loa);
+    });
+    if (!hs.length) return null;
+    var m = Math.max(25, 1.5 * maxLoa);
+    return { x0: x0 - m, x1: x1 + m, y0: y0 - m, y1: y1 + m, z: model.draught };
+  }
+
+  function makeWaterGeometry(model) {
+    var w = waterExtent(model), g = new T.BufferGeometry();
+    if (!w) return g;
+    g.setAttribute('position', new T.Float32BufferAttribute([w.x0, w.y0, w.z, w.x1, w.y0, w.z, w.x1, w.y1, w.z, w.x0, w.y1, w.z], 3));
+    g.setIndex([0, 1, 2, 0, 2, 3]);
+    return g;
+  }
+
   var api = {
     FORMAT: FORMAT, VERSION: VERSION, SHAPES: SHAPES, SHAPE_ORDER: SHAPE_ORDER, METRICS: METRICS, STATUS_LABEL: STATUS_LABEL,
-    makeGeometry: makeGeometry, makeEdges: makeEdges,
+    makeGeometry: makeGeometry, shapeContains: shapeContains, makeEdges: makeEdges,
     blockMatrix: blockMatrix, blockVolume: blockVolume, blockPlanArea: blockPlanArea, blockArea: blockArea,
     blockWorldBox: blockWorldBox, envelope: envelope,
     defaultGroups: defaultGroups, groupMap: groupMap, groupOrder: groupOrder, groupPath: groupPath,
     isGroupVisible: isGroupVisible, descendantIds: descendantIds,
-    summarize: summarize, evaluateRequirements: evaluateRequirements,
-    emptyProject: emptyProject, exampleProject: exampleProject, simpleExample: simpleExample, gunnerusExample: gunnerusExample,
+    summarize: summarize, weightSummary: weightSummary, blockMass: blockMass, blockCentroid: blockCentroid, groupDensity: groupDensity, hullCentroid: hullCentroid, SHAPE_CENTROID: SHAPE_CENTROID, DEFAULT_DENSITY: DEFAULT_DENSITY, DEFAULT_STRUCT_PCT: DEFAULT_STRUCT_PCT, evaluateRequirements: evaluateRequirements,
+    emptyProject: emptyProject, exampleProject: exampleProject, simpleExample: simpleExample, gunnerusExample: gunnerusExample, catamaranExample: catamaranExample, trimaranExample: trimaranExample,
     sanitizeProject: sanitizeProject, serializeProject: serializeProject,
     summaryCSV: summaryCSV, requirementsCSV: requirementsCSV, blocksCSV: blocksCSV,
+    HULL_TYPES: HULL_TYPES, HULL_ORDER: HULL_ORDER, hullHalf: hullHalf, hullParams: hullParams, cleanShape: cleanShape, SHAPE_SPEC: SHAPE_SPEC, STERN_PRESETS: STERN_PRESETS, hullXRange: hullXRange, hullContains: hullContains,
+    hullVolumeTo: hullVolumeTo, hullHydro: hullHydro, modelHydro: modelHydro, hullCheck: hullCheck, setQuickCheck: setQuickCheck, addHullTo: addHullTo, mirrorHull: mirrorHull, autoDeckLine: autoDeckLine, fitHull: fitHull,
+    makeHullGeometry: makeHullGeometry, makeWaterGeometry: makeWaterGeometry, waterExtent: waterExtent, syncDraught: syncDraught, hullNameFor: hullNameFor, makeHullLines: makeHullLines,
     uid: uid, num: num
   };
 
@@ -1045,6 +1896,8 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
   /* Add new examples here: they appear in the Examples menu. */
   var EXAMPLES = [
     { id: 'simple', label: 'Simple (5 blocks)', make: function () { return C.simpleExample(); } },
+    { id: 'catamaran', label: 'Catamaran (9 blocks, 2 hulls)', make: function () { return C.catamaranExample(); } },
+    { id: 'trimaran', label: 'Trimaran (10 blocks, 3 hulls)', make: function () { return C.trimaranExample(); } },
     { id: 'gunnerus', label: 'R/V Gunnerus (15 blocks)', make: function () { return C.gunnerusExample(); } },
     { id: 'psv', label: 'PSV (20 blocks)', make: function () { return C.exampleProject(); } }
   ];
@@ -1077,9 +1930,11 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
 
   /* ---------- state ---------- */
   var S = {
+    blocksOff: false,                  // view only: every block hidden, to look at the hulls
     model: null, sel: null, activeGroup: null, activeReq: null,
     collapsed: {}, mode: 'translate', snap: 0.5, xray: false,
-    tab: 'summary', drawerOpen: true, delim: ','
+    tab: 'summary', drawerOpen: true, delim: ',', selHull: null,
+    sumSub: 'overview', blkSets: { geo: true, mass: true, hull: true }, blkSort: null   // view state only, not saved
   };
   var meshes = {};            // block id -> THREE.Mesh
   var theme = {};
@@ -1141,6 +1996,98 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
   selBox.raycast = function () {};
   selBox.visible = false;
   scene.add(selBox);
+
+  /* ---------- hulls (illustrative) ---------- */
+  var hullRoot = new THREE.Group();
+  scene.add(hullRoot);
+  var hullObjs = {};                       // hull id -> {sig, group, mesh, fill, line, water}
+  var hullProxy = new THREE.Object3D();    // stands in for the selected hull so the gizmo can move and scale it
+  scene.add(hullProxy);
+
+  function selHullObj() {
+    var id = S.selHull, hs = S.model ? S.model.hulls : [];
+    for (var i = 0; i < hs.length; i++) if (hs[i].id === id) return hs[i];
+    return null;
+  }
+
+  function styleHull(o, selected) {
+    o.fill.color.set(theme.hull || '#3a6fb0');
+    o.fill.opacity = selected ? 0.34 : 0.2;
+    o.line.color.set(selected ? (theme.sel || '#ff2e93') : (theme.hullLine || '#2d5a96'));
+    o.water.color.set(theme.water || '#1f9bd1');
+  }
+
+  function disposeHull(o) {
+    hullRoot.remove(o.group);
+    o.group.children.forEach(function (c) { if (c.geometry) c.geometry.dispose(); });
+    o.fill.dispose(); o.line.dispose(); o.water.dispose();
+  }
+
+  function buildHull(h) {
+    var o = { group: new THREE.Group() };
+    o.fill = new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.2, side: THREE.DoubleSide, depthWrite: false });
+    o.line = new THREE.LineBasicMaterial({ transparent: true, opacity: 1 });
+    o.water = new THREE.LineBasicMaterial();
+    o.mesh = new THREE.Mesh(C.makeHullGeometry(h), o.fill);
+    o.mesh.userData.hid = h.id;
+    o.mesh.renderOrder = 1;
+    o.group.add(o.mesh);
+    var ln = C.makeHullLines(h);
+    o.wlines = [];
+    [[ln.sections, o.line], [ln.waterline, o.water]].forEach(function (pair) {
+      var g = new THREE.BufferGeometry();
+      g.setAttribute('position', new THREE.Float32BufferAttribute(pair[0], 3));
+      var seg = new THREE.LineSegments(g, pair[1]);
+      seg.raycast = function () {};
+      seg.renderOrder = 2;
+      o.group.add(seg);
+      if (pair[1] === o.water) o.wlines.push(seg);
+    });
+    return o;
+  }
+
+  /* one flat water surface for the whole vessel, at the draught */
+  var waterMat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.12, side: THREE.DoubleSide, depthWrite: false });
+  var waterMesh = new THREE.Mesh(new THREE.BufferGeometry(), waterMat), waterSig = '';
+  waterMesh.raycast = function () {};
+  waterMesh.renderOrder = 3;
+  waterMesh.visible = false;
+  scene.add(waterMesh);
+  function updateWater() {
+    var m = S.model, w = m.hulls.length && m.waterline !== false ? C.waterExtent(m) : null;
+    waterMesh.visible = !!w;
+    waterMat.color.set(theme.water || '#1f9bd1');
+    if (!w) { request(); return; }
+    var sig = JSON.stringify(w);
+    if (sig !== waterSig) { waterSig = sig; waterMesh.geometry.dispose(); waterMesh.geometry = C.makeWaterGeometry(m); }
+    request();
+  }
+
+  function rebuildHulls() {
+    var seen = {};
+    S.model.hulls.forEach(function (h) {
+      seen[h.id] = true;
+      var sig = JSON.stringify([h.type, h.shape || null, h.x, h.y, h.loa, h.beam, h.depth, S.model.draught]);
+      var o = hullObjs[h.id];
+      if (!o || o.sig !== sig) {
+        if (o) disposeHull(o);
+        o = buildHull(h); o.sig = sig; hullObjs[h.id] = o;
+        hullRoot.add(o.group);
+      }
+      o.group.visible = h.visible !== false;
+      o.wlines.forEach(function (w) { w.visible = S.model.waterline !== false; });
+      styleHull(o, h.id === S.selHull);
+    });
+    Object.keys(hullObjs).forEach(function (id) {
+      if (!seen[id]) { disposeHull(hullObjs[id]); delete hullObjs[id]; }
+    });
+    updateWater();
+    request();
+  }
+
+  function hullPickList() {
+    return Object.keys(hullObjs).map(function (k) { return hullObjs[k]; }).filter(function (o) { return o.group.visible; }).map(function (o) { return o.mesh; });
+  }
 
   var needs = true;
   function request() { needs = true; }
@@ -1223,6 +2170,7 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
     scene.background = new THREE.Color(theme.bg);
     edgeMat.color.set(theme.edge);
     selBox.material.color.set(theme.sel);
+    theme.hull = cssVar('--hull'); theme.hullLine = cssVar('--hull-line'); theme.water = cssVar('--water');
     buildDressing();
     reconcile();
   }
@@ -1261,15 +2209,29 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
     mat.color.set(groupColor(b.group));
     mat.emissive.set(sel ? theme.sel || '#ff2e93' : '#000000');
     if (sel) mat.emissive.multiplyScalar(0.3);
-    var tr = S.xray;
+    var tr = S.xray || !!S.selHull;
     if (mat.transparent !== tr) mat.needsUpdate = true;
     mat.transparent = tr;
-    mat.opacity = tr ? 0.38 : 1;
+    mat.opacity = tr ? (S.selHull ? 0.28 : 0.38) : 1;
     mat.depthWrite = !tr;
+  }
+
+  function updateBlocksEye() {
+    var btn = $('#btnBlocksEye');
+    btn.innerHTML = S.blocksOff ? ICON_EYE_OFF : ICON_EYE;
+    btn.title = S.blocksOff ? 'Show all blocks' : 'Hide all blocks (view only)';
+    btn.setAttribute('aria-label', btn.title);
+    btn.setAttribute('aria-pressed', S.blocksOff ? 'true' : 'false');
+  }
+  function setBlocksOff(v) {
+    S.blocksOff = v;
+    if (v) S.sel = null;
+    reconcile(); renderTree(); renderProps(); renderBlocksTab();
   }
 
   function reconcile() {
     if (!S.model) return;
+    updateBlocksEye();
     var seen = {};
     S.model.blocks.forEach(function (b) {
       seen[b.id] = true;
@@ -1277,7 +2239,7 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
       if (!m) { m = createMesh(b); meshes[b.id] = m; blocksRoot.add(m); }
       else if (m.userData.shape !== b.shape) swapShape(m, b);
       syncTransform(m, b);
-      m.visible = !b.hidden && C.isGroupVisible(S.model, b.group);
+      m.visible = !S.blocksOff && !b.hidden && C.isGroupVisible(S.model, b.group);
       styleMesh(m, b);
     });
     Object.keys(meshes).forEach(function (id) {
@@ -1288,10 +2250,31 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
         delete meshes[id];
       }
     });
+    rebuildHulls();
     updateGizmo();
   }
 
+  function syncHullProxy(h) {
+    hullProxy.position.set(h.x + h.loa / 2, h.y, h.depth / 2);
+    hullProxy.rotation.set(0, 0, 0);
+    hullProxy.scale.set(h.loa, h.beam, h.depth);
+    hullProxy.updateMatrixWorld(true);
+  }
+
   function updateGizmo() {
+    var hs = selHullObj();
+    $('[data-mode="rotate"]').disabled = !!hs;
+    if (hs && hullObjs[hs.id] && hullObjs[hs.id].group.visible) {
+      syncHullProxy(hs);
+      if (tc.object !== hullProxy) tc.attach(hullProxy);
+      var hm = S.mode === 'rotate' ? 'translate' : S.mode;
+      tc.setMode(hm);
+      tc.showX = true; tc.showY = true; tc.showZ = hm === 'scale';
+      selBox.visible = false;
+      request();
+      return;
+    }
+    tc.showX = tc.showY = tc.showZ = true;
     var m = S.sel ? meshes[S.sel] : null;
     if (m && m.visible) {
       if (tc.object !== m) tc.attach(m);
@@ -1329,9 +2312,29 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
     m.position.set(b.position[0], b.position[1], b.position[2]);
   }
 
+  function hullDragged() {
+    var h = selHullObj();
+    if (!h) return;
+    var p = hullProxy, s = S.snap, r4 = function (v) { return Math.round(v * 1e4) / 1e4; };
+    if (tc.getMode() === 'scale') {
+      h.loa = r4(Math.max(1, p.scale.x)); h.beam = r4(Math.max(0.5, p.scale.y)); h.depth = r4(Math.max(0.5, p.scale.z));
+      h.x = r4(p.position.x - h.loa / 2); h.y = r4(p.position.y);
+      C.syncDraught(S.model);
+    } else {
+      h.x = p.position.x - h.loa / 2; h.y = p.position.y;
+      if (s) { h.x = Math.round(h.x / s) * s; h.y = Math.round(h.y / s) * s; }
+      h.x = r4(h.x); h.y = r4(h.y);
+    }
+    syncHullProxy(h);
+    rebuildHulls();
+    uiSoon();
+    request();
+  }
+
   tc.addEventListener('objectChange', function () {
     var m = tc.object;
     if (!m) return;
+    if (m === hullProxy) { hullDragged(); return; }
     var b = blockById(m.userData.id);
     if (!b) return;
     if (S.mode === 'scale') m.scale.set(Math.max(0.05, m.scale.x), Math.max(0.05, m.scale.y), Math.max(0.05, m.scale.z));
@@ -1343,6 +2346,7 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
   });
   tc.addEventListener('dragging-changed', function (e) {
     orbit.enabled = !e.value;
+    C.setQuickCheck(e.value);
     if (!e.value) { var m = tc.object; if (m) { var b = blockById(m.userData.id); if (b) readMesh(m, b); } renderAll(); pushHistory(); }
   });
 
@@ -1365,6 +2369,11 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
     if (!d || d.button !== 0 || d.onGizmo) return;
     if (Math.hypot(e.clientX - d.x, e.clientY - d.y) > 5) return;
     setRay(e);
+    if (S.selHull) {                       // hull edit mode: only hulls can be picked, blocks are locked
+      var hh = rc.intersectObjects(hullPickList(), false)[0];
+      if (hh) selectHull(hh.object.userData.hid); else select(null);
+      return;
+    }
     var hit = rc.intersectObjects(visibleMeshes(), false)[0];
     select(hit ? hit.object.userData.id : null);
   });
@@ -1388,7 +2397,16 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
     var cx = 42, cy = 0, cz = 8, R = 45;
     if (env) {
       cx = (env.min[0] + env.max[0]) / 2; cy = (env.min[1] + env.max[1]) / 2; cz = (env.min[2] + env.max[2]) / 2;
-      R = Math.max(4, 0.5 * Math.sqrt(env.length * env.length + env.beam * env.beam + env.height * env.height));
+      var lo = env.min.slice(), hi = env.max.slice();
+      S.model.hulls.forEach(function (hh) {
+        if (hh.visible === false) return;
+        lo[0] = Math.min(lo[0], hh.x); hi[0] = Math.max(hi[0], hh.x + hh.loa);
+        lo[1] = Math.min(lo[1], hh.y - hh.beam / 2); hi[1] = Math.max(hi[1], hh.y + hh.beam / 2);
+        lo[2] = Math.min(lo[2], 0);
+      });
+      cx = (lo[0] + hi[0]) / 2; cy = (lo[1] + hi[1]) / 2; cz = (lo[2] + hi[2]) / 2;
+      var dl = hi[0] - lo[0], db = hi[1] - lo[1], dh = hi[2] - lo[2];
+      R = Math.max(4, 0.5 * Math.sqrt(dl * dl + db * db + dh * dh));
     }
     var dir;
     if (name === 'fit') dir = camera.position.clone().sub(orbit.target).normalize();
@@ -1423,6 +2441,7 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
   function restore(s) {
     S.model = JSON.parse(s);
     if (S.sel && !blockById(S.sel)) S.sel = null;
+    if (S.selHull && !selHullObj()) S.selHull = null;
     fixActive();
     reconcile();
     renderAll();
@@ -1433,7 +2452,7 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
   function updateUndo() { $('#btnUndo').disabled = H.past.length < 2; $('#btnRedo').disabled = !H.future.length; }
   function scheduleSave() {
     clearTimeout(saveTimer);
-    saveTimer = setTimeout(function () { try { localStorage.setItem(STORE_KEY, snapshot()); } catch (e) { /* storage unavailable */ } }, 400);
+    // nothing is kept in the browser: the page opens on the Gunnerus example, and Save writes the project file
   }
   function fixActive() {
     var gm = C.groupMap(S.model);
@@ -1443,7 +2462,9 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
 
   function setModel(model, message) {
     S.model = model;
+    S.blocksOff = false;
     S.sel = null;
+    S.selHull = null;
     S.collapsed = {};
     S.activeGroup = null; S.activeReq = null;
     fixActive();
@@ -1468,6 +2489,7 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
   }
 
   function addBlock(shape, at) {
+    S.blocksOff = false;
     fixActive();
     var d = DEFAULT_SIZE[shape] || [8, 6, 4];
     var x = at ? at.x : orbit.target.x, y = at ? at.y : orbit.target.y, zb = at ? at.z : 0;
@@ -1477,17 +2499,67 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
     var pz = s ? Math.round(zb / s) * s + d[2] / 2 : zb + d[2] / 2;
     var b = {
       id: nextBlockId(), name: nextName(shape), shape: shape, group: S.activeGroup, req: S.activeReq,
-      position: [px, py, pz], size: d.slice(), rotation: [0, 0, 0], areaOverride: null, hidden: false
+      position: [px, py, pz], size: d.slice(), rotation: [0, 0, 0], areaOverride: null, hidden: false, density: null, fill: 100, massOverride: null
     };
     S.model.blocks.push(b);
     S.sel = b.id;
+    S.selHull = null;
     reconcile();
     renderAll();
     pushHistory();
   }
 
+  function selectHull(id) {
+    S.selHull = id;
+    S.sel = null;
+    reconcile();
+    renderTree();
+    renderProps();
+    renderBlocksTab();
+  }
+
+  function addHull() {
+    var hs = S.model.hulls, h;
+    if (!hs.length) {
+      h = C.addHullTo(S.model, C.fitHull(S.model, 'osv', C.autoDeckLine(S.model)));
+      if (!h) { toast('Add some blocks first. The hull is fitted around the blocks below the main deck.', true); return; }
+    } else {
+      h = C.mirrorHull(S.model, hs[hs.length - 1]);
+    }
+    hs.push(h);
+    S.sel = null; S.selHull = h.id;
+    reconcile(); renderAll(); pushHistory();
+    toast(hs.length === 1 ? 'Hull fitted. The depth (main deck) is a guess (' + fmt(h.depth, 2) + ' m): edit it in the panel if needed.' : 'Mirrored copy added, ready for a catamaran. Pick a slender hull type and adjust the beam and offset.');
+  }
+
+  function deleteHull(id) {
+    S.model.hulls = S.model.hulls.filter(function (h) { return h.id !== id; });
+    if (S.selHull === id) S.selHull = null;
+    reconcile(); renderAll(); pushHistory();
+    toast('Hull removed.');
+  }
+
+  function toggleHull(id) {
+    var h = S.model.hulls.filter(function (x) { return x.id === id; })[0];
+    if (!h) return;
+    h.visible = h.visible === false;
+    reconcile(); renderAll(); pushHistory();
+  }
+
+  function refitHull(h, auto) {
+    var multi = S.model.hulls.length > 1;
+    var f = C.fitHull(S.model, h.type, auto ? C.autoDeckLine(S.model) : h.depth, auto ? null : h.draught, multi ? { y: h.y, beam: h.beam } : null, h.shape);
+    if (!f) { toast(multi ? 'No blocks lie within this hull\u2019s side-to-side span below the main deck.' : 'No block reaches below the main deck.', true); return; }
+    h.x = f.x; h.y = f.y; h.loa = f.loa; h.beam = f.beam; h.depth = f.depth;
+    C.syncDraught(S.model);
+    reconcile(); renderAll(); pushHistory();
+    toast(auto ? 'Depth set to ' + fmt(h.depth, 2) + ' m and the hull refitted.' : 'Hull refitted to the blocks.');
+  }
+
   function select(id) {
+    if (id) S.blocksOff = false;
     S.sel = id;
+    S.selHull = null;
     reconcile();
     renderTree();
     renderProps();
@@ -1511,6 +2583,7 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
     c.position[0] += 1; c.position[1] += 1;
     S.model.blocks.push(c);
     S.sel = c.id;
+    S.selHull = null;
     reconcile(); renderAll(); pushHistory();
   }
 
@@ -1556,6 +2629,7 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
   function showAll() {
     S.model.groups.forEach(function (g) { g.visible = true; });
     S.model.blocks.forEach(function (b) { b.hidden = false; });
+    S.blocksOff = false;
     reconcile(); renderAll(); pushHistory();
   }
 
@@ -1613,6 +2687,18 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
           '</div>');
       });
     });
+    html.push('<div class="hsep">Hulls</div>');
+    if (!S.model.hulls.length) html.push('<div class="empty-note hnote">No hull. Press + Hull to fit one around the blocks.</div>');
+    S.model.hulls.forEach(function (h) {
+      var off = h.visible === false;
+      html.push('<div class="brow hullrow' + (h.id === S.selHull ? ' sel' : '') + (off ? ' off' : '') + '" data-hid="' + esc(h.id) + '" style="--depth:1">' +
+        '<span class="sw hullsw"></span>' +
+        '<button class="bname" data-act="selh" title="' + esc(h.name) + '">' + esc(h.name) + '</button>' +
+        '<span class="bvol" title="Hull volume to the main deck, m\u00B3">' + fmt(C.hullVolumeTo(h, h.depth), 0) + '</span>' +
+        '<button class="ic" data-act="hvis" aria-label="' + (off ? 'Show' : 'Hide') + ' hull" title="' + (off ? 'Show' : 'Hide') + ' hull">' + (off ? ICON_EYE_OFF : ICON_EYE) + '</button>' +
+        '<button class="ic" data-act="delh" aria-label="Delete hull" title="Delete hull">\u00D7</button>' +
+        '</div>');
+    });
     $('#tree').innerHTML = html.join('') || '<div class="empty-note">No groups.</div>';
   }
 
@@ -1650,7 +2736,66 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
   /* ---------- rendering: properties ---------- */
   var sigProps = '';
   function setVal(input, v) { if (document.activeElement !== input) input.value = v; }
+  /* shape sliders: rows are built once from the spec, values follow the selected hull */
+  function buildShapeRows() {
+    var host = $('#shapeRows'), grp = '', html = '';
+    C.SHAPE_SPEC.forEach(function (s) {
+      if (s.group !== grp) { grp = s.group; html += '<div class="shgrp">' + esc(grp) + '</div>'; }
+      html += '<div class="shrow" data-row="' + s.key + '"><label for="sh_' + s.key + '"' + (s.hint ? ' title="' + esc(s.hint) + '"' : '') + '>' + esc(s.label) + '</label>' +
+        '<input type="range" id="sh_' + s.key + '" data-sh="' + s.key + '" min="' + s.min + '" max="' + s.max + '" step="' + s.step + '"><output></output></div>';
+    });
+    host.innerHTML = html;
+  }
+  function shapeText(s, v) { return s.pct ? fmt(v * 100, 0) + '%' : fmt(v, 1); }
+  function renderShape(h) {
+    var P = C.hullParams(h), own = h.shape || {};
+    C.SHAPE_SPEC.forEach(function (s) {
+      var row = $('[data-row="' + s.key + '"]'), inp = $('input', row);
+      if (document.activeElement !== inp) inp.value = P[s.key];
+      $('output', row).textContent = shapeText(s, P[s.key]);
+      row.classList.toggle('set', typeof own[s.key] === 'number');
+    });
+    $('#shapeReset').disabled = !h.shape;
+  }
+
+  function renderHullProps(h) {
+    var form = $('#hullPropsForm'), ty = $('[data-hf="type"]', form);
+    if (!ty.options.length) ty.innerHTML = C.HULL_ORDER.map(function (k) { return '<option value="' + k + '">' + C.HULL_TYPES[k].label + '</option>'; }).join('');
+    setVal($('[data-hf="name"]', form), h.name);
+    ty.value = h.type;
+    ['x', 'y', 'loa', 'beam', 'depth'].forEach(function (f) { setVal($('[data-hf="' + f + '"]', form), fin(h[f])); });
+    setVal($('[data-hf="draught"]', form), fin(S.model.draught));
+    $('[data-hf="waterline"]', form).checked = S.model.waterline !== false;
+    $('#hfTD').value = fmt(S.model.draught / h.depth, 2);
+    $('#hfFB').value = fmt(h.depth - S.model.draught, 2) + ' m';
+    renderShape(h);
+    var hc = C.hullCheck(S.model), mine = hc.hulls.filter(function (e) { return e.hull.id === h.id; })[0], hy = C.hullHydro(h, h.draught, S.model.rho);
+    var rows = [
+      ['\u2207', 'Displaced volume, m\u00B3', fmt(hy.V, 1) + ' m\u00B3', '\u0394', 'Displacement at the water density, tonnes', fmt(hy.disp, 1) + ' t'],
+      ['LWL', 'Waterline length', fmt(hy.LWL, 2) + ' m', 'BWL', 'Waterline beam (maximum)', fmt(hy.BWL, 2) + ' m'],
+      ['Awp', 'Waterplane area', fmt(hy.Awp, 1) + ' m\u00B2', 'TPC', 'Tonnes per centimetre immersion', fmt(hy.TPC, 2) + ' t/cm'],
+      ['Cb', 'Block coefficient', fmt(hy.Cb, 3), 'Cp', 'Prismatic coefficient', fmt(hy.Cp, 3)],
+      ['Cm', 'Midship section coefficient', fmt(hy.Cm, 3), 'Cwp', 'Waterplane coefficient', fmt(hy.Cwp, 3)],
+      ['LCB', 'Longitudinal centre of buoyancy, from the aft end of the model', fmt(hy.LCB, 2) + ' m', 'KB', 'Height of the centre of buoyancy above the baseline', fmt(hy.KB, 2) + ' m'],
+      ['LCF', 'Longitudinal centre of flotation, from the aft end of the model', fmt(hy.LCF, 2) + ' m', 'Hull', 'Hull volume up to the main deck', fmt(mine.volDeck, 1) + ' m\u00B3']
+    ];
+    $('#hullOut').innerHTML = '<div class="rh">Hydrostatics at draught T = ' + fmt(S.model.draught, 2) + ' m <small>this hull, \u03C1 = ' + fmt(S.model.rho || 1.025, 3) + ' t/m\u00B3</small></div><dl class="readout r4">' +
+      rows.map(function (r) {
+        return '<dt title="' + esc(r[1]) + '">' + r[0] + '</dt><dd>' + r[2] + '</dd><dt title="' + esc(r[4]) + '">' + r[3] + '</dt><dd>' + r[5] + '</dd>';
+      }).join('') + '</dl>';
+    var warn = $('#hullWarn'), share = hc.blocksBelow > 0 ? hc.outside / hc.blocksBelow : 0;
+    warn.hidden = share < 0.005;
+    if (!warn.hidden) {
+      warn.textContent = 'About ' + fmt(100 * share, 1) + '% of the block volume below the main deck is outside the hulls: ' +
+        hc.per.slice(0, 3).map(function (p) { return p.block.name + ' ' + fmt(100 * p.share, 0) + '%'; }).join(', ') + (hc.per.length > 3 ? ' and more' : '') + '. Estimate.';
+    }
+  }
+
   function renderProps() {
+    var hs = selHullObj();
+    $('#propsTitle').textContent = hs ? 'Selected hull' : 'Selected block';
+    $('#hullPropsForm').hidden = !hs;
+    if (hs) { $('#propsEmpty').hidden = true; $('#propsForm').hidden = true; renderHullProps(hs); return; }
     var b = selBlock();
     $('#propsEmpty').hidden = !!b;
     $('#propsForm').hidden = !b;
@@ -1674,15 +2819,37 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
     $('[data-f="areaon"]', form).checked = on;
     $('#areaRow').hidden = !on;
     if (on) setVal($('[data-f="area"]', form), fin(b.areaOverride));
+    var q = C.blockMass(S.model, b), cgb = C.blockCentroid(b);
+    var dIn = $('[data-f="density"]', form);
+    setVal(dIn, typeof b.density === 'number' ? fin(b.density) : '');
+    dIn.placeholder = fmt(q.groupDensity, 2); dIn.disabled = q.typed;
+    setVal($('[data-f="fill"]', form), fin(q.fill)); $('[data-f="fill"]', form).disabled = q.typed;
+    $('[data-f="masson"]', form).checked = q.typed;
+    $('#massRow').hidden = !q.typed;
+    if (q.typed) setVal($('[data-f="mass"]', form), fin(b.massOverride));
     var bx = C.blockWorldBox(b);
     function ext(i) { return fmt(bx.min[i], 2) + ' → ' + fmt(bx.max[i], 2); }
     $('#pOut').innerHTML =
       '<dt>Volume</dt><dd>' + fmt(C.blockVolume(b), 2) + ' m³</dd>' +
+      '<dt>Mass</dt><dd>' + fmt(q.mass, 2) + ' t' + (q.typed ? ' (typed)' : '') + '</dd>' +
+      '<dt>Density used</dt><dd>' + (q.typed ? '\u2013' : fmt(q.density, 2) + ' t/m³') + '</dd>' +
+      '<dt>CG x</dt><dd>' + fmt(cgb[0], 2) + ' m</dd>' +
+      '<dt>CG y</dt><dd>' + fmt(cgb[1], 2) + ' m</dd>' +
+      '<dt>CG z</dt><dd>' + fmt(cgb[2], 2) + ' m</dd>' +
       '<dt>Plan area</dt><dd>' + fmt(C.blockPlanArea(b), 2) + ' m²</dd>' +
       '<dt>Used area</dt><dd>' + fmt(C.blockArea(b), 2) + ' m²' + (on ? ' (typed)' : '') + '</dd>' +
       '<dt>X from–to</dt><dd>' + ext(0) + '</dd>' +
       '<dt>Y from–to</dt><dd>' + ext(1) + '</dd>' +
       '<dt>Z from–to</dt><dd>' + ext(2) + '</dd>';
+    var hcb = C.hullCheck(S.model), qb = hcb && hcb.byId[b.id], ph = $('#pHull');
+    $('#pHullHead').hidden = !qb; ph.hidden = !qb;
+    if (qb) {
+      ph.innerHTML = qb.aboveDeck
+        ? '<dt>Status</dt><dd>above the main deck, not checked</dd>'
+        : '<dt>Below main deck</dt><dd>' + fmt(qb.below, 2) + ' m\u00B3</dd>' +
+          '<dt>Outside hulls</dt><dd class="' + (qb.shareBelow > 0.05 ? 'bad' : '') + '">' + fmt(qb.out, 2) + ' m\u00B3 (' + fmt(100 * qb.shareBelow, 1) + '% of it)</dd>' +
+          '<dt>Inside hulls</dt><dd>' + fmt(qb.vol - qb.out, 2) + ' m\u00B3 of ' + fmt(qb.vol, 2) + '</dd>';
+    }
     $('#pHide').textContent = b.hidden ? 'Show' : 'Hide';
   }
 
@@ -1696,24 +2863,92 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
   }
 
   function renderSummary() {
-    var s = C.summarize(S.model);
+    var s = C.summarize(S.model), w = C.weightSummary(S.model);
     var e = s.envelope;
     $('#env').innerHTML =
       '<div><small>Length (X)</small><b>' + (e ? fmt(e.length, 2) : '–') + ' m</b></div>' +
       '<div><small>Beam (Y)</small><b>' + (e ? fmt(e.beam, 2) : '–') + ' m</b></div>' +
       '<div><small>Height (Z)</small><b>' + (e ? fmt(e.height, 2) : '–') + ' m</b></div>' +
       '<div><small>Gross volume</small><b>' + fmt(s.total.vol, 1) + ' m³</b></div>' +
-      '<div><small>Gross area</small><b>' + fmt(s.total.area, 1) + ' m²</b></div>';
-    var rows = ['<thead><tr><th>System</th><th class="num">Blocks</th><th class="num">Area m²</th><th class="num">Volume m³</th><th class="share">Share of volume</th></tr></thead><tbody>'];
-    s.rows.forEach(function (r) {
-      var pct = s.total.vol > 0 ? 100 * r.total.vol / s.total.vol : 0;
+      '<div><small>Gross area</small><b>' + fmt(s.total.area, 1) + ' m²</b></div>' +
+      '<div><small>Block mass</small><b>' + fmt(w.blocks.mass, 1) + ' t</b></div>' +
+      '<div><small>Total weight</small><b>' + fmt(w.total.mass, 1) + ' t</b></div>' +
+      (w.margin == null ? '' : '<div><small>Margin to displacement</small><b class="' + (w.margin < 0 ? 'bad' : '') + '">' + fmt(w.margin, 1) + ' t (' + fmt(w.marginPct, 1) + '%)</b></div>');
+    var rows = ['<thead><tr><th>System</th><th class="num">Blocks</th><th class="num">Area m\u00B2</th><th class="num">Volume m\u00B3</th><th class="share">Share of volume</th>' +
+      '<th class="num" title="t/m\u00B3. Type a value to set it for the group; grey is inherited from the parent group or the default">Density t/m\u00B3</th><th class="num">Mass t</th><th class="num">LCG m</th><th class="num">TCG m</th><th class="num">VCG m</th></tr></thead><tbody>'];
+    function fm(v) { return v == null ? '\u2013' : fmt(v, 2); }
+    s.rows.forEach(function (r, i) {
+      var pct = s.total.vol > 0 ? 100 * r.total.vol / s.total.vol : 0, wr = w.rows[i], g = r.group;
       var cls = r.depth === 0 ? 'sub' : (r.total.n === 0 ? 'zero' : '');
-      rows.push('<tr class="' + cls + '"><td style="padding-left:' + (8 + r.depth * 16) + 'px"><span class="sw" style="background:' + esc(r.group.color) + '"></span>' + esc(r.group.name) + '</td>' +
+      rows.push('<tr class="' + cls + '"><td style="padding-left:' + (8 + r.depth * 16) + 'px"><span class="sw" style="background:' + esc(g.color) + '"></span>' + esc(g.name) + '</td>' +
         '<td class="num">' + r.total.n + '</td><td class="num">' + fmt(r.total.area) + '</td><td class="num">' + fmt(r.total.vol) + '</td>' +
-        '<td class="share"><span class="bar" style="width:' + Math.round(pct * 0.9) + 'px;background:' + esc(r.group.color) + '"></span> <span class="mono">' + fmt(pct, 1) + '%</span></td></tr>');
+        '<td class="share"><span class="bar" style="width:' + Math.round(pct * 0.9) + 'px;background:' + esc(g.color) + '"></span> <span class="mono">' + fmt(pct, 1) + '%</span></td>' +
+        '<td class="num"><input type="number" step="0.05" min="0" data-gdens="' + esc(g.id) + '" value="' + (typeof g.density === 'number' ? g.density : '') + '" placeholder="' + fmt(wr.density.value, 2) + '" aria-label="Density of ' + esc(g.name) + '"></td>' +
+        '<td class="num">' + fmt(wr.total.mass, 1) + '</td><td class="num">' + fm(wr.total.lcg) + '</td><td class="num">' + fm(wr.total.tcg) + '</td><td class="num">' + fm(wr.total.vcg) + '</td></tr>');
     });
-    rows.push('<tr class="tot"><td>Gross total</td><td class="num">' + s.total.n + '</td><td class="num">' + fmt(s.total.area) + '</td><td class="num">' + fmt(s.total.vol) + '</td><td></td></tr></tbody>');
+    rows.push('<tr class="tot"><td>Gross total</td><td class="num">' + s.total.n + '</td><td class="num">' + fmt(s.total.area) + '</td><td class="num">' + fmt(s.total.vol) + '</td><td></td><td></td>' +
+      '<td class="num">' + fmt(w.blocks.mass, 1) + '</td><td class="num">' + fm(w.blocks.lcg) + '</td><td class="num">' + fm(w.blocks.tcg) + '</td><td class="num">' + fm(w.blocks.vcg) + '</td></tr></tbody>');
     $('#sumTbl').innerHTML = rows.join('');
+    var hc = C.hullCheck(S.model), he = $('#hullEnv'), ht = $('#hullTbl');
+    he.hidden = !hc; ht.hidden = !hc; $('#hullNone').hidden = !!hc;
+    if (hc) {
+      he.innerHTML =
+        '<div><small>Hulls</small><b>' + hc.hulls.length + '</b></div>' +
+        '<div><small>Hull volume to main deck</small><b>' + fmt(hc.volDeck, 1) + ' m\u00B3</b></div>' +
+        '<div><small>Displaced volume at draught</small><b>' + fmt(hc.volDraught, 1) + ' m\u00B3</b></div>' +
+        '<div><small>Blocks below main deck</small><b>' + fmt(hc.blocksBelow, 1) + ' m\u00B3</b></div>' +
+        '<div><small>Blocks outside hulls</small><b>' + fmt(hc.outside, 1) + ' m\u00B3</b></div>';
+      var hr = ['<thead><tr><th>Hull (illustrative)</th><th>Type</th><th class="num">Length</th><th class="num">Beam</th><th class="num">Depth</th><th class="num">Draught</th><th class="num">Y offset</th><th class="num">Volume m\u00B3</th><th class="num">Displaced m\u00B3</th></tr></thead><tbody>'];
+      hc.hulls.forEach(function (e) {
+        var h = e.hull;
+        hr.push('<tr class="pick' + (h.id === S.selHull ? ' sel' : '') + '" data-hid="' + esc(h.id) + '"><td><span class="sw hullsw"></span>' + esc(h.name) + '</td><td>' + esc(C.HULL_TYPES[h.type].label) + '</td>' +
+          '<td class="num">' + fmt(h.loa, 2) + '</td><td class="num">' + fmt(h.beam, 2) + '</td><td class="num">' + fmt(h.depth, 2) + '</td><td class="num">' + fmt(h.draught, 2) + '</td><td class="num">' + fmt(h.y, 2) + '</td>' +
+          '<td class="num">' + fmt(e.volDeck, 1) + '</td><td class="num">' + fmt(e.volDraught, 1) + '</td></tr>');
+      });
+      hr.push('</tbody>');
+      ht.innerHTML = hr.join('');
+    }
+    renderHydro();
+    renderWeight(w);
+  }
+
+  function renderWeight(w) {
+    setVal($('#structIn'), fin(w.pct));
+    function fm(v) { return v == null ? '\u2013' : fmt(v, 2); }
+    var rows = ['<thead><tr><th>Item</th><th class="num">Mass t</th><th class="num">LCG m</th><th class="num">TCG m</th><th class="num">VCG m</th></tr></thead><tbody>'];
+    function line(cls, name, m, c, extra) {
+      rows.push('<tr class="' + cls + '"><td>' + name + '</td><td class="num' + (extra || '') + '">' + m + '</td><td class="num">' + c[0] + '</td><td class="num">' + c[1] + '</td><td class="num">' + c[2] + '</td></tr>');
+    }
+    line('', 'Blocks <small>' + w.blocks.n + '</small>', fmt(w.blocks.mass, 1), [fm(w.blocks.lcg), fm(w.blocks.tcg), fm(w.blocks.vcg)]);
+    line('', 'Structure and outfitting <small>' + fmt(w.pct, 0) + '% of displacement' + (w.hasHull ? '' : ', needs a hull') + '</small>', fmt(w.struct.mass, 1), [fm(w.struct.lcg), fm(w.struct.tcg), fm(w.struct.vcg)]);
+    line('tot', 'Total weight', fmt(w.total.mass, 1), [fm(w.total.lcg), fm(w.total.tcg), fm(w.total.vcg)]);
+    if (w.hasHull) {
+      line('', 'Displacement at the draught <small>with the centre of buoyancy</small>', fmt(w.disp, 1), [fm(w.lcb), fm(w.tcb), fm(w.kb)]);
+      line('', 'Margin: displacement minus weight <small>' + fmt(w.marginPct, 1) + '% of the displacement</small>', fmt(w.margin, 1), ['', '', ''], w.margin < 0 ? ' bad' : '');
+      line('', 'LCG minus LCB <small>positive: weight forward of the buoyancy</small>', '', [w.lcgMinusLcb == null ? '\u2013' : fmt(w.lcgMinusLcb, 2), '', '']);
+    }
+    rows.push('</tbody>');
+    $('#wtTbl').innerHTML = rows.join('');
+  }
+
+  function renderHydro() {
+    var hd = C.modelHydro(S.model), hh = $('#hydroHead'), tb = $('#hydroTbl');
+    hh.hidden = !hd; tb.hidden = !hd;
+    if (!hd) return;
+    setVal($('#rhoIn'), fin(hd.total.rho));
+    var rows = ['<thead><tr><th>Hull</th><th class="num">LWL m</th><th class="num">BWL m</th><th class="num">Draught m</th><th class="num">Volume m\u00B3</th><th class="num">Displ. t</th>' +
+      '<th class="num">Cb</th><th class="num">Cp</th><th class="num">Cm</th><th class="num">Cwp</th><th class="num">Awp m\u00B2</th><th class="num">LCB m</th><th class="num">KB m</th><th class="num">LCF m</th><th class="num">TPC t/cm</th></tr></thead><tbody>'];
+    hd.hulls.forEach(function (e) {
+      var q = e.h;
+      rows.push('<tr class="pick' + (e.hull.id === S.selHull ? ' sel' : '') + '" data-hid="' + esc(e.hull.id) + '"><td><span class="sw hullsw"></span>' + esc(e.hull.name) + '</td>' +
+        '<td class="num">' + fmt(q.LWL, 2) + '</td><td class="num">' + fmt(q.BWL, 2) + '</td><td class="num">' + fmt(q.T, 2) + '</td><td class="num">' + fmt(q.V, 1) + '</td><td class="num">' + fmt(q.disp, 1) + '</td>' +
+        '<td class="num">' + fmt(q.Cb, 3) + '</td><td class="num">' + fmt(q.Cp, 3) + '</td><td class="num">' + fmt(q.Cm, 3) + '</td><td class="num">' + fmt(q.Cwp, 3) + '</td>' +
+        '<td class="num">' + fmt(q.Awp, 1) + '</td><td class="num">' + fmt(q.LCB, 2) + '</td><td class="num">' + fmt(q.KB, 2) + '</td><td class="num">' + fmt(q.LCF, 2) + '</td><td class="num">' + fmt(q.TPC, 2) + '</td></tr>');
+    });
+    var t = hd.total;
+    rows.push('<tr class="tot"><td>All hulls' + (Math.abs(t.TCB) > 0.005 ? ' (TCB y ' + fmt(t.TCB, 2) + ' m)' : '') + '</td><td></td><td></td><td></td><td class="num">' + fmt(t.V, 1) + '</td><td class="num">' + fmt(t.disp, 1) + '</td>' +
+      '<td></td><td></td><td></td><td></td><td class="num">' + fmt(t.Awp, 1) + '</td><td class="num">' + fmt(t.LCB, 2) + '</td><td class="num">' + fmt(t.KB, 2) + '</td><td class="num">' + fmt(t.LCF, 2) + '</td><td class="num">' + fmt(t.TPC, 2) + '</td></tr></tbody>');
+    tb.innerHTML = rows.join('');
   }
 
   var sigReq = '';
@@ -1735,7 +2970,7 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
     var tbl = $('#reqTbl');
     if (sig !== sigReq || !$('thead', tbl)) {
       sigReq = sig;
-      var h = ['<thead><tr><th>Requirement</th><th>Metric</th><th>Sense</th><th class="num">Shall</th><th class="num">Should</th><th class="num">Achieved</th><th>Status</th><th class="num">Blocks</th><th></th></tr></thead><tbody>'];
+      var h = ['<thead><tr><th>Requirement</th><th>Metric</th><th>Sense</th><th class="num">Shall</th><th class="num">Should</th><th class="num">Achieved</th><th class="num" title="Only the part of each linked block that lies inside the hulls (estimate; volume and area requirements)">Inside hulls</th><th>Status</th><th class="num">Blocks</th><th></th></tr></thead><tbody>'];
       ev.forEach(function (e) {
         var r = e.req;
         h.push('<tr data-rid="' + esc(r.id) + '">' +
@@ -1744,10 +2979,10 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
           '<td><select data-f="rsense" aria-label="Sense"><option value="min"' + (r.sense === 'min' ? ' selected' : '') + '>at least</option><option value="max"' + (r.sense === 'max' ? ' selected' : '') + '>at most</option></select></td>' +
           '<td class="num"><input type="number" step="any" data-f="rshall" value="' + (r.shall == null ? '' : r.shall) + '" aria-label="Shall value"></td>' +
           '<td class="num"><input type="number" step="any" data-f="rshould" value="' + (r.should == null ? '' : r.should) + '" aria-label="Should value"></td>' +
-          '<td class="num" data-c="ach"></td><td data-c="st"></td><td class="num" data-c="n"></td>' +
+          '<td class="num" data-c="ach"></td><td class="num" data-c="in"></td><td data-c="st"></td><td class="num" data-c="n"></td>' +
           '<td><button class="ic" data-act="delr" aria-label="Delete requirement" title="Delete requirement">×</button></td></tr>');
       });
-      if (!ev.length) h.push('<tr><td colspan="9" class="empty-note">No requirements yet. Add one, then pick it for blocks in the library or the block panel.</td></tr>');
+      if (!ev.length) h.push('<tr><td colspan="10" class="empty-note">No requirements yet. Add one, then pick it for blocks in the library or the block panel.</td></tr>');
       h.push('</tbody>');
       tbl.innerHTML = h.join('');
     }
@@ -1755,25 +2990,74 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
       var row = $('tr[data-rid="' + e.req.id + '"]', tbl);
       if (!row) return;
       $('[data-c="ach"]', row).textContent = fmt(e.achieved, 2) + ' ' + C.METRICS[e.req.metric].unit;
+      var cin = $('[data-c="in"]', row);
+      if (e.inside == null) { cin.textContent = '\u2013'; cin.className = 'num'; }
+      else {
+        cin.textContent = fmt(e.inside, 2) + (e.achieved - e.inside > 0.005 ? ' (\u2212' + fmt(e.achieved - e.inside, 2) + ')' : '');
+        cin.className = 'num' + (e.statusInside !== e.status && e.statusInside === 'fail' ? ' bad' : '');
+        cin.title = e.statusInside === e.status ? '' : 'Inside the hulls this becomes: ' + C.STATUS_LABEL[e.statusInside];
+      }
       $('[data-c="st"]', row).innerHTML = statusChip(e.status, e.req);
       $('[data-c="n"]', row).textContent = (e.req.metric === 'volume' || e.req.metric === 'area') ? e.n : '–';
     });
   }
 
+  /* Blocks tab: columns come in sets (Geometry, Mass, Hull) that can be switched; the header sorts. View state only. */
+  function blockColumns(ctx) {
+    var cols = [
+      { set: 'base', key: 'name', label: 'Name', get: function (b) { return b.name.toLowerCase(); },
+        cell: function (b) { var g = ctx.gm[b.group]; return '<td><span class="sw" style="background:' + esc(g ? g.color : '#888') + '"></span>' + esc(b.name) + '</td>'; } },
+      { set: 'base', key: 'group', label: 'Group', get: function (b) { var g = ctx.gm[b.group]; return g ? C.groupPath(S.model, g.id).toLowerCase() : ''; },
+        cell: function (b) { var g = ctx.gm[b.group]; return '<td>' + esc(g ? g.name : '') + '</td>'; } },
+      { set: 'base', key: 'req', label: 'Requirement', get: function (b) { return b.req ? (ctx.rm[b.req] || '').toLowerCase() : ''; },
+        cell: function (b) { return '<td>' + esc(b.req ? ctx.rm[b.req] || '' : '') + '</td>'; } },
+      { set: 'geo', key: 'shape', label: 'Shape', get: function (b) { return C.SHAPES[b.shape].label; }, cell: function (b) { return '<td>' + C.SHAPES[b.shape].label + '</td>'; } }
+    ];
+    ['L', 'B', 'H'].forEach(function (l, i) { cols.push({ set: 'geo', key: 'size' + i, label: l, num: true, get: function (b) { return b.size[i]; }, cell: function (b) { return '<td class="num">' + fmt(b.size[i], 2) + '</td>'; } }); });
+    ['X', 'Y', 'Z'].forEach(function (l, i) { cols.push({ set: 'geo', key: 'pos' + i, label: l, num: true, get: function (b) { return b.position[i]; }, cell: function (b) { return '<td class="num">' + fmt(b.position[i], 2) + '</td>'; } }); });
+    cols.push({ set: 'geo', key: 'vol', label: 'Volume m\u00B3', num: true, get: C.blockVolume, cell: function (b) { return '<td class="num">' + fmt(C.blockVolume(b), 2) + '</td>'; } });
+    cols.push({ set: 'geo', key: 'area', label: 'Area m\u00B2', num: true, get: C.blockArea, cell: function (b) { return '<td class="num">' + fmt(C.blockArea(b), 2) + (b.areaOverride != null ? '*' : '') + '</td>'; } });
+    cols.push({ set: 'mass', key: 'dens', label: 'Density t/m\u00B3', num: true, title: 'Type a value to override the group density; grey is the group value', get: function (b) { return C.blockMass(S.model, b).density; },
+      cell: function (b) { var q = C.blockMass(S.model, b); return '<td class="num"><input type="number" step="0.05" min="0" data-bf="density" value="' + (typeof b.density === 'number' ? b.density : '') + '" placeholder="' + fmt(q.groupDensity, 2) + '"' + (q.typed ? ' disabled' : '') + ' aria-label="Density of ' + esc(b.name) + '"></td>'; } });
+    cols.push({ set: 'mass', key: 'fill', label: 'Fill %', num: true, get: function (b) { return C.blockMass(S.model, b).fill; },
+      cell: function (b) { var q = C.blockMass(S.model, b); return '<td class="num"><input type="number" step="5" min="0" max="100" data-bf="fill" value="' + fin(q.fill) + '"' + (q.typed ? ' disabled' : '') + ' aria-label="Fill of ' + esc(b.name) + '"></td>'; } });
+    cols.push({ set: 'mass', key: 'mass', label: 'Mass t', num: true, title: '* typed mass', get: function (b) { return C.blockMass(S.model, b).mass; },
+      cell: function (b) { var q = C.blockMass(S.model, b); return '<td class="num">' + fmt(q.mass, 2) + (q.typed ? '*' : '') + '</td>'; } });
+    ['x', 'y', 'z'].forEach(function (l, i) { cols.push({ set: 'mass', key: 'cg' + i, label: 'CG ' + l, num: true, get: function (b) { return C.blockCentroid(b)[i]; }, cell: function (b) { return '<td class="num">' + fmt(C.blockCentroid(b)[i], 2) + '</td>'; } }); });
+    if (ctx.hc) {
+      cols.push({ set: 'hull', key: 'out', label: 'Outside hulls m\u00B3', num: true, title: 'Part of the block below the main deck that lies outside every hull (estimate)', get: function (b) { var q = ctx.hc.byId[b.id]; return q.aboveDeck ? -1 : q.out; },
+        cell: function (b) { var q = ctx.hc.byId[b.id]; return q.aboveDeck ? '<td class="num">\u2013</td>' : '<td class="num' + (q.shareBelow > 0.05 ? ' bad' : '') + '">' + fmt(q.out, 2) + '</td>'; } });
+      cols.push({ set: 'hull', key: 'outp', label: '% of block', num: true, get: function (b) { var q = ctx.hc.byId[b.id]; return q.aboveDeck ? -1 : q.shareBlock; },
+        cell: function (b) { var q = ctx.hc.byId[b.id]; return q.aboveDeck ? '<td class="num">\u2013</td>' : '<td class="num' + (q.shareBelow > 0.05 ? ' bad' : '') + '">' + fmt(100 * q.shareBlock, 1) + '</td>'; } });
+    }
+    return cols.filter(function (c) { return c.set === 'base' || S.blkSets[c.set]; });
+  }
+
   function renderBlocksTab() {
     var rm = {};
     S.model.requirements.forEach(function (r) { rm[r.id] = r.name; });
-    var gm = C.groupMap(S.model);
-    var h = ['<thead><tr><th>Name</th><th>Group</th><th>Requirement</th><th>Shape</th><th class="num">L</th><th class="num">B</th><th class="num">H</th><th class="num">X</th><th class="num">Y</th><th class="num">Z</th><th class="num">Volume m³</th><th class="num">Area m²</th></tr></thead><tbody>'];
-    S.model.blocks.forEach(function (b) {
-      var g = gm[b.group];
-      h.push('<tr class="pick' + (b.id === S.sel ? ' sel' : '') + '" data-bid="' + esc(b.id) + '"><td><span class="sw" style="background:' + esc(g ? g.color : '#888') + '"></span>' + esc(b.name) + '</td>' +
-        '<td>' + esc(g ? g.name : '') + '</td><td>' + esc(b.req ? rm[b.req] || '' : '') + '</td><td>' + C.SHAPES[b.shape].label + '</td>' +
-        b.size.map(function (v) { return '<td class="num">' + fmt(v, 2) + '</td>'; }).join('') +
-        b.position.map(function (v) { return '<td class="num">' + fmt(v, 2) + '</td>'; }).join('') +
-        '<td class="num">' + fmt(C.blockVolume(b), 2) + '</td><td class="num">' + fmt(C.blockArea(b), 2) + (b.areaOverride != null ? '*' : '') + '</td></tr>');
+    var ctx = { rm: rm, gm: C.groupMap(S.model), hc: C.hullCheck(S.model) };
+    $$('#blkSets [data-set]').forEach(function (b) {
+      var on = !!S.blkSets[b.getAttribute('data-set')];
+      b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false');
     });
-    if (!S.model.blocks.length) h.push('<tr><td colspan="12" class="empty-note">No blocks yet.</td></tr>');
+    var cols = blockColumns(ctx), list = S.model.blocks.slice(), so = S.blkSort;
+    if (so && cols.some(function (c) { return c.key === so.key; })) {
+      var col = cols.filter(function (c) { return c.key === so.key; })[0];
+      list = list.map(function (b, i) { return { b: b, i: i, v: col.get(b) }; }).sort(function (p, q) {
+        var r = typeof p.v === 'number' && typeof q.v === 'number' ? p.v - q.v : String(p.v).localeCompare(String(q.v), 'en', { numeric: true });
+        return (so.dir === 'desc' ? -r : r) || p.i - q.i;
+      }).map(function (e) { return e.b; });
+    } else so = null;
+    var h = ['<thead><tr>' + cols.map(function (c) {
+      var on = so && so.key === c.key;
+      return '<th class="sortable' + (c.num ? ' num' : '') + '" data-sort="' + c.key + '"' + (c.title ? ' title="' + esc(c.title) + '"' : '') + ' aria-sort="' + (on ? (so.dir === 'desc' ? 'descending' : 'ascending') : 'none') + '">' +
+        esc(c.label) + '<span class="srt">' + (on ? (so.dir === 'desc' ? '\u25BE' : '\u25B4') : '') + '</span></th>';
+    }).join('') + '</tr></thead><tbody>'];
+    list.forEach(function (b) {
+      h.push('<tr class="pick' + (b.id === S.sel ? ' sel' : '') + '" data-bid="' + esc(b.id) + '">' + cols.map(function (c) { return c.cell(b); }).join('') + '</tr>');
+    });
+    if (!S.model.blocks.length) h.push('<tr><td colspan="' + cols.length + '" class="empty-note">No blocks yet.</td></tr>');
     h.push('</tbody>');
     $('#blkTbl').innerHTML = h.join('');
   }
@@ -1787,6 +3071,7 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
     renderSummary();
     renderReqs();
     renderBlocksTab();
+    applyTips();
     $('#projName').value = S.model.name;
     updateUndo();
     request();
@@ -1801,6 +3086,14 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
   }
 
   /* ---------- tabs, drawer ---------- */
+  function setSub(k) {
+    S.sumSub = k;
+    ['overview', 'hull', 'weight'].forEach(function (n) {
+      $('#sub-' + n).hidden = n !== k;
+      var b = $('#sumSub [data-sub="' + n + '"]'); b.classList.toggle('on', n === k); b.setAttribute('aria-pressed', n === k ? 'true' : 'false');
+    });
+  }
+
   function setTab(t) {
     S.tab = t;
     ['summary', 'reqs', 'blocks'].forEach(function (k) {
@@ -1819,31 +3112,124 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
     toastTimer = setTimeout(function () { t.hidden = true; }, bad ? 5200 : 3200);
   }
 
+  /* ---------- help: start, shortcuts, glossary ---------- */
+  var GLOSS = [
+    { group: 'Design', items: [
+      ['Block', 'A space or item with a shape, size and position. Its volume and plan area count towards the design.'],
+      ['Group', 'A branch of the system breakdown (Levander’s OSV taxonomy to begin with). Totals roll up the tree.'],
+      ['Requirement', 'A target on volume, area, length, beam or height, for the blocks tagged with it. Shall: the limit that must be met. Should: the desirable target.'],
+      ['Gross volume, gross area', 'Sums over all blocks. Overlaps and the hull are not deducted. A block’s volume uses its shape, so a cylinder is π/4 of its box.'],
+      ['Plan area', 'The footprint seen from above. You can type an area instead, which is marked with *.']
+    ] },
+    { group: 'Hull and draught', items: [
+      ['Baseline', 'The reference level z = 0, at the underside of the hull. All heights are measured up from it.'],
+      ['Depth', 'Height of the main deck above the baseline. Blocks above it are not checked against the hull.'],
+      ['Draught (T)', 'Height of the waterline above the baseline. One draught for the whole vessel, at most the deepest hull.'],
+      ['Freeboard', 'Depth minus draught.'],
+      ['Displaced volume (∇)', 'Hull volume below the waterline.'],
+      ['Displacement (Δ)', 'The mass of water displaced: water density × ∇, in tonnes.'],
+      ['Outside hulls', 'The part of a block below the main deck that is not inside any hull. An estimate from sampling points in the block.']
+    ] },
+    { group: 'Hydrostatics', items: [
+      ['LWL, BWL', 'Length and (maximum) beam of the waterline.'],
+      ['Cb', 'Block coefficient: ∇ / (LWL × BWL × T). How full the underwater body is.'],
+      ['Cp', 'Prismatic coefficient: ∇ / (Am × LWL). How the volume is spread along the length.'],
+      ['Cm', 'Midship section coefficient: Am / (BWL × T). Am is the largest immersed section.'],
+      ['Cwp', 'Waterplane coefficient: Awp / (LWL × BWL).'],
+      ['Awp', 'Waterplane area, at the draught.'],
+      ['LCB, TCB, KB', 'Centre of buoyancy: from the aft end (LCB), to port of the centreline (TCB), and above the baseline (KB).'],
+      ['LCF', 'Longitudinal centre of flotation: the centroid of the waterplane, from the aft end.'],
+      ['TPC', 'Tonnes per centimetre immersion: the mass that sinks the vessel 1 cm. Water density × Awp / 100.']
+    ] },
+    { group: 'Weight', items: [
+      ['Density, fill, mass', 'Mass = density × volume × fill. Density comes from the block, else its group, else the parent group, else 0.3 t/m³. A typed mass replaces the calculation.'],
+      ['LCG, TCG, VCG', 'Centre of gravity: from the aft end, to port of the centreline, and above the baseline. For a block it is the centroid of its shape.'],
+      ['Structure and outfitting', 'Hull steel, piping, cabling and so on, taken as a share of the displacement (25% to begin with) and spread over the hull volume.'],
+      ['Margin', 'Displacement minus total weight. Positive: room to add weight. Negative: the vessel would float deeper than the draught.'],
+      ['LCG minus LCB', 'Positive: the weight is forward of the buoyancy, so the vessel would trim by the bow. It should be close to zero.']
+    ] }
+  ];
+  /* hover hints for table headers, keyed by the header text without its unit */
+  var TIPS = {
+    'LWL': 'Waterline length', 'BWL': 'Waterline beam (maximum)', 'Draught': 'Waterline height above the baseline', 'Volume': 'Volume of the block or hull',
+    'Displ.': 'Displacement: water density × displaced volume, tonnes', 'Cb': 'Block coefficient: ∇ / (LWL × BWL × T)', 'Cp': 'Prismatic coefficient: ∇ / (Am × LWL)',
+    'Cm': 'Midship section coefficient: Am / (BWL × T)', 'Cwp': 'Waterplane coefficient: Awp / (LWL × BWL)', 'Awp': 'Waterplane area',
+    'LCB': 'Longitudinal centre of buoyancy, from the aft end', 'KB': 'Height of the centre of buoyancy above the baseline', 'LCF': 'Longitudinal centre of flotation, from the aft end',
+    'TPC': 'Tonnes per centimetre immersion', 'LCG': 'Longitudinal centre of gravity, from the aft end', 'TCG': 'Transverse centre of gravity, to port of the centreline',
+    'VCG': 'Vertical centre of gravity, above the baseline', 'Mass': 'Mass = density × volume × fill', 'Fill': 'How full the space is, for tanks and stores',
+    'Share of weight': 'Share of the total weight', 'Share of volume': 'Share of the gross volume', 'Area': 'Plan area, or the typed area (*)'
+  };
+  function applyTips() {
+    $$('.tbl th').forEach(function (th) {
+      if (th.title) return;
+      var k = th.textContent.replace(/[▴▾]/g, '').replace(/\s+(m|t|m²|m³|t\/m³|t\/cm|%)$/, '').trim();
+      if (TIPS[k]) th.title = TIPS[k];
+    });
+  }
+
+  function helpStart() {
+    return '<ol>' +
+      '<li><b>Start from your systems.</b> Each system that needs volume or deck area becomes a block. Use <i>New</i>, or open one from the <i>Examples</i> menu to see a finished design.</li>' +
+      '<li><b>Set up groups.</b> The hierarchy on the left starts with Levander’s OSV breakdown. Rename, recolour, add (<i>+ Group</i>, or + on a row) or delete groups to match your own division.</li>' +
+      '<li><b>Write requirements.</b> In the <i>Requirements</i> tab choose a metric (volume, area, length, beam, height), at least or at most, and the <i>shall</i> and <i>should</i> values. Pick the group and requirement for new blocks in the two menus under the shape library.</li>' +
+      '<li><b>Add and shape blocks.</b> Click a shape, or drag it onto the workplane. Select a block and use <i>Move</i>, <i>Rotate</i> or <i>Scale</i>. <b>To resize, choose Scale and drag the small coloured cubes</b>, or type exact values in the right panel. Snap aligns block faces to the step you choose.</li>' +
+      '<li><b>Add a hull (optional).</b> Press <i>+ Hull</i>. It is fitted around the blocks below the main deck, whose height is the hull <i>depth</i>. Click the hull row to edit it: move and scale it with the gizmo, set the <i>draught</i>, or open <i>Shape</i> for the sliders. A second <i>+ Hull</i> adds a mirrored copy for a catamaran. The hulls are illustrative shapes, not real lines.</li>' +
+      '<li><b>Add weight.</b> Set a density per group in the Summary, and override it on a block if needed, with a fill % for tanks or a typed mass. The structure share is set in the Weight section of the Summary.</li>' +
+      '<li><b>Read the tables.</b> <i>Summary</i> has Overview (volume, area and weight by group), Hull (hydrostatics) and Weight (balance against displacement). <i>Requirements</i> shows whether shall and should are met. <i>Blocks</i> lists every block; choose its column sets and click a title to sort.</li>' +
+      '<li><b>Iterate and save.</b> <i>Save</i> writes a JSON file you can reopen later. <i>Export CSV</i> saves the table you are viewing. Nothing is kept in the browser, so save before you leave.</li>' +
+      '</ol>' +
+      '<p class="note">Axes: X forward from the aft end, Y to port, Z up from the baseline, in metres. Hydrostatics and weights are indicative.</p>';
+  }
+  function helpKeys() {
+    var K = [
+      ['W / E / R', 'Move, rotate, scale the selection'], ['H', 'Hide or show the selected block or hull'], ['F or 5', 'Fit the model in the view'],
+      ['1 / 2 / 3 / 4', '3D, top, side, front view'], ['Ctrl+D', 'Duplicate the block (adds a mirrored hull when a hull is selected)'],
+      ['Delete or Backspace', 'Delete the selected block or hull'], ['Esc', 'Deselect'], ['Ctrl+Z', 'Undo'], ['Ctrl+Shift+Z or Ctrl+Y', 'Redo']
+    ], M = [
+      ['Drag the background', 'Orbit'], ['Right-drag', 'Pan'], ['Mouse wheel', 'Zoom'], ['Click a block or a hierarchy row', 'Select it'],
+      ['Eye icons', 'Hide a block, group, hull or every block (next to Hierarchy)'], ['Column titles in the Blocks tab', 'Sort: once, twice to reverse, a third time for the original order']
+    ];
+    function tbl(rows, first) {
+      return '<table class="keytbl"><thead><tr><th>' + first + '</th><th></th></tr></thead><tbody>' + rows.map(function (r) { return '<tr><td><kbd>' + esc(r[0]) + '</kbd></td><td>' + esc(r[1]) + '</td></tr>'; }).join('') + '</tbody></table>';
+    }
+    return '<h3>Keyboard</h3>' + tbl(K, 'Key') + '<h3>Mouse and tables</h3>' + tbl(M, 'Action') + '<p class="note">Keys work when no text field is focused.</p>';
+  }
+  function helpGlossary() {
+    return GLOSS.map(function (g) {
+      return '<h3>' + esc(g.group) + '</h3><dl class="gloss">' + g.items.map(function (i) { return '<dt>' + esc(i[0]) + '</dt><dd>' + esc(i[1]) + '</dd>'; }).join('') + '</dl>';
+    }).join('') + '<p class="note">Hovering over a table heading shows the same short explanation.</p>';
+  }
+
+  function helpAbout() {
+    return '<p class="aboutp">The DBB Block Editor is an app for early-stage ship design with the Design Building Block approach. Spaces and systems are modelled as blocks in 3D; the app sums volume, area, weight and centres of gravity by system, checks them against shall and should requirements, and compares them with an illustrative hull and its hydrostatics. Hulls are illustrative and results are indicative. Stability is not included.</p>' +
+      '<h3>Credits</h3><p class="aboutp">Developed by Henrique Gaspar, NTNU, October 2026. It builds on a block layout prototype from 2015.</p>' +
+      '<h3>Acknowledgements</h3><p class="aboutp">Professor David Andrews, University College London, for his support over the years and the long collaboration between NTNU and UCL.</p>' +
+      '<h3>Reference</h3><p class="aboutp">Gaspar, H.M., Fonseca, \u00CD.A. and Andrews, D., <i>Wither now the Design Building Block (DBB) Approach</i>. International Marine Design Conference (IMDC 2024). <a href="https://doi.org/10.59490/imdc.2024.915" target="_blank" rel="noopener">doi.org/10.59490/imdc.2024.915</a></p>';
+  }
+
   function showHelp() {
     var ov = document.createElement('div');
     ov.className = 'overlay';
-    ov.innerHTML = '<div class="dialog help" role="dialog" aria-modal="true" aria-label="How to build a design"><h2>How to build a design</h2>' +
-      '<ol>' +
-      '<li><b>Start from your systems.</b> Take the spaces from your Systems Based Ship Design summary: each system that needs volume or deck area becomes a block. Use <i>New</i>, or open one from the <i>Examples</i> menu to see a finished design.</li>' +
-      '<li><b>Set up groups.</b> The hierarchy on the left starts with Levander\u2019s OSV breakdown. Rename, recolour, add (<i>+ Group</i>, or + on a row) or delete groups to match your own division.</li>' +
-      '<li><b>Write requirements.</b> Open the <i>Requirements</i> tab, add one, and choose a metric (volume, area, length, beam, height), whether it is at least or at most, and the <i>shall</i> and <i>should</i> values.</li>' +
-      '<li><b>Pick the group and requirement for new blocks</b> in the two menus under the shape library. Volume and area requirements count only the blocks tagged with them.</li>' +
-      '<li><b>Add blocks.</b> Click a shape, or drag it onto the workplane (dropping on a block puts it on top). It is placed in the chosen group.</li>' +
-      '<li><b>Shape them.</b> Select a block, then use the <i>Move</i>, <i>Rotate</i> or <i>Scale</i> buttons above the 3D view (keys W, E, R). <b>To resize, choose Scale and drag the small coloured cubes</b>, or type the exact L, B, H, centre and rotation in the right panel. Snapping aligns block faces to the step you choose.</li>' +
-      '<li><b>Read the tables.</b> <i>Summary</i> gives volume and area per group and the overall L, B, H. <i>Requirements</i> shows achieved values and whether shall/should are met. <i>Blocks</i> lists every block.</li>' +
-      '<li><b>Iterate and save.</b> Resize or move blocks until the requirements are met. <i>Save</i> writes a JSON file you can reopen later; <i>Export CSV</i> saves the table you are viewing.</li>' +
-      '</ol>' +
-      '<h3>Reference</h3><ul class="refs">' +
-      '<li>Gaspar, H.M., Fonseca, \u00CD.A. and Andrews, D., <i>Wither now the Design Building Block (DBB) Approach</i>. International Marine Design Conference (IMDC 2024). <a href="https://doi.org/10.59490/imdc.2024.915" target="_blank" rel="noopener">doi.org/10.59490/imdc.2024.915</a></li>' +
-      '</ul>' +
-      '<p class="note">Created by Henrique Gaspar, NTNU, October 2026.</p>' +
-      '<p class="note">Axes: X forward from the aft end, Y to port, Z up from the baseline, in metres. Keys: W/E/R mode, Ctrl+D duplicate, Del delete, F fit, 1\u20134 views, Ctrl+Z undo.</p>' +
-      '<div class="actions"><button class="btn primary" data-x="close">Got it</button></div></div>';
+    ov.innerHTML = '<div class="dialog help" role="dialog" aria-modal="true" aria-label="How to"><h2>How to</h2>' +
+      '<div class="tabs helptabs" role="tablist">' +
+      '<button class="tab" role="tab" data-ht="start" aria-selected="true">Start</button>' +
+      '<button class="tab" role="tab" data-ht="keys" aria-selected="false">Shortcuts</button>' +
+      '<button class="tab" role="tab" data-ht="gloss" aria-selected="false">Glossary</button>' +
+      '<button class="tab" role="tab" data-ht="about" aria-selected="false">About</button></div>' +
+      '<div class="helpbody"><div data-hp="start">' + helpStart() + '</div><div data-hp="keys" hidden>' + helpKeys() + '</div><div data-hp="gloss" hidden>' + helpGlossary() + '</div><div data-hp="about" hidden>' + helpAbout() + '</div></div>' +
+      '<div class="helpfoot"><div class="actions"><button class="btn primary" data-x="close">Got it</button></div></div></div>';
     document.body.appendChild(ov);
     function close() { ov.remove(); document.removeEventListener('keydown', onKey); }
     function onKey(e) { if (e.key === 'Escape') close(); }
     document.addEventListener('keydown', onKey);
-    ov.addEventListener('click', function (e) { if (e.target === ov || e.target.getAttribute('data-x') === 'close') close(); });
+    ov.addEventListener('click', function (e) {
+      if (e.target === ov || e.target.getAttribute('data-x') === 'close') { close(); return; }
+      var t = e.target.getAttribute && e.target.getAttribute('data-ht');
+      if (!t) return;
+      $$('[data-ht]', ov).forEach(function (b) { b.setAttribute('aria-selected', b.getAttribute('data-ht') === t ? 'true' : 'false'); });
+      $$('[data-hp]', ov).forEach(function (p) { p.hidden = p.getAttribute('data-hp') !== t; });
+      $('.helpbody', ov).scrollTop = 0;
+    });
     $('[data-x="close"]', ov).focus();
   }
 
@@ -1959,6 +3345,12 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
     var tree = $('#tree');
     tree.addEventListener('click', function (e) {
       var act = e.target.closest('[data-act]');
+      var hrow = e.target.closest('.hullrow');
+      if (hrow) {
+        var hid = hrow.getAttribute('data-hid'), ha = act ? act.getAttribute('data-act') : 'selh';
+        if (ha === 'hvis') toggleHull(hid); else if (ha === 'delh') deleteHull(hid); else selectHull(hid);
+        return;
+      }
       var grow = e.target.closest('.grow'), brow = e.target.closest('.brow');
       if (act && grow) {
         var gid = grow.getAttribute('data-gid'), g = groupById(gid);
@@ -2000,6 +3392,7 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
     });
     $('#btnAddGroup').addEventListener('click', function () { addGroup(null); });
     $('#btnShowAll').addEventListener('click', showAll);
+    $('#btnBlocksEye').addEventListener('click', function () { setBlocksOff(!S.blocksOff); });
 
     // top bar
     $('#projName').addEventListener('change', function (e) { S.model.name = e.target.value.trim() || 'Untitled design'; renderAll(); pushHistory(); });
@@ -2038,29 +3431,97 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
     $('#btnCsv').addEventListener('click', exportCsv);
     $('#csvDelim').addEventListener('change', function (e) { S.delim = e.target.value; });
     $('#btnAddReq').addEventListener('click', addRequirement);
-    $('#blkTbl').addEventListener('click', function (e) {
+
+    // hulls
+    $('#btnAddHull').addEventListener('click', addHull);
+    $('#rhoIn').addEventListener('change', function (e) {
+      var v = parseFloat(e.target.value);
+      S.model.rho = isFinite(v) ? Math.min(1.3, Math.max(0.9, v)) : 1.025;
+      renderAll(); pushHistory();
+    });
+    $('#structIn').addEventListener('change', function (e) {
+      var v = parseFloat(e.target.value);
+      S.model.structPct = isFinite(v) ? Math.min(100, Math.max(0, v)) : C.DEFAULT_STRUCT_PCT;
+      renderAll(); pushHistory();
+    });
+    $('#sumTbl').addEventListener('change', function (e) {
+      var id = e.target.getAttribute('data-gdens');
+      if (!id) return;
+      var g = S.model.groups.filter(function (x) { return x.id === id; })[0];
+      if (!g) return;
+      g.density = e.target.value.trim() === '' ? null : Math.max(0, C.num(e.target.value, 0));
+      renderAll(); pushHistory();
+    });
+    $$('#sumSub [data-sub]').forEach(function (b) { b.addEventListener('click', function () { setSub(b.getAttribute('data-sub')); }); });
+    $$('#blkSets [data-set]').forEach(function (b) {
+      b.addEventListener('click', function () { var k = b.getAttribute('data-set'); S.blkSets[k] = !S.blkSets[k]; renderBlocksTab(); });
+    });
+    var bt = $('#blkTbl');
+    bt.addEventListener('click', function (e) {
+      var th = e.target.closest('th[data-sort]');
+      if (th) {
+        var k = th.getAttribute('data-sort'), so = S.blkSort;
+        S.blkSort = !so || so.key !== k ? { key: k, dir: 'asc' } : (so.dir === 'asc' ? { key: k, dir: 'desc' } : null);
+        renderBlocksTab(); return;
+      }
+      if (e.target.closest('input')) return;
       var tr = e.target.closest('tr[data-bid]');
       if (tr) select(tr.getAttribute('data-bid'));
     });
-    var reqTbl = $('#reqTbl');
-    reqTbl.addEventListener('click', function (e) {
-      var act = e.target.closest('[data-act="delr"]');
-      if (act) deleteRequirement(act.closest('tr').getAttribute('data-rid'));
+    bt.addEventListener('change', function (e) {
+      var f = e.target.getAttribute('data-bf'), tr = e.target.closest('tr[data-bid]');
+      if (!f || !tr) return;
+      var b = blockById(tr.getAttribute('data-bid'));
+      if (!b) return;
+      if (f === 'density') b.density = e.target.value.trim() === '' ? null : Math.max(0, C.num(e.target.value, 0));
+      else if (f === 'fill') b.fill = Math.min(100, Math.max(0, C.num(e.target.value, 100)));
+      renderAll(); pushHistory();
     });
-    reqTbl.addEventListener('change', function (e) {
-      var tr = e.target.closest('tr[data-rid]');
-      if (!tr) return;
-      var r = S.model.requirements.filter(function (x) { return x.id === tr.getAttribute('data-rid'); })[0];
-      if (!r) return;
-      var f = e.target.getAttribute('data-f'), v = e.target.value;
-      if (f === 'rname') r.name = v.trim() || r.name;
-      else if (f === 'rmetric') r.metric = v;
-      else if (f === 'rsense') r.sense = v === 'max' ? 'max' : 'min';
-      else if (f === 'rshall') r.shall = v === '' ? null : C.num(v, null);
-      else if (f === 'rshould') r.should = v === '' ? null : C.num(v, null);
-      renderReqs(); renderLibrarySelects(); renderProps(); renderBlocksTab(); pushHistory();
-      if (f === 'rname') { sigProps = ''; sigNew = ''; renderLibrarySelects(); renderProps(); }
+    ['#hullTbl', '#hydroTbl'].forEach(function (sel) {
+      $(sel).addEventListener('click', function (e) {
+        var tr = e.target.closest('tr[data-hid]');
+        if (tr) selectHull(tr.getAttribute('data-hid'));
+      });
     });
+    var hform = $('#hullPropsForm');
+    hform.addEventListener('change', function (e) {
+      var f = e.target.getAttribute('data-hf'), h = selHullObj();
+      if (!f || !h) return;
+      if (f === 'name') h.name = e.target.value.trim() || h.name;
+      else if (f === 'type') { h.name = C.hullNameFor(h.name, e.target.value); h.type = e.target.value; delete h.shape; }
+      else if (f === 'waterline') S.model.waterline = e.target.checked;
+      else if (f === 'draught') S.model.draught = Math.max(0.1, C.num(e.target.value, S.model.draught));
+      else {
+        var v = C.num(e.target.value, h[f]);
+        if (f === 'loa') v = Math.max(1, v);
+        else if (f === 'beam' || f === 'depth') v = Math.max(0.5, v);
+        h[f] = v;
+      }
+      C.syncDraught(S.model);
+      reconcile(); renderAll(); pushHistory();
+    });
+    buildShapeRows();
+    function setShape(patch, keep) {
+      var h = selHullObj(); if (!h) return;
+      var s = {}, k; for (k in (h.shape || {})) s[k] = h.shape[k];
+      if (patch === null) s = {}; else for (k in patch) s[k] = patch[k];
+      h.shape = C.cleanShape(s) || undefined;
+      if (!h.shape) delete h.shape;
+      rebuildHulls(); uiSoon();
+      if (!keep) pushHistory();
+    }
+    $('#shapeRows').addEventListener('input', function (e) {
+      C.setQuickCheck(true);
+      var k = e.target.getAttribute('data-sh'); if (k) setShape((function () { var o = {}; o[k] = parseFloat(e.target.value); return o; })(), true);
+    });
+    $('#shapeRows').addEventListener('change', function () { C.setQuickCheck(false); uiSoon(); pushHistory(); });
+    $$('[data-stern]').forEach(function (btn) {
+      btn.addEventListener('click', function () { setShape(C.STERN_PRESETS[btn.getAttribute('data-stern')]); });
+    });
+    $('#shapeReset').addEventListener('click', function () { setShape(null); });
+    $('#hfFit').addEventListener('click', function () { var h = selHullObj(); if (h) refitHull(h, false); });
+    $('#hfAuto').addEventListener('click', function () { var h = selHullObj(); if (h) refitHull(h, true); });
+    $('#hfDel').addEventListener('click', function () { if (S.selHull) deleteHull(S.selHull); });
 
     // properties
     var form = $('#propsForm');
@@ -2077,6 +3538,10 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
       else if (f === 'rot') b.rotation[i] = C.num(t.value, b.rotation[i]);
       else if (f === 'areaon') b.areaOverride = t.checked ? Math.round(C.blockPlanArea(b) * 1000) / 1000 : null;
       else if (f === 'area') b.areaOverride = Math.max(0, C.num(t.value, b.areaOverride || 0));
+      else if (f === 'density') b.density = t.value.trim() === '' ? null : Math.max(0, C.num(t.value, 0));
+      else if (f === 'fill') b.fill = Math.min(100, Math.max(0, C.num(t.value, 100)));
+      else if (f === 'masson') b.massOverride = t.checked ? Math.round(C.blockMass(S.model, b).mass * 1000) / 1000 : null;
+      else if (f === 'mass') b.massOverride = Math.max(0, C.num(t.value, b.massOverride || 0));
       reconcile(); renderAll(); pushHistory();
     });
     $('#pDup').addEventListener('click', duplicateSelected);
@@ -2090,18 +3555,20 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
       var k = e.key, mod = e.ctrlKey || e.metaKey;
       if (mod && k.toLowerCase() === 'z') { e.preventDefault(); e.shiftKey ? redo() : undo(); }
       else if (mod && k.toLowerCase() === 'y') { e.preventDefault(); redo(); }
-      else if (mod && k.toLowerCase() === 'd') { e.preventDefault(); duplicateSelected(); }
+      else if (mod && k.toLowerCase() === 'd') { e.preventDefault(); if (S.selHull) addHull(); else duplicateSelected(); }
       else if (mod) return;
-      else if (k === 'Delete' || k === 'Backspace') { if (S.sel) { e.preventDefault(); deleteSelected(); } }
+      else if (k === 'Delete' || k === 'Backspace') { if (S.selHull) { e.preventDefault(); deleteHull(S.selHull); } else if (S.sel) { e.preventDefault(); deleteSelected(); } }
       else if (k === 'Escape') select(null);
       else if (k === 'w' || k === 'W') setMode('translate');
       else if (k === 'e' || k === 'E') setMode('rotate');
       else if (k === 'r' || k === 'R') setMode('scale');
+      else if (k === 'h' || k === 'H') { if (S.selHull) toggleHull(S.selHull); else if (S.sel) toggleSelectedHidden(); }
       else if (k === 'f' || k === 'F') setView('fit');
       else if (k === '1') setView('iso');
       else if (k === '2') setView('top');
       else if (k === '3') setView('side');
       else if (k === '4') setView('front');
+      else if (k === '5') setView('fit');
     });
 
     // theme changes
@@ -2121,20 +3588,18 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
   }
 
   function setMode(m) {
+    if (m === 'rotate' && S.selHull) { toast('A hull stays upright: it can be moved and scaled, not rotated.'); return; }
     S.mode = m;
     $$('[data-mode]').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-mode') === m); });
-    if (tc.object) tc.setMode(m);
+    if (tc.object) { updateGizmo(); }
     request();
   }
 
   /* ---------- start ---------- */
   function start() {
-    var restored = false, model = null;
-    try {
-      var saved = localStorage.getItem(STORE_KEY);
-      if (saved) { model = C.sanitizeProject(JSON.parse(saved)).model; restored = true; }
-    } catch (e) { model = null; }
-    if (!model) model = C.exampleProject();
+    // the page always opens on the R/V Gunnerus example; work is kept with Save, not in the browser
+    var model = C.gunnerusExample();
+    try { localStorage.removeItem(STORE_KEY); } catch (e) { /* storage unavailable */ }
     S.model = model;
     applyTheme();
     wire();
@@ -2146,7 +3611,6 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
     setView('iso');
     H.past = [snapshot()];
     updateUndo();
-    if (restored) toast('Restored your last session. Use "PSV example" to start from the example.');
   }
   start();
 })();

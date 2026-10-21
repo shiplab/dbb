@@ -63,7 +63,9 @@ The R/V Gunnerus example uses the main dimensions and the space areas and tank v
 
 ## Citation
 
-This tool is based on the approach in:
+The approach and the tool are two different things, and they are cited separately.
+
+**The approach.** If you use or refer to the Design Building Block approach, cite the paper:
 
 Gaspar, H.M., Fonseca, Í.A. and Andrews, D. *Wither now the Design Building Block (DBB) Approach.* International Marine Design Conference (IMDC 2024). https://doi.org/10.59490/imdc.2024.915
 
@@ -74,6 +76,21 @@ Gaspar, H.M., Fonseca, Í.A. and Andrews, D. *Wither now the Design Building Blo
   booktitle = {International Marine Design Conference (IMDC 2024)},
   year      = {2024},
   doi       = {10.59490/imdc.2024.915}
+}
+```
+
+**The tool.** If you use the DBB Block Editor itself, for example in teaching material, a report or a thesis, cite the software:
+
+Gaspar, H.M. (2026). *DBB Block Editor* [Computer software]. NTNU. https://shiplab.github.io/dbb/
+
+```bibtex
+@software{gaspar2026dbbeditor,
+  author       = {Gaspar, Henrique M.},
+  title        = {{DBB} Block Editor},
+  year         = {2026},
+  note         = {Web application for teaching the Design Building Block approach to ship design},
+  organization = {NTNU},
+  url          = {https://shiplab.github.io/dbb/}
 }
 ```
 

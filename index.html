@@ -1820,7 +1820,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
 
     // 0 summary: the same numbers as the app shows, gathered on one page (no new calculation)
     var e0 = s.envelope, fl = hd ? floatState(model) : null, ev0 = evaluateRequirements(model);
-    var sm = [[{ v: model.name + ': summary', s: 'title' }], [{ v: 'Design Building Block (DBB). Exported ' + (when || '') + '. Values as in the app; the other sheets give the detail.', s: 'note' }], []];
+    var sm = [[{ v: model.name + ': summary', s: 'title' }], [{ v: 'Generated with the DBB Block Editor, NTNU, https://shiplab.github.io/dbb/ . Exported ' + (when || '') + '. Values as in the app; the other sheets give the detail.', s: 'note' }], []];
     var line = function (label, val, unit) { sm.push([label, val, unit || '']); };
     var as0 = assessment(model, fl, hd ? undefined : null), sevFill = { bad: 'F8CBAD', warn: 'FFEB9C', ok: 'C6EFCE', note: 'EDEDED', none: 'EDEDED' }, sevWord = { bad: 'Problem', warn: 'Check', ok: 'OK', note: 'Note', none: '-' };
     sm.push(H(['Assessment', 'Result', 'Status']));
@@ -1869,7 +1869,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     sheets.push({ name: 'Summary', rows: sm, widths: [52, 16, 14, 14, 12, 12, 12, 12] });
 
     // 1 project
-    var pr = [[{ v: model.name, s: 'title' }], [{ v: 'Design Building Block (DBB) block editor. Exported ' + (when || '') , s: 'note' }], [],
+    var pr = [[{ v: model.name, s: 'title' }], [{ v: 'Generated with the DBB Block Editor (Design Building Block approach), NTNU, https://shiplab.github.io/dbb/ . Exported ' + (when || ''), s: 'note' }], [],
       [{ v: 'Blocks', s: 'b' }, model.blocks.length], [{ v: 'Groups', s: 'b' }, model.groups.length], [{ v: 'Requirements', s: 'b' }, model.requirements.length], [{ v: 'Hulls', s: 'b' }, (model.hulls || []).length],
       [{ v: 'Water density (t/m3)', s: 'b' }, { v: model.rho || 1.025, s: 'n3' }], [{ v: 'Structure and outfitting (% of displacement)', s: 'b' }, ws.pct],
       [{ v: 'Float (draught and trim follow the weight)', s: 'b' }, model.float ? 'on' : 'off'], [],
@@ -4337,7 +4337,8 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
       '<h3>Educational use only</h3><p class="aboutp">This tool is made for teaching and for early concept exploration. The hulls are illustrative parametric shapes, not real lines, and the weights, hydrostatics, trim, heel and stability are simplified estimates. Stability covers small angles only, with no righting-arm curve, wind, waves or damage. The results must not be used for design approval, class or flag-state documentation, or any safety-critical decision. The software is provided as it is, without warranty.</p>' +
       '<h3>Credits</h3><p class="aboutp">Developed by Henrique Gaspar, NTNU, October 2026. It builds on a block layout prototype from 2015.</p>' +
       '<h3>Acknowledgements</h3><p class="aboutp">Professor David Andrews, University College London, for his support over the years and the long collaboration between NTNU and UCL.</p>' +
-      '<h3>Reference</h3><p class="aboutp">Gaspar, H.M., Fonseca, Í.A. and Andrews, D., <i>Wither now the Design Building Block (DBB) Approach</i>. International Marine Design Conference (IMDC 2024). <a href="https://doi.org/10.59490/imdc.2024.915" target="_blank" rel="noopener">doi.org/10.59490/imdc.2024.915</a></p>';
+      '<h3>Citing</h3><p class="aboutp"><b>The approach.</b> Gaspar, H.M., Fonseca, Í.A. and Andrews, D., <i>Wither now the Design Building Block (DBB) Approach</i>. International Marine Design Conference (IMDC 2024). <a href="https://doi.org/10.59490/imdc.2024.915" target="_blank" rel="noopener">doi.org/10.59490/imdc.2024.915</a></p>' +
+      '<p class="aboutp"><b>The tool.</b> Gaspar, H.M. (2026). <i>DBB Block Editor</i> [Computer software]. NTNU. <a href="https://shiplab.github.io/dbb/" target="_blank" rel="noopener">shiplab.github.io/dbb</a></p>';
   }
 
   function showHelp() {

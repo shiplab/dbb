@@ -1,6 +1,6 @@
 # Ship Design Building Block Editor
 
-**A small 3D editor for teaching the Design Building Block (DBB) approach to ship design.**
+**A small 3D editor for teaching early-stage ship design, inspired by the Design Building Block (DBB) approach.**
 
 **Open the app: https://shiplab.github.io/dbb/**
 
@@ -88,7 +88,7 @@ Gaspar, H.M. (2026). *Ship Design Building Block Editor* [Computer software]. NT
   author       = {Gaspar, Henrique M.},
   title        = {{DBB} Block Editor},
   year         = {2026},
-  note         = {Web application for teaching the Design Building Block approach to ship design},
+  note         = {Web application for teaching early-stage ship design, inspired by the Design Building Block approach},
   organization = {NTNU},
   url          = {https://shiplab.github.io/dbb/}
 }

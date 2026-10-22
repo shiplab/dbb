@@ -396,6 +396,19 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
 :root[data-theme="dark"] .ntnuword { background: #fff; padding: 6px 8px; border-radius: 4px; }
 @media (max-width: 1050px) { .brand span { display: none; } }
 
+.reqchk { display: flex; flex-direction: column; gap: 3px; max-height: 120px; overflow: auto; padding: 4px 6px; background: var(--bg); border: 1px solid var(--line); border-radius: 4px; }
+.rc { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--fg); }
+.rc span { font: inherit; letter-spacing: 0; text-transform: none; }
+.rc-none { font-size: 12px; color: var(--fg-dim); }
+.lnk { background: none; border: 0; padding: 0; font: inherit; color: var(--accent); cursor: pointer; text-decoration: underline; }
+.lnk:disabled { color: var(--fg-dim); text-decoration: none; cursor: default; }
+.dialog.picker { width: min(560px, 100%); }
+.pickbody { overflow: auto; display: flex; flex-direction: column; gap: 10px; min-height: 80px; }
+.pgh { display: flex; align-items: center; gap: 8px; margin-bottom: 3px; }
+.pgh .btn { margin-left: auto; }
+.pb { display: flex; align-items: baseline; gap: 6px; padding: 2px 4px 2px 18px; font-size: 13px; }
+.pb em { color: var(--fg-dim); font-size: 11.5px; }
+
 </style>
 </head>
 <body>
@@ -625,7 +638,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
         <label class="f"><span>Name</span><input type="text" data-f="name" spellcheck="false"></label>
         <label class="f"><span>Shape</span><select data-f="shape"></select></label>
         <label class="f"><span>Group</span><select data-f="group"></select></label>
-        <label class="f"><span>Requirement</span><select data-f="req"></select></label>
+        <div class="f"><span>Requirements</span><div class="reqchk" data-f="reqs"></div></div>
         <div class="grp"><b>Size (m)</b>
           <div class="f3">
             <label class="f"><span>L</span><input type="number" step="0.1" min="0.05" data-f="size" data-i="0"></label>
@@ -1050,14 +1063,17 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
   /* ---------- requirements ---------- */
   function tol(thr) { return 1e-6 * Math.max(1, Math.abs(thr)); }
 
+  /* a block can serve several requirements; b.reqs is the list of requirement ids (an old b.req string is still understood) */
+  function blockReqs(b) { return Array.isArray(b.reqs) ? b.reqs : (b.req ? [b.req] : []); }
+  function hasReq(b, id) { return blockReqs(b).indexOf(id) >= 0; }
   function evaluateRequirements(model, summary) {
     var env = (summary || summarize(model)).envelope, hc = hullCheck(model);
     return model.requirements.map(function (r) {
-      var achieved = 0, n = 0;
+      var achieved = 0, n = 0, shared = 0, names = [];
       if (r.metric === 'volume' || r.metric === 'area') {
         model.blocks.forEach(function (b) {
-          if (b.req === r.id) {
-            n++;
+          if (hasReq(b, r.id)) {
+            n++; names.push(b.name); if (blockReqs(b).length > 1) shared++;
             achieved += r.metric === 'volume' ? blockVolume(b) : blockArea(b);
           }
         });
@@ -1083,13 +1099,13 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
       if (hc && (r.metric === 'volume' || r.metric === 'area')) {
         insideVal = 0;
         model.blocks.forEach(function (b) {
-          if (b.req !== r.id) return;
+          if (!hasReq(b, r.id)) return;
           var q = hc.byId[b.id], full = r.metric === 'volume' ? blockVolume(b) : blockArea(b);
           insideVal += q ? full * (1 - q.shareBlock) : full;
         });
         statusIn = statusOf(insideVal);
       }
-      return { req: r, achieved: achieved, n: n, status: status, inside: insideVal, statusInside: statusIn };
+      return { req: r, achieved: achieved, n: n, shared: shared, blocks: names, status: status, inside: insideVal, statusInside: statusIn };
     });
   }
 
@@ -1102,7 +1118,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
 
   function mkBlock(id, name, shape, group, req, x0, x1, y0, y1, z0, z1) {
     return {
-      id: id, name: name, shape: shape, group: group, req: req,
+      id: id, name: name, shape: shape, group: group, reqs: req ? [req] : [],
       position: [(x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2],
       size: [x1 - x0, y1 - y0, z1 - z0],
       rotation: [0, 0, 0], areaOverride: null, hidden: false, density: null, fill: 100, massOverride: null, freeSurface: false
@@ -1510,7 +1526,11 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
         id: id,
         name: typeof b.name === 'string' && b.name.trim() ? b.name : 'Block ' + (i + 1),
         shape: shape, group: group,
-        req: typeof b.req === 'string' && rseen[b.req] ? b.req : null,
+        reqs: (function () {
+          var src = Array.isArray(b.reqs) ? b.reqs : (typeof b.req === 'string' ? [b.req] : []), out = [];
+          src.forEach(function (x) { if (typeof x === 'string' && rseen[x] && out.indexOf(x) < 0) out.push(x); });
+          return out;
+        })(),
         position: pos, size: size, rotation: rot,
         areaOverride: b.areaOverride === null || b.areaOverride === undefined ? null : Math.max(0, num(b.areaOverride, 0)),
         hidden: b.hidden === true,
@@ -1592,7 +1612,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
       }),
       blocks: model.blocks.map(function (b) {
         return {
-          id: b.id, name: b.name, shape: b.shape, group: b.group, req: b.req,
+          id: b.id, name: b.name, shape: b.shape, group: b.group, reqs: blockReqs(b).slice(),
           position: b.position.map(r4), size: b.size.map(r4), rotation: b.rotation.map(r4),
           areaOverride: b.areaOverride == null ? null : r4(b.areaOverride), hidden: !!b.hidden,
           density: typeof b.density === 'number' ? r4(b.density) : null, fill: typeof b.fill === 'number' ? r4(b.fill) : 100, massOverride: typeof b.massOverride === 'number' ? r4(b.massOverride) : null, freeSurface: !!b.freeSurface,
@@ -1669,12 +1689,12 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
   }
 
   function requirementsCSV(model, delim) {
-    var rows = [['Requirement', 'Metric', 'Unit', 'Sense', 'Shall', 'Should', 'Achieved', 'Linked blocks', 'Status', 'Inside hulls, estimate', 'Status inside hulls']];
+    var rows = [['Requirement', 'Metric', 'Unit', 'Sense', 'Shall', 'Should', 'Achieved', 'Linked blocks', 'Status', 'Inside hulls, estimate', 'Status inside hulls', 'Block names']];
     evaluateRequirements(model).forEach(function (e) {
       var r = e.req;
       rows.push([r.name, METRICS[r.metric].label, METRICS[r.metric].unit, r.sense === 'max' ? 'at most' : 'at least',
         r.shall == null ? '' : r.shall, r.should == null ? '' : r.should, r4(e.achieved), e.n, STATUS_LABEL[e.status],
-        e.inside == null ? '' : r4(e.inside), e.statusInside ? STATUS_LABEL[e.statusInside] : '']);
+        e.inside == null ? '' : r4(e.inside), e.statusInside ? STATUS_LABEL[e.statusInside] : '', e.blocks.join('; ')]);
     });
     return toCSV(rows, delim);
   }
@@ -1686,7 +1706,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     var gm = groupMap(model), hc = hullCheck(model);
     model.blocks.forEach(function (b) {
       var q = blockMass(model, b), cg = blockCentroid(b);
-      rows.push([b.id, b.name, groupPath(model, b.group), gm[b.group] ? gm[b.group].name : '', b.req ? rmap[b.req] : '', SHAPES[b.shape].label,
+      rows.push([b.id, b.name, groupPath(model, b.group), gm[b.group] ? gm[b.group].name : '', blockReqs(b).map(function (x) { return rmap[x]; }).join('; '), SHAPES[b.shape].label,
         r4(b.position[0]), r4(b.position[1]), r4(b.position[2]), r4(b.size[0]), r4(b.size[1]), r4(b.size[2]),
         r4(b.rotation[0]), r4(b.rotation[1]), r4(b.rotation[2]), r4(blockVolume(b)), r4(blockArea(b)), b.areaOverride != null ? 'yes' : 'no',
         hc ? r4(hc.byId[b.id].below) : '', hc ? r4(hc.byId[b.id].out) : '', hc ? r4(100 * hc.byId[b.id].shareBlock) : '',
@@ -1907,7 +1927,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
           nv(w.total.lcg, 'bn2|' + tn), nv(w.total.tcg, 'bn2|' + tn), nv(w.total.vcg, 'bn2|' + tn)]);
       } else {
         var b = it.b, q2 = blockMass(model, b), cg = blockCentroid(b), n = it.row, tb = tint(gcol(b.group), 0.88);
-        out.push([{ v: '', s: 'n|' + hex6(gcol(b.group)) }, { v: '   ' + b.name, s: 'n|' + tb }, b.req ? rmap2(b.req) : '', SHAPES[b.shape].label, 1, nv(blockArea(b)), nv(blockVolume(b)), nv(q2.density, 'n3'), nv(q2.fill, 'n1'),
+        out.push([{ v: '', s: 'n|' + hex6(gcol(b.group)) }, { v: '   ' + b.name, s: 'n|' + tb }, blockReqs(b).map(rmap2).join('; '), SHAPES[b.shape].label, 1, nv(blockArea(b)), nv(blockVolume(b)), nv(q2.density, 'n3'), nv(q2.fill, 'n1'),
           q2.typed ? { v: r4(q2.mass), s: 'n2' } : { v: r4(q2.mass), s: 'n2', f: 'G' + n + '*H' + n + '*I' + n + '/100' }, nv(cg[0]), nv(cg[1]), nv(cg[2])]);
       }
     });
@@ -1939,7 +1959,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     model.blocks.forEach(function (b, i) {
       var q = blockMass(model, b), cg = blockCentroid(b), n = i + 2, vol = blockVolume(b);
       var gc = gm[b.group] ? gm[b.group].color : '#9aa5b1', tb2 = 'n|' + tint(gc, 0.8);
-      br.push([{ v: b.id, s: 'n|' + hex6(gc) }, { v: b.name, s: tb2 }, groupPath(model, b.group), { v: gm[b.group] ? gm[b.group].name : '', s: tb2 }, b.req ? rmap[b.req] : '', SHAPES[b.shape].label,
+      br.push([{ v: b.id, s: 'n|' + hex6(gc) }, { v: b.name, s: tb2 }, groupPath(model, b.group), { v: gm[b.group] ? gm[b.group].name : '', s: tb2 }, blockReqs(b).map(function (x) { return rmap[x]; }).join('; '), SHAPES[b.shape].label,
         nv(b.position[0]), nv(b.position[1]), nv(b.position[2]), nv(b.size[0]), nv(b.size[1]), nv(b.size[2]), nv(b.rotation[0], 'n1'), nv(b.rotation[1], 'n1'), nv(b.rotation[2], 'n1'),
         nv(vol), nv(blockArea(b)), hc ? nv(hc.byId[b.id].below) : '', hc ? nv(hc.byId[b.id].out) : '', hc ? nv(100 * hc.byId[b.id].shareBlock, 'n1') : '',
         nv(q.density, 'n3'), nv(q.fill, 'n1'),
@@ -2023,13 +2043,13 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     }
 
     // 6 requirements
-    var rq = [H(['Requirement', 'Metric', 'Unit', 'Sense', 'Shall', 'Should', 'Achieved', 'Linked blocks', 'Status', 'Inside hulls, estimate', 'Status inside hulls'])];
+    var rq = [H(['Requirement', 'Metric', 'Unit', 'Sense', 'Shall', 'Should', 'Achieved', 'Linked blocks', 'Status', 'Inside hulls, estimate', 'Status inside hulls', 'Block names'])];
     evaluateRequirements(model).forEach(function (ev) {
       var r = ev.req;
       rq.push([r.name, METRICS[r.metric].label, METRICS[r.metric].unit, r.sense === 'max' ? 'at most' : 'at least', nv(r.shall), nv(r.should), nv(ev.achieved), ev.n, STATUS_LABEL[ev.status],
-        nv(ev.inside), ev.statusInside ? STATUS_LABEL[ev.statusInside] : '']);
+        nv(ev.inside), ev.statusInside ? STATUS_LABEL[ev.statusInside] : '', ev.blocks.join('; ')]);
     });
-    sheets.push({ name: 'Requirements', rows: rq, widths: [34, 18, 8, 10, 10, 10, 12, 13, 16, 20, 20], freeze: 1 });
+    sheets.push({ name: 'Requirements', rows: rq, widths: [34, 18, 8, 10, 10, 10, 12, 13, 16, 20, 20, 50], freeze: 1 });
     return sheets;
   }
   function projectXlsx(model, when) { return xlsxBuild(workbookSheets(model, when)); }
@@ -2766,7 +2786,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     blockWorldBox: blockWorldBox, envelope: envelope,
     defaultGroups: defaultGroups, groupMap: groupMap, groupOrder: groupOrder, groupPath: groupPath,
     isGroupVisible: isGroupVisible, descendantIds: descendantIds,
-    summarize: summarize, weightSummary: weightSummary, blockMass: blockMass, blockCentroid: blockCentroid, groupDensity: groupDensity, hullCentroid: hullCentroid, SHAPE_CENTROID: SHAPE_CENTROID, DEFAULT_DENSITY: DEFAULT_DENSITY, DEFAULT_STRUCT_PCT: DEFAULT_STRUCT_PCT, evaluateRequirements: evaluateRequirements,
+    summarize: summarize, weightSummary: weightSummary, blockMass: blockMass, blockCentroid: blockCentroid, groupDensity: groupDensity, hullCentroid: hullCentroid, SHAPE_CENTROID: SHAPE_CENTROID, DEFAULT_DENSITY: DEFAULT_DENSITY, DEFAULT_STRUCT_PCT: DEFAULT_STRUCT_PCT, evaluateRequirements: evaluateRequirements, blockReqs: blockReqs, hasReq: hasReq,
     emptyProject: emptyProject, exampleProject: exampleProject, containerShipExample: containerShipExample, tankerExample: tankerExample, bulkCarrierExample: bulkCarrierExample, simpleExample: simpleExample, gunnerusExample: gunnerusExample, catamaranExample: catamaranExample, trimaranExample: trimaranExample,
     sanitizeProject: sanitizeProject, serializeProject: serializeProject,
     summaryCSV: summaryCSV, projectXlsx: projectXlsx, workbookSheets: workbookSheets, xlsxBuild: xlsxBuild, requirementsCSV: requirementsCSV, blocksCSV: blocksCSV,
@@ -3488,7 +3508,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     var py = s ? Math.round((y - d[1] / 2) / s) * s + d[1] / 2 : y;
     var pz = s ? Math.round(zb / s) * s + d[2] / 2 : zb + d[2] / 2;
     var b = {
-      id: nextBlockId(), name: nextName(shape), shape: shape, group: S.activeGroup, req: S.activeReq,
+      id: nextBlockId(), name: nextName(shape), shape: shape, group: S.activeGroup, reqs: S.activeReq ? [S.activeReq] : [],
       position: [px, py, pz], size: d.slice(), rotation: [0, 0, 0], areaOverride: null, hidden: false, density: null, fill: 100, massOverride: null
     };
     S.model.blocks.push(b);
@@ -3636,7 +3656,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
 
   function deleteRequirement(id) {
     S.model.requirements = S.model.requirements.filter(function (r) { return r.id !== id; });
-    S.model.blocks.forEach(function (b) { if (b.req === id) b.req = null; });
+    S.model.blocks.forEach(function (b) { b.reqs = C.blockReqs(b).filter(function (x) { return x !== id; }); delete b.req; });
     fixActive();
     renderAll(); pushHistory();
   }
@@ -3707,6 +3727,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
       return '<option value="' + esc(r.group.id) + '">' + '  '.repeat(r.depth) + esc(r.group.name) + '</option>';
     }).join('');
   }
+  function reqNames(b, rm) { return C.blockReqs(b).map(function (x) { return rm[x] || ''; }).filter(Boolean).join('; '); }
   function reqOptionsHtml(noneLabel) {
     return '<option value="">' + noneLabel + '</option>' + S.model.requirements.map(function (r) {
       return '<option value="' + esc(r.id) + '">' + esc(r.name) + '</option>';
@@ -3794,17 +3815,19 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     $('#propsForm').hidden = !b;
     if (!b) return;
     var form = $('#propsForm');
-    var sig = JSON.stringify([S.model.groups.map(function (g) { return [g.id, g.name, g.parent]; }), S.model.requirements.map(function (r) { return [r.id, r.name]; })]);
+    var sig = JSON.stringify([S.model.groups.map(function (g) { return [g.id, g.name, g.parent]; }), S.model.requirements.map(function (r) { return [r.id, r.name, r.metric]; })]);
     if (sig !== sigProps) {
       sigProps = sig;
       $('[data-f="group"]', form).innerHTML = groupOptionsHtml();
-      $('[data-f="req"]', form).innerHTML = reqOptionsHtml('None');
+      var lk = S.model.requirements.filter(function (r) { return r.metric === 'volume' || r.metric === 'area'; });
+      $('[data-f="reqs"]', form).innerHTML = lk.length ? lk.map(function (r) { return '<label class="rc"><input type="checkbox" data-f="reqchk" value="' + esc(r.id) + '"><span>' + esc(r.name) + '</span></label>'; }).join('') : '<em class="rc-none">None defined yet. Add them in the Requirements tab.</em>';
       $('[data-f="shape"]', form).innerHTML = C.SHAPE_ORDER.map(function (k) { return '<option value="' + k + '">' + C.SHAPES[k].label + '</option>'; }).join('');
     }
     setVal($('[data-f="name"]', form), b.name);
     $('[data-f="shape"]', form).value = b.shape;
     $('[data-f="group"]', form).value = b.group;
-    $('[data-f="req"]', form).value = b.req || '';
+    var brq = C.blockReqs(b);
+    $$('[data-f="reqchk"]', form).forEach(function (c) { c.checked = brq.indexOf(c.value) >= 0; });
     $$('[data-f="size"]', form).forEach(function (i) { setVal(i, fin(b.size[+i.dataset.i])); });
     $$('[data-f="pos"]', form).forEach(function (i) { setVal(i, fin(b.position[+i.dataset.i])); });
     $$('[data-f="rot"]', form).forEach(function (i) { setVal(i, fin(b.rotation[+i.dataset.i])); });
@@ -4113,7 +4136,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
           '<td><select data-f="rsense" aria-label="Sense"><option value="min"' + (r.sense === 'min' ? ' selected' : '') + '>at least</option><option value="max"' + (r.sense === 'max' ? ' selected' : '') + '>at most</option></select></td>' +
           '<td class="num"><input type="number" step="any" data-f="rshall" value="' + (r.shall == null ? '' : r.shall) + '" aria-label="Shall value"></td>' +
           '<td class="num"><input type="number" step="any" data-f="rshould" value="' + (r.should == null ? '' : r.should) + '" aria-label="Should value"></td>' +
-          '<td class="num" data-c="ach"></td><td class="num" data-c="in"></td><td data-c="st"></td><td class="num" data-c="n"></td>' +
+          '<td class="num" data-c="ach"></td><td class="num" data-c="in"></td><td data-c="st"></td><td class="num"><button class="lnk" data-act="blocks" data-c="n" title="Choose the blocks that serve this requirement"></button></td>' +
           '<td><button class="ic" data-act="delr" aria-label="Delete requirement" title="Delete requirement">×</button></td></tr>');
       });
       if (!ev.length) h.push('<tr><td colspan="10" class="empty-note">No requirements yet. Add one, then pick it for blocks in the library or the block panel.</td></tr>');
@@ -4132,7 +4155,10 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
         cin.title = e.statusInside === e.status ? '' : 'Inside the hulls this becomes: ' + C.STATUS_LABEL[e.statusInside];
       }
       $('[data-c="st"]', row).innerHTML = statusChip(e.status, e.req);
-      $('[data-c="n"]', row).textContent = (e.req.metric === 'volume' || e.req.metric === 'area') ? e.n : '–';
+      var nb = $('[data-c="n"]', row), sumArea = e.req.metric === 'volume' || e.req.metric === 'area';
+      nb.disabled = !sumArea;
+      nb.textContent = sumArea ? e.n + (e.shared ? ' \u00B7 ' + e.shared + ' shared' : '') : '\u2013';
+      nb.title = sumArea ? 'Choose the blocks that serve this requirement' + (e.shared ? '. ' + e.shared + ' of them also serve another requirement and count in full for each.' : '') : 'Length, beam and height use the whole design';
     });
   }
 
@@ -4143,8 +4169,8 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
         cell: function (b) { var g = ctx.gm[b.group]; return '<td><span class="sw" style="background:' + esc(g ? g.color : '#888') + '"></span>' + esc(b.name) + '</td>'; } },
       { set: 'base', key: 'group', label: 'Group', get: function (b) { var g = ctx.gm[b.group]; return g ? C.groupPath(S.model, g.id).toLowerCase() : ''; },
         cell: function (b) { var g = ctx.gm[b.group]; return '<td>' + esc(g ? g.name : '') + '</td>'; } },
-      { set: 'base', key: 'req', label: 'Requirement', get: function (b) { return b.req ? (ctx.rm[b.req] || '').toLowerCase() : ''; },
-        cell: function (b) { return '<td>' + esc(b.req ? ctx.rm[b.req] || '' : '') + '</td>'; } },
+      { set: 'base', key: 'req', label: 'Requirement', get: function (b) { return reqNames(b, ctx.rm).toLowerCase(); },
+        cell: function (b) { return '<td>' + esc(reqNames(b, ctx.rm)) + '</td>'; } },
       { set: 'geo', key: 'shape', label: 'Shape', get: function (b) { return C.SHAPES[b.shape].label; }, cell: function (b) { return '<td>' + C.SHAPES[b.shape].label + '</td>'; } }
     ];
     ['L', 'B', 'H'].forEach(function (l, i) { cols.push({ set: 'geo', key: 'size' + i, label: l, num: true, get: function (b) { return b.size[i]; }, cell: function (b) { return '<td class="num">' + fmt(b.size[i], 2) + '</td>'; } }); });
@@ -4308,7 +4334,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     return '<ol>' +
       '<li><b>Start from your systems.</b> Each system that needs volume or deck area becomes a Design Building Block. Use <i>New</i>, or open one from the <i>Examples</i> menu (simple, catamaran, trimaran, research vessel, PSV, container ship, tanker, bulk carrier) to see a finished design.</li>' +
       '<li><b>Set up groups.</b> The hierarchy on the left starts with Levander’s OSV breakdown. Rename, recolour, add (<i>+ Group</i>, or + on a row) or delete groups to match your own division.</li>' +
-      '<li><b>Write requirements.</b> In the <i>Requirements</i> tab choose a metric (volume, area, length, beam, height), at least or at most, and the <i>shall</i> and <i>should</i> values. Pick the group and requirement for new blocks in the two menus under the shape library. A block is linked to one requirement.</li>' +
+      '<li><b>Write requirements.</b> In the <i>Requirements</i> tab choose a metric (volume, area, length, beam, height), at least or at most, and the <i>shall</i> and <i>should</i> values. Pick the group and requirement for new blocks in the two menus under the shape library. To link a block to several requirements, tick them in the block panel, or press the block count in the Requirements tab to pick the blocks (<i>Add all</i> ticks a whole group). A block counts in full for each requirement it serves.</li>' +
       '<li><b>Add and shape blocks.</b> Click a shape, or drag it onto the workplane. Select a block and use <i>Move</i>, <i>Rotate</i> or <i>Scale</i>. <b>To resize, choose Scale and drag the small coloured cubes</b>, or type exact values in the right panel, which appears when something is selected. Snap aligns block faces to the step you choose.</li>' +
       '<li><b>Add a hull (optional).</b> Press <i>+ Hull</i>. It is fitted around the blocks below the main deck, whose height is the hull <i>depth</i>. Click the hull row to edit it: move and scale it with the gizmo, set the <i>draught</i>, or open <i>Shape</i> for the sliders. A second <i>+ Hull</i> adds a mirrored copy for a catamaran. The hulls are illustrative shapes, not real lines.</li>' +
       '<li><b>Add weight.</b> In the <i>Hydrostatics</i> tab set a density per group, and override it on a block if needed, with a fill % for tanks or a typed mass. Tick <i>Free surface</i> on a part-filled liquid tank. The structure share is set in the same tab.</li>' +
@@ -4339,7 +4365,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
   }
 
   function helpAbout() {
-    return '<p class="aboutp">The Ship Design Building Block Editor is an app for early-stage ship design with the Design Building Block approach. Spaces and systems are modelled as blocks in 3D; the app sums volume, area, weight and centres of gravity by system, checks them against shall and should requirements, floats the design on an illustrative hull, and gives its hydrostatics and initial stability (GM).</p>' +
+    return '<p class="aboutp">The Ship Design Building Block Editor is an app for early-stage ship design, inspired by the Design Building Block (DBB) approach. Spaces and systems are modelled as blocks in 3D; the app sums volume, area, weight and centres of gravity by system, checks them against shall and should requirements, floats the design on an illustrative hull, and gives its hydrostatics and initial stability (GM).</p>' +
       '<h3>Educational use only</h3><p class="aboutp">This tool is made for teaching and for early concept exploration. The hulls are illustrative parametric shapes, not real lines, and the weights, hydrostatics, trim, heel and stability are simplified estimates. Stability covers small angles only, with no righting-arm curve, wind, waves or damage. The results must not be used for design approval, class or flag-state documentation, or any safety-critical decision. The software is provided as it is, without warranty.</p>' +
       '<img class="ntnuword" src="data:image/png;base64,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" alt="NTNU" width="181" height="36">' +
       '<h3>Credits</h3><p class="aboutp">Developed by Henrique Gaspar, NTNU, October 2026. It builds on a block layout prototype from 2015.</p>' +
@@ -4347,6 +4373,61 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
       '<h3>Source code</h3><p class="aboutp"><a href="https://github.com/shiplab/dbb" target="_blank" rel="noopener">github.com/shiplab/dbb</a></p>' +
       '<h3>Citing</h3><p class="aboutp"><b>The approach.</b> Gaspar, H.M., Fonseca, Í.A. and Andrews, D., <i>Wither now the Design Building Block (DBB) Approach</i>. International Marine Design Conference (IMDC 2024). <a href="https://doi.org/10.59490/imdc.2024.915" target="_blank" rel="noopener">doi.org/10.59490/imdc.2024.915</a></p>' +
       '<p class="aboutp"><b>The tool.</b> Gaspar, H.M. (2026). <i>Ship Design Building Block Editor</i> [Computer software]. NTNU. <a href="https://shiplab.github.io/dbb/" target="_blank" rel="noopener">shiplab.github.io/dbb</a></p>';
+  }
+
+  /* picker: tick the blocks that serve one requirement; "Add all" ticks a whole group once (no stored group link) */
+  function openReqPicker(rid) {
+    var req = S.model.requirements.filter(function (r) { return r.id === rid; })[0];
+    if (!req) return;
+    var ov = document.createElement('div');
+    ov.className = 'overlay';
+    ov.innerHTML = '<div class="dialog picker" role="dialog" aria-modal="true" aria-label="Blocks for the requirement"><h2></h2>' +
+      '<p>Tick the blocks that serve this requirement. A block can serve several requirements and counts in full for each. <i>Add all</i> ticks every block now in a group; blocks added later are not linked automatically.</p>' +
+      '<div class="pickbody"></div><div class="actions"><button class="btn primary" data-x="close">Done</button></div></div>';
+    document.body.appendChild(ov);
+    $('h2', ov).textContent = req.name;
+    var rm = {}; S.model.requirements.forEach(function (r) { rm[r.id] = r.name; });
+    function draw() {
+      var top = $('.pickbody', ov).scrollTop, out = [];
+      var groups = S.model.groups.slice().sort(function (a, b) { return C.groupPath(S.model, a.id).localeCompare(C.groupPath(S.model, b.id)); });
+      groups.forEach(function (g) {
+        var bs = S.model.blocks.filter(function (b) { return b.group === g.id; });
+        if (!bs.length) return;
+        var all = bs.every(function (b) { return C.hasReq(b, rid); });
+        out.push('<div class="pg"><div class="pgh"><span class="sw" style="background:' + esc(g.color) + '"></span><b>' + esc(C.groupPath(S.model, g.id)) + '</b>' +
+          '<button class="btn sm" data-g="' + esc(g.id) + '" data-on="' + (all ? '0' : '1') + '">' + (all ? 'Clear all' : 'Add all') + '</button></div>');
+        bs.forEach(function (b) {
+          var others = C.blockReqs(b).filter(function (x) { return x !== rid && rm[x]; }).map(function (x) { return rm[x]; });
+          out.push('<label class="pb"><input type="checkbox" data-b="' + esc(b.id) + '"' + (C.hasReq(b, rid) ? ' checked' : '') + '><span>' + esc(b.name) + '</span>' + (others.length ? '<em>also ' + esc(others.join('; ')) + '</em>' : '') + '</label>');
+        });
+        out.push('</div>');
+      });
+      $('.pickbody', ov).innerHTML = out.join('') || '<p>There are no blocks yet.</p>';
+      $('.pickbody', ov).scrollTop = top;
+    }
+    function setLink(b, on) {
+      var cur = C.blockReqs(b).filter(function (x) { return x !== rid; });
+      if (on) cur.push(rid);
+      b.reqs = S.model.requirements.map(function (r) { return r.id; }).filter(function (x) { return cur.indexOf(x) >= 0; });
+      delete b.req;
+    }
+    function changed() { renderAll(); pushHistory(); draw(); }
+    draw();
+    function close() { ov.remove(); document.removeEventListener('keydown', onKey); }
+    function onKey(e) { if (e.key === 'Escape') close(); }
+    document.addEventListener('keydown', onKey);
+    ov.addEventListener('change', function (e) {
+      var id = e.target.getAttribute('data-b'), b = id && blockById(id);
+      if (b) { setLink(b, e.target.checked); changed(); }
+    });
+    ov.addEventListener('click', function (e) {
+      if (e.target === ov || e.target.getAttribute('data-x') === 'close') { close(); return; }
+      var g = e.target.getAttribute && e.target.getAttribute('data-g');
+      if (!g) return;
+      var on = e.target.getAttribute('data-on') === '1';
+      S.model.blocks.forEach(function (b) { if (b.group === g) setLink(b, on); });
+      changed();
+    });
   }
 
   function showHelp() {
@@ -4591,6 +4672,8 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     reqTbl.addEventListener('click', function (e) {
       var act = e.target.closest('[data-act="delr"]');
       if (act) deleteRequirement(act.closest('tr').getAttribute('data-rid'));
+      var bl = e.target.closest('[data-act="blocks"]');
+      if (bl && !bl.disabled) openReqPicker(bl.closest('tr').getAttribute('data-rid'));
     });
     reqTbl.addEventListener('change', function (e) {
       var tr = e.target.closest('tr[data-rid]');
@@ -4746,7 +4829,12 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
       if (f === 'name') b.name = t.value.trim() || b.name;
       else if (f === 'shape') b.shape = t.value;
       else if (f === 'group') b.group = t.value;
-      else if (f === 'req') b.req = t.value || null;
+      else if (f === 'reqchk') {
+        var cur = C.blockReqs(b).filter(function (x) { return x !== t.value; });
+        if (t.checked) cur.push(t.value);
+        b.reqs = S.model.requirements.map(function (r) { return r.id; }).filter(function (x) { return cur.indexOf(x) >= 0; });
+        delete b.req;
+      }
       else if (f === 'pos') b.position[i] = C.num(t.value, b.position[i]);
       else if (f === 'size') b.size[i] = Math.max(0.05, C.num(t.value, b.size[i]));
       else if (f === 'rot') b.rotation[i] = C.num(t.value, b.rotation[i]);

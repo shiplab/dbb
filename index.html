@@ -199,8 +199,6 @@ select { padding-right: 2px; }
 .hud { position: absolute; left: 10px; bottom: 8px; display: flex; gap: 14px; flex-wrap: wrap; padding: 4px 8px; background: color-mix(in srgb, var(--panel) 82%, transparent); border: 1px solid var(--line); border-radius: 4px; font: 500 12px var(--font-mono); pointer-events: none; }
 .hud b { font-weight: 500; color: var(--fg-dim); margin-right: 4px; }
 .keys { position: absolute; right: 10px; bottom: 8px; max-width: 46%; padding: 4px 8px; background: color-mix(in srgb, var(--panel) 82%, transparent); border: 1px solid var(--line); border-radius: 4px; font-size: 11.5px; color: var(--fg-dim); pointer-events: none; text-align: right; }
-.vp-empty { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; text-align: center; padding: 20px; color: var(--fg-dim); font-size: 14px; }
-.vp-empty div { max-width: 340px; }
 
 /* ---------- drawer ---------- */
 .drawer { border-top: 1px solid var(--line); display: flex; flex-direction: column; height: var(--drawer-h, 50vh); min-height: 0; background: var(--panel); }
@@ -430,6 +428,18 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
 .offctl label{display:flex;align-items:center;gap:8px}
 .offctl select{width:auto}
 
+.gzplot { padding: 0 12px 6px; }
+.gzplot svg { width: 100%; max-width: 560px; height: auto; display: block; }
+.gzgrid { stroke: var(--line); stroke-width: 1; }
+.gzaxis { stroke: var(--fg-dim); stroke-width: 1.2; }
+.gztx { fill: var(--fg-dim); font: 11px var(--font-mono); }
+.gzline { fill: none; stroke: var(--accent); stroke-width: 2; }
+.gzdot { fill: var(--accent); }
+.gzedge { stroke: var(--fg-dim); stroke-width: 1.2; stroke-dasharray: 4 3; }
+
+.tabtxt { width: 100%; box-sizing: border-box; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12px; margin: 6px 0; padding: 6px; border: 1px solid var(--line, #c9d0da); border-radius: 6px; background: var(--panel, #fff); color: inherit; resize: vertical; }
+.offctl label { white-space: nowrap; }
+
 </style>
 </head>
 <body>
@@ -500,7 +510,6 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
       </div>
 
       <div class="viewport" id="viewport">
-        <div class="vp-empty" id="vpEmpty" hidden><div>No blocks yet. Drag a shape from the library onto the workplane, or click one to add it.</div></div>
         <div class="hud" id="hud" aria-live="off"></div>
         <div class="floathud" id="floatHud" hidden></div>
         <div class="keys">W move &middot; E rotate &middot; R scale (resize) &middot; Ctrl+D duplicate &middot; Del delete &middot; H hide &middot; F fit</div>
@@ -570,6 +579,19 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
                 <div class="tblwrap"><table class="tbl" id="stChk"></table></div>
               </section>
             </div>
+            <div class="hydrocols">
+              <section>
+                <div class="hydrohead"><span class="hydrotitle">Righting lever (GZ)</span></div>
+                <div class="hnote" id="gzNote"></div>
+                <div id="gzPlot" class="gzplot"></div>
+                <div class="tblwrap"><table class="tbl" id="gzTbl"></table></div>
+              </section>
+              <section>
+                <div class="hydrohead"><span class="hydrotitle">GZ criteria</span></div>
+                <div class="hnote">For guidance only. Hull counted to the main deck. No openings.</div>
+                <div class="tblwrap"><table class="tbl" id="gzChk"></table></div>
+              </section>
+            </div>
             <div class="hydrohead"><span class="hydrotitle">Weight by group</span><span class="hnote">Density in t/m&sup3;. Type a value to set it for a group; a subgroup follows its parent, and a block can override it. Mass = density &times; volume &times; fill.</span></div>
             <div class="tblwrap"><table class="tbl" id="wgtTbl"></table></div>
             <div class="hydrohead" id="hydroHead"><span class="hydrotitle">Hull hydrostatics</span><span class="hnote">Upright, at the draught. x from the aft end, KB above the baseline.</span></div>
@@ -585,7 +607,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
                 <li>Draught is solved with Archimedes' principle: displacement equals the total weight, in a flat sea with one water density.</li>
                 <li>Trim and heel are an exact tilted water plane on the hull shapes, solved so that the volume equals the weight and the centre of buoyancy sits on the vertical through the centre of gravity. All hulls share the plane.</li>
                 <li>The heel needs the vertical centre of gravity, which comes from the block centroids and the structure estimate. A heavy off-centre load on a single hull may have no equilibrium within the range, and then the heel is shown as not found.</li>
-                <li>GM is initial stability only (small angles). It is worked out upright and without trim, at the level draught that carries the weight, from the waterplane of the hulls (BM = I / V). There is no righting-arm curve, large-angle stability, wind, damage or wave effect. The heel above is the equilibrium angle for the loading, not a stability check.</li>
+                <li>GM is initial stability (small angles). It is worked out upright and without trim, at the level draught that carries the weight, from the waterplane of the hulls (BM = I / V). The righting-lever curve (GZ) below it heels the hulls with the trim free and ends where the deck edge enters the water: buoyancy above the main deck is not counted. There is no wind, damage, opening or wave effect. The heel above is the equilibrium angle for the loading, not a stability check.</li>
                 <li>Free surface: a block marked Free surface and partly filled is taken as a rectangular tank by its bounding box, which overestimates round or tapered tanks. Only blocks you mark are counted.</li>
                 <li>The basic checks are simple guides (GM at least 0.15 m as in the IMO intact criteria, heel and trim limits as design guides). They are not a stability assessment for class or flag state.</li>
                 <li>The hull checks (blocks outside the hulls, volume below the waterline) use the level draught, also when the trim is shown.</li>
@@ -614,7 +636,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
       <form class="props" id="hullPropsForm" hidden onsubmit="return false">
         <label class="f"><span>Name</span><input type="text" data-hf="name" spellcheck="false"></label>
         <label class="f"><span>Hull type</span><select data-hf="type"></select></label>
-        <p class="note">Illustrative hull, not real lines. Blocks above the main deck (such as the accommodation) do not need to be inside. Depth is measured to the main deck; draught is the waterline below it, and the hydrostatics are calculated at the draught.</p>
+        <p class="note" id="hullNote">Illustrative hull, not real lines. Blocks above the main deck (such as the accommodation) do not need to be inside. Depth is measured to the main deck; draught is the waterline below it, and the hydrostatics are calculated at the draught.</p>
         <div class="grp"><b>Size (m)</b>
           <div class="f3">
             <label class="f"><span>Length</span><input type="number" step="0.5" min="1" data-hf="loa"></label>
@@ -654,6 +676,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
         <div class="actions">
           <button type="button" class="btn sm" id="hfFit" title="Resize the hull around the blocks below the main deck">Fit to blocks</button>
           <button type="button" class="btn sm" id="hfOff" title="Show the table of offsets of this hull">Offsets</button>
+          <button type="button" class="btn sm" id="hfTab" title="Add a hull from a table of offsets (CSV or pasted)">Hull from table…</button>
           <button type="button" class="btn sm" id="hfAuto" title="Guess the depth (main deck level) from the blocks, then fit">Auto depth</button>
         </div>
         <div id="hullOut"></div>
@@ -1368,6 +1391,12 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
   }
 
   /* ---------- project model ---------- */
+  /* a new, blank project: the task-related group starts without sub-groups (the user adds their own); ship systems as usual */
+  function blankProject(name) {
+    var m = emptyProject(name);
+    m.groups = m.groups.filter(function (g) { return g.parent !== 'g_task'; });
+    return m;
+  }
   function emptyProject(name) {
     return { app: FORMAT, version: VERSION, name: name || 'Untitled design', groups: defaultGroups(), requirements: [], blocks: [], hulls: [], rho: 1.025, draught: null, waterline: true, float: false, structPct: DEFAULT_STRUCT_PCT };
   }
@@ -1489,6 +1518,19 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
 
   /* Very simplified R/V Gunnerus. Dimensions: LOA 36.25 m, B 9.6 m, depth to 1-deck 4.287 m, A-deck 6.6 m.
      Space areas and tank volumes from the GA metadata (shiplab.github.io/gunnerus); positions are approximate. */
+  /* Approximate table of offsets of R/V Gunnerus (half-breadths, m; rows up to 4 m height; from the vessel.js data in shiplab/gunnerus, CC BY-NC 4.0) */
+  var GUN_OFFS = { xs: [0.0,0.58,1.16,1.74,2.32,2.9,3.48,4.06,4.64,5.22,5.8,6.38,6.96,7.54,8.12,8.7,9.28,9.86,10.44,11.02,11.6,12.18,12.76,13.34,13.92,14.5,15.08,15.66,16.24,16.82,17.4,17.98,18.56,19.14,19.72,20.3,20.88,21.46,22.04,22.62,23.2,23.78,24.36,24.94,25.52,26.1,26.68,27.26,27.84,28.42,29.0,29.58,30.16,30.74,31.32,31.9,32.48,33.06,33.64,34.22,34.8,35.38,35.96,36.25], zs: [0.0,0.5,1.0,1.5,2.0,2.5,3.0,3.5,4.0], half: [
+    [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.114,0.2,0.19,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,null,null,null,null,null,null,null],
+    [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.344,1.047,1.666,3.396,3.409,3.43,3.476,3.598,3.704,3.747,3.731,3.648,3.528,3.397,3.258,3.116,2.972,2.825,2.675,2.523,2.369,2.214,2.058,1.901,1.745,1.59,1.437,1.285,1.135,0.987,0.838,0.69,0.542,0.395,0.263,0.168,0.084,0.0,0.0,0.0,null,null,null,null],
+    [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.546,1.345,3.51,3.512,3.52,3.657,3.903,4.092,4.223,4.32,4.391,4.447,4.474,4.491,4.494,4.482,4.457,4.418,4.367,4.296,4.205,4.096,3.97,3.832,3.682,3.522,3.355,3.179,2.997,2.812,2.622,2.429,2.235,2.043,1.853,1.667,1.482,1.3,1.12,0.943,0.77,0.607,0.457,0.3,0.127,0.0,null,null,null],
+    [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.544,1.099,1.692,3.489,3.519,3.526,3.734,4.028,4.253,4.411,4.522,4.601,4.657,4.695,4.727,4.736,4.746,4.753,4.742,4.732,4.717,4.698,4.679,4.646,4.598,4.54,4.474,4.392,4.292,4.18,4.054,3.909,3.746,3.571,3.391,3.207,3.013,2.816,2.617,2.417,2.216,2.014,1.825,1.636,1.449,1.263,1.09,0.942,0.795,0.649,0.476,0.166,0.0,null,null],
+    [0.708,0.938,1.211,1.513,1.828,2.177,2.966,3.131,3.288,3.625,3.91,4.151,4.343,4.483,4.587,4.665,4.721,4.761,4.785,4.797,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.796,4.784,4.772,4.739,4.702,4.656,4.598,4.529,4.447,4.352,4.242,4.114,3.966,3.798,3.612,3.417,3.213,3.006,2.797,2.59,2.384,2.181,1.982,1.788,1.597,1.409,1.233,1.069,0.923,0.786,0.63,0.361,0.0,null,null],
+    [3.421,3.6,3.772,3.937,4.097,4.248,4.377,4.486,4.575,4.648,4.705,4.748,4.779,4.796,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.801,4.799,4.786,4.757,4.721,4.676,4.62,4.551,4.465,4.361,4.239,4.101,3.945,3.772,3.582,3.376,3.156,2.929,2.701,2.474,2.248,2.027,1.811,1.6,1.395,1.201,1.019,0.845,0.689,0.537,0.174,0.0,null,null],
+    [4.571,4.622,4.667,4.706,4.74,4.766,4.786,4.797,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.803,4.801,4.8,4.794,4.773,4.74,4.694,4.633,4.556,4.464,4.355,4.229,4.088,3.929,3.754,3.56,3.349,3.121,2.884,2.639,2.387,2.129,1.865,1.595,1.321,1.042,0.759,0.472,0.181,0.0,0.0,0.0,null,null],
+    [4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.805,4.801,4.802,4.801,4.797,4.778,4.743,4.693,4.628,4.551,4.462,4.36,4.241,4.103,3.947,3.776,3.589,3.382,3.157,2.916,2.658,2.376,2.069,1.74,1.377,0.95,0.452,0.0,0.0,0.0,0.0,0.0,null,null],
+    [4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.8,4.805,4.8,4.803,4.802,4.801,4.798,4.777,4.738,4.686,4.624,4.552,4.471,4.375,4.26,4.129,3.986,3.827,3.647,3.444,3.216,2.97,2.703,2.397,2.047,1.657,1.222,0.731,0.084,0.0,0.0,0.0,0.0,null,null]
+  ] };
+
   function gunnerusExample() {
     var m = emptyProject('Gunnerus (simplified)');
     m.groups.push({ id: 'g_res', name: 'Research and survey', color: '#c2548a', parent: 'g_task', visible: true });
@@ -1503,16 +1545,16 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     ];
     var B = [];
     // Below 1-deck (z 1.0 to 4.287 above the tank top)
-    B.push(mkBlock('b1',  'Engine room',                 'box', 'g_mach',   null,     6, 18, -4.8, 4.8, 1, 4.287));
-    B.push(mkBlock('b2',  'ECR and switchboards',        'box', 'g_mach',   null,     18, 22, -4.8, 4.8, 1, 4.287));
-    B.push(mkBlock('b3',  'Cabins below 1-deck',         'box', 'g_acc',    'r_cab',  22, 30.4, -4.8, 4.8, 1, 4.287));
-    B.push(mkBlock('b4',  'Cargo hold',                  'box', 'g_cargo',  'r_hold', 30.4, 34, -1.6, 1.6, 1, 4.287));
-    B.push(mkBlock('b5',  'Thruster room',               'box', 'g_outfit', null,     34, 36.25, -3, 3, 0, 4.287));
+    B.push(mkBlock('b1',  'Engine room',                 'box', 'g_mach',   null,     10, 20, -4.2, 4.2, 2, 4.287));
+    B.push(mkBlock('b2',  'ECR and switchboards',        'box', 'g_mach',   null,     20, 23, -3.7, 3.7, 2, 4.287));
+    B.push(mkBlock('b3',  'Cabins below 1-deck',         'box', 'g_acc',    'r_cab',  0.5, 10, -3.7, 3.7, 2.7, 4.287));
+    B.push(mkBlock('b4',  'Cargo hold',                  'box', 'g_cargo',  'r_hold', 26, 30.5, -1.6, 1.6, 1.7, 4.287));
+    B.push(mkBlock('b5',  'Thruster room',               'box', 'g_outfit', null,     31, 32.5, -0.5, 0.5, 3.5, 4.287));
     // Tank top (z 0 to 1.0)
-    B.push(mkBlock('b6',  'Fuel oil tank P',             'box', 'g_tanks',  'r_fuel', 6, 18, 1, 3.5, 0, 1));
-    B.push(mkBlock('b7',  'Fuel oil tank S',             'box', 'g_tanks',  'r_fuel', 6, 18, -3.5, -1, 0, 1));
-    B.push(mkBlock('b8',  'Fresh and technical water',   'box', 'g_tanks',  null,     18, 30.4, -2.35, 2.35, 0, 1));
-    B.push(mkBlock('b9',  'Waste and sludge tanks',      'box', 'g_tanks',  null,     0, 6, -1.6, 1.6, 0, 1));
+    B.push(mkBlock('b6',  'Fuel oil tank P',             'box', 'g_tanks',  'r_fuel', 13.3, 22.5, 0.4, 2.5, 0.5, 2));
+    B.push(mkBlock('b7',  'Fuel oil tank S',             'box', 'g_tanks',  'r_fuel', 13.3, 22.5, -2.5, -0.4, 0.5, 2));
+    B.push(mkBlock('b8',  'Fresh and technical water',   'box', 'g_tanks',  null,     22.5, 27.5, -1.5, 1.5, 0.6, 2));
+    B.push(mkBlock('b9',  'Waste and sludge tanks',      'box', 'g_tanks',  null,     23, 26, -1.7, 1.7, 2, 4.287));
     // 1-deck (z 4.287 to 6.6)
     B.push(mkBlock('b10', 'Aft working deck',            'box', 'g_res',    'r_work', 0, 9, -4.5, 4.5, 4.287, 4.587));
     B.push(mkBlock('b11', 'Wet lab, dry lab, data room', 'box', 'g_res',    'r_lab',  9, 12.9, -4.8, 4.8, 4.287, 6.6));
@@ -1522,11 +1564,14 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     B.push(mkBlock('b14', 'A-deck: day room and galley', 'box', 'g_acc',    null,     12.9, 19, -4.2, 4.2, 6.6, 8.9));
     B.push(mkBlock('b15', 'Wheelhouse',                  'box', 'g_outfit', null,     14, 18, -2.5, 2.5, 8.9, 11.4));
     m.blocks = B;
-    m.hulls = [addHullTo(m, fitHull(m, 'research', 4.6, 2.5))];
+    var gh = libraryHull('gunnerus');
+    gh.x = -0.8;                                       // places the hull so that it floats level
+    m.hulls = [addHullTo(m, gh)];
+    m.hulls[0].name = HULL_LIBRARY.gunnerus.label;
     tune(m, 'b1', { massOverride: 140 });              // engine room: weight typed in
     tune(m, 'b6', { fill: 40 }); tune(m, 'b7', { fill: 40 }); tune(m, 'b8', { fill: 80 });
     pruneGroups(m);
-    settle(m);
+    settle(m); m.draught = Math.round((m.draught + 0.01) * 100) / 100; syncDraught(m);
     return m;
   }
 
@@ -1851,11 +1896,13 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
       if (!HULL_TYPES[H.type]) { warnings.push('A hull of unknown type was ignored.'); return; }
       var id = typeof H.id === 'string' && H.id && !hseen[H.id] ? H.id : uid('h', hseen);
       hseen[id] = true;
-      var depth = Math.max(0.5, num(H.depth, 4));
+      var depth = Math.max(0.5, num(H.depth, 4)), offs = H.type === 'offsets' && H.offsets ? cleanOffsets({ zs: H.offsets.zs, xs: H.offsets.xs, half: H.offsets.halfBreadth || H.offsets.half }) : null;
+      if (H.type === 'offsets' && !offs) { warnings.push('A hull from a table of offsets was ignored: the table is not readable.'); return; }
       model.hulls.push({ id: id, name: typeof H.name === 'string' && H.name.trim() ? H.name : HULL_TYPES[H.type].label, type: H.type,
         x: num(H.x, 0), y: num(H.y, 0), loa: Math.max(1, num(H.loa, 30)), beam: Math.max(0.5, num(H.beam, 8)), depth: depth,
         draught: Math.min(depth, Math.max(0.1, num(H.draught, depth * 0.6))), visible: H.visible !== false });
-      var shp = cleanShape(H.shape); if (shp) model.hulls[model.hulls.length - 1].shape = shp;
+      var shp = cleanShape(H.shape); if (shp && !offs) model.hulls[model.hulls.length - 1].shape = shp;
+      if (offs) { model.hulls[model.hulls.length - 1].offsets = offs; if (HULL_LIBRARY[H.library]) model.hulls[model.hulls.length - 1].lib = H.library; }
     });
     model.draught = typeof raw.draught === 'number' && isFinite(raw.draught) ? raw.draught : (model.hulls[0] ? model.hulls[0].draught : null);
     model.waterline = raw.waterline !== false;
@@ -1909,7 +1956,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
       weight: (function () { var w = weightSummary(model); return { unit: 't', blocks: r4(w.blocks.mass), structureAndOutfitting: r4(w.struct.mass), total: r4(w.total.mass), lcg: w.total.lcg == null ? null : r4(w.total.lcg), tcg: w.total.tcg == null ? null : r4(w.total.tcg), vcg: w.total.vcg == null ? null : r4(w.total.vcg), displacement: w.disp == null ? null : r4(w.disp), margin: w.margin == null ? null : r4(w.margin) }; })(),
       hulls: model.hulls.map(function (h) {
         var hy = hullHydro(h, h.draught, model.rho);
-        return { id: h.id, name: h.name, type: h.type, x: r4(h.x), y: r4(h.y), loa: r4(h.loa), beam: r4(h.beam), depth: r4(h.depth), draught: r4(h.draught), visible: h.visible !== false, shape: cleanShape(h.shape) || undefined,
+        return { id: h.id, name: h.name, type: h.type, x: r4(h.x), y: r4(h.y), loa: r4(h.loa), beam: r4(h.beam), depth: r4(h.depth), draught: r4(h.draught), visible: h.visible !== false, shape: cleanShape(h.shape) || undefined, library: h.lib || undefined, offsets: h.offsets ? { zs: h.offsets.zs.map(r4), xs: h.offsets.xs.map(r4), halfBreadth: h.offsets.half.map(function (r) { return r.map(function (v) { return v === null ? null : r4(v); }); }) } : undefined,
           computed: { volumeToDeck: r4(hullVolumeTo(h, h.depth)), displacedVolume: r4(hullVolumeTo(h, h.draught)),
             hydrostatics: { lwl: r4(hy.LWL), bwl: r4(hy.BWL), cb: r4(hy.Cb), cp: r4(hy.Cp), cm: r4(hy.Cm), cwp: r4(hy.Cwp), waterplaneArea: r4(hy.Awp), lcb: r4(hy.LCB), kb: r4(hy.KB), lcf: r4(hy.LCF), tpc: r4(hy.TPC) } } };
       }),
@@ -2560,6 +2607,38 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
       }
     }
 
+    // ----- righting lever
+    var gzr = ws.hasHull && st && !st.overloaded ? gzCurve(model, st) : null;
+    if (gzr) {
+      ensure(230);
+      heading('Righting lever (GZ)', 'Heel to one side, trim free, G on the centre line' + (gzr.fsT > 0 ? ', free surface included' : '') + '. The hulls are counted up to the main deck, so the curve ends where the deck edge enters the water.');
+      var pwid = CW * 0.58, phgt = 150, px0 = M + 34, py0 = y + 14, pw2 = pwid - 40, xmax = Math.max(40, Math.ceil(gzr.limit / 10) * 10), ymx = 0, ymn = 0, v;
+      gzr.pts.forEach(function (p) { ymx = Math.max(ymx, p.gz); ymn = Math.min(ymn, p.gz); });
+      var stp = ymx > 4 ? 1 : ymx > 2 ? 0.5 : ymx > 1 ? 0.25 : 0.1, yt = Math.ceil(ymx / stp + 0.2) * stp, yb = Math.floor(ymn / stp) * stp, ph2 = phgt - 30;
+      var GX = function (a) { return px0 + a / xmax * pw2; }, GY = function (g) { return py0 + (yt - g) / (yt - yb) * ph2; };
+      for (v = yb; v <= yt + 1e-9; v += stp) { doc.line(px0, GY(v), px0 + pw2, GY(v), { color: '#e3e8ee', w: 0.4 }); doc.text(px0 - 4, GY(v) + 2.5, String(Math.round(v * 100) / 100), { size: 7, align: 'right', color: DIM }); }
+      for (v = 0; v <= xmax; v += 10) { doc.line(GX(v), py0, GX(v), py0 + ph2, { color: '#e3e8ee', w: 0.4 }); doc.text(GX(v), py0 + ph2 + 10, String(v), { size: 7, align: 'center', color: DIM }); }
+      doc.line(px0, GY(0), px0 + pw2, GY(0), { color: DIM, w: 0.8 });
+      doc.text(px0 + pw2 / 2, py0 + ph2 + 21, 'Heel angle, degrees', { size: 7.5, align: 'center', color: DIM });
+      doc.text(px0 - 4, py0 - 4, 'GZ, m', { size: 7.5, align: 'right', color: DIM });
+      doc.poly(gzr.pts.map(function (p) { return [GX(p.phi), GY(p.gz)]; }), { color: BLUE, w: 1.6 });
+      gzr.pts.forEach(function (p) { doc.rect(GX(p.phi) - 1.5, GY(p.gz) - 1.5, 3, 3, { fill: BLUE }); });
+      if (gzr.reason === 'edge') { doc.line(GX(gzr.limit), py0, GX(gzr.limit), py0 + ph2, { color: DIM, w: 0.8 }); doc.text(GX(gzr.limit) - 3, py0 + 8, 'deck edge in the water', { size: 7, align: 'right', color: DIM }); }
+      var kx = M + CW * 0.62, ky = py0 + 6, krows = [['Maximum GZ', (gzr.open ? 'at least ' : '') + f(gzr.maxGZ, 2) + ' m'], ['Angle of maximum GZ', (gzr.open ? 'at least ' : '') + f(gzr.phiMax, 1) + '°'],
+        ['Range of positive stability', gzr.phiVan != null ? '0° to ' + f(gzr.phiVan, 1) + '°' : 'beyond ' + f(gzr.limit, 1) + '°'], ['Deck edge in the water', gzr.reason === 'edge' ? f(gzr.limit, 1) + '°' : 'not reached'], ['GM, corrected', f(gzr.GM, 2) + ' m']];
+      krows.forEach(function (r, ri) { doc.text(kx, ky + ri * 14, r[0], { size: 8, color: DIM }); doc.text(M + CW, ky + ri * 14, r[1], { size: 8, bold: true, align: 'right' }); });
+      y = py0 + phgt + 4;
+      sub('GZ criteria (for guidance only: hull counted to the main deck, no openings)');
+      table([{ t: 'Criterion', w: 42 }, { t: 'Needed', w: 16, a: 'r' }, { t: 'Value', w: 16, a: 'r' }, { t: 'Result', w: 26 }], gzr.criteria.map(function (c) {
+        var d = c.unit === 'm·rad' ? 3 : c.unit === '°' ? 1 : 2;
+        return { cells: [c.name, f(c.req, d) + ' ' + c.unit.replace('·rad', ' rad').replace('m rad', 'm.rad'), c.value == null ? '-' : f(c.value, d), (c.ok ? 'Met' : 'Not met') + (c.note ? ' (' + c.note + ')' : '')], colors: [null, null, null, c.ok ? SEV.good : SEV.bad] };
+      }), { keep: true });
+      sub('GZ by heel angle');
+      table([{ t: 'Heel (deg)', w: 14, a: 'r' }, { t: 'Draught m', w: 18, a: 'r' }, { t: 'Trim m', w: 16, a: 'r' }, { t: 'KN m', w: 16, a: 'r' }, { t: 'KG with FS m', w: 18, a: 'r' }, { t: 'GZ m', w: 18, a: 'r' }], gzr.pts.map(function (p) {
+        return { cells: [f(p.phi, 1), f(p.T, 2), f(p.trim, 2), f(p.KN, 3), f(p.KGfs, 3), f(p.gz, 3)] };
+      }), { size: 7.5, keep: true });
+    }
+
     // ----- assumptions
     heading('Assumptions and limits');
     (o.assumptions || []).forEach(function (t) {
@@ -2675,6 +2754,11 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
       sm.push([]); sm.push(H(['Initial stability (small angles)', 'Value', 'Unit']));
       line('KB', nv(sb0.KB), 'm'); line('BM transverse', nv(sb0.BMt), 'm'); line('KM transverse', nv(sb0.KMt), 'm'); line('KG', nv(sb0.KG), 'm');
       line('Free surface correction', nv(sb0.fsT, 'n3'), 'm'); line('GM transverse, corrected', nv(sb0.GM, 'bn2'), 'm'); line('GM longitudinal', nv(sb0.GMl, 'n1'), 'm');
+      var gz0 = gzCurve(model, sb0);
+      if (gz0) {
+        line('Maximum GZ' + (gz0.open ? ' (at least)' : ''), nv(gz0.maxGZ), 'm'); line('Angle of maximum GZ' + (gz0.open ? ' (at least)' : ''), nv(gz0.phiMax, 'n1'), 'deg');
+        line('Deck edge in the water', gz0.reason === 'edge' ? nv(gz0.limit, 'n1') : 'not reached', gz0.reason === 'edge' ? 'deg' : '');
+      }
       sb0.checks.forEach(function (c) { line(c.name + ' (' + c.limit + ')', { v: c.status === 'pass' ? 'Met' : c.status === 'fail' ? 'Not met' : 'n/a', s: 'n|' + (c.status === 'pass' ? 'C6EFCE' : c.status === 'fail' ? 'F8CBAD' : 'EDEDED') }); });
     }
     if (ev0.length) {
@@ -2698,7 +2782,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
       [{ v: 'Float (draught and trim follow the weight)', s: 'b' }, model.float ? 'on' : 'off'], [],
       [{ v: 'Notes', s: 'b' }],
       [{ v: 'x is measured forward from the aft end, y to port, z up from the baseline. Lengths in m, volumes in m3, masses in t.', s: 'note' }],
-      [{ v: 'For educational use only. Hulls are illustrative parametric shapes, not real lines. Hydrostatics, trim, heel and initial stability (GM) are indicative: buoyancy comes from the hulls only, stability is for small angles, and there is no righting-arm curve, wind, wave or damage case. Not for design approval, class or safety decisions.', s: 'note' }],
+      [{ v: 'For educational use only. Hulls are illustrative parametric shapes, not real lines. Hydrostatics, trim, heel, initial stability (GM) and the righting lever (GZ) are indicative: buoyancy comes from the hulls only up to the main deck, the GZ curve ends where the deck edge enters the water, and there is no wind, wave, opening or damage case. Not for design approval, class or safety decisions.', s: 'note' }],
       [{ v: 'The Mass column in the Output and Blocks sheets is a formula (density x volume x fill) unless the mass was typed. Edit a density or fill there and the totals follow.', s: 'note' }]];
     sheets.push({ name: 'Project', rows: pr, widths: [46, 26] });
 
@@ -2839,6 +2923,30 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
       sheets.push({ name: 'Hydrostatics', rows: hr, widths: [46, 12, 12, 12, 14, 16, 9, 9, 9, 9, 18, 12, 10, 12, 12], freeze: 1 });
     }
 
+    // righting lever GZ
+    var gsb = model.hulls && model.hulls.length ? stabilityState(model, null) : null, gzc = gsb && !gsb.overloaded ? gzCurve(model, gsb) : null;
+    if (gzc) {
+      var gr = [[{ v: 'Righting lever GZ', s: 'b' }],
+        ['Heel to one side, trim free, G on the centre line. Hulls counted up to the main deck: the curve ends where the deck edge enters the water. For guidance only, no openings.'],
+        ['GZ = KN - KG x sin(angle). KG includes the free surface correction.'], [],
+        H(['Heel angle (deg)', 'Draught at midship (m)', 'Trim (m)', 'KN (m)', 'KG with free surface (m)', 'GZ (m)'])];
+      var g0 = gr.length;
+      gzc.pts.forEach(function (p, i) {
+        var rr = g0 + i + 1;
+        gr.push([nv(p.phi, 'n1'), nv(p.T), nv(p.trim), nv(p.KN, 'n3'), nv(p.KGfs, 'n3'), { v: r4(p.gz), s: 'bn2', f: 'D' + rr + '-E' + rr + '*SIN(RADIANS(A' + rr + '))' }]);
+      });
+      gr.push([]); gr.push(H(['Result', 'Value', 'Unit']));
+      gr.push(['Maximum GZ' + (gzc.open ? ' (at least)' : ''), nv(gzc.maxGZ), 'm']);
+      gr.push(['Angle of maximum GZ' + (gzc.open ? ' (at least)' : ''), nv(gzc.phiMax, 'n1'), 'deg']);
+      gr.push(['Range of positive stability', gzc.phiVan != null ? nv(gzc.phiVan, 'n1') : 'beyond ' + r4(gzc.limit), 'deg']);
+      gr.push(['Deck edge in the water', gzc.reason === 'edge' ? nv(gzc.limit, 'n1') : 'not reached', 'deg']);
+      gr.push([]); gr.push(H(['Criterion (guidance only)', 'Needed', 'Value', 'Result']));
+      gzc.criteria.forEach(function (c) {
+        gr.push([c.name + ' (' + c.unit + ')', nv(c.req, 'n3'), c.value == null ? '' : nv(c.value, 'n3'), { v: (c.ok ? 'Met' : 'Not met') + (c.note ? ' (' + c.note + ')' : ''), s: 'n|' + (c.ok ? 'C6EFCE' : 'F8CBAD') }]);
+      });
+      sheets.push({ name: 'GZ', rows: gr, widths: [44, 22, 12, 12, 24, 12], freeze: 0 });
+    }
+
     // offsets, one block per hull
     if (model.hulls && model.hulls.length) {
       var orw = [];
@@ -2875,6 +2983,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     research: { label: 'Research vessel',   ps: 0.88, ua: 0.12, a: 0.8, ub: 0.82, pb: 0.00, c: 2.0, rake: 0.045, flare: 0.16, fb: 0.60, m: 3.4, sternRake: 0.015, dr: 0.55 },
     cargo:    { label: 'Cargo ship',        ps: 0.92, ua: 0.08, a: 0.8, ub: 0.88, pb: 0.00, c: 2.4, rake: 0.02,  flare: 0.08, fb: 0.85, m: 5.0, sternRake: 0.000, dr: 0.70 },
     demihull: { label: 'Slender demihull',  ps: 0.70, ua: 0.10, a: 0.8, ub: 0.80, pb: 0.00, c: 1.8, rake: 0.06,  flare: 0.05, fb: 0.30, m: 2.2, sternRake: 0.010, dr: 0.60 },
+    offsets:  { label: 'Table of offsets', ps: 0.9, ua: 0.1, a: 0.8, ub: 0.85, pb: 0.00, c: 2.0, rake: 0.02, flare: 0.1, fb: 0.5, m: 3.0, sternRake: 0.000, dr: 0.55 },
     barge:    { label: 'Barge',             ps: 1.00, ua: 0.02, a: 1.0, ub: 0.94, pb: 0.60, c: 3.0, rake: 0.03,  flare: 0.00, fb: 0.90, m: 6.0, sternRake: 0.000, dr: 0.50 }
   };
   var MAX_HULLS = 5;
@@ -2935,13 +3044,172 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     return n ? out : null;
   }
 
+  /* ---------- hull from a table of offsets ----------
+     h.offsets = { L, B, D, zs[], xs[], half[][] }: heights zs (m above the baseline, first 0, last = D), stations xs (m from the
+     aft end, L = last), half[j][i] = half-breadth (m) at height j and station i, null where there is no hull. The hull's own
+     loa, beam and depth scale the table (loa/L, beam/B, depth/D), so the usual size fields keep working. */
+  function cleanOffsets(o) {
+    if (!o || typeof o !== 'object' || !Array.isArray(o.zs) || !Array.isArray(o.xs) || !Array.isArray(o.half)) return null;
+    var zs = o.zs.map(Number), xs = o.xs.map(Number), nz = zs.length, nx = xs.length, j, i;
+    if (nz < 2 || nx < 2 || nz > 200 || nx > 400 || o.half.length !== nz) return null;
+    for (j = 0; j < nz; j++) if (!isFinite(zs[j]) || (j && zs[j] <= zs[j - 1])) return null;
+    for (i = 0; i < nx; i++) if (!isFinite(xs[i]) || (i && xs[i] <= xs[i - 1])) return null;
+    var half = [], mx = 0, x0 = Infinity, x1 = -Infinity;
+    for (j = 0; j < nz; j++) {
+      var row = o.half[j];
+      if (!Array.isArray(row) || row.length !== nx) return null;
+      var r = row.map(function (v) { return v === null || v === undefined || v === '' || !isFinite(Number(v)) ? null : Math.max(0, Number(v)); });
+      for (i = 0; i < nx; i++) if (r[i] !== null) { mx = Math.max(mx, r[i]); x0 = Math.min(x0, xs[i]); x1 = Math.max(x1, xs[i]); }
+      half.push(r);
+    }
+    if (!(mx > 0) || !(x1 > x0)) return null;
+    for (j = 0; j < nz; j++) if (half[j].every(function (v) { return v === null; })) return null;
+    xs = xs.map(function (x) { return x - x0; });
+    return { L: x1 - x0, B: 2 * mx, D: zs[nz - 1], zs: zs, xs: xs, half: half };
+  }
+  var OFFC = typeof WeakMap === 'function' ? new WeakMap() : null;
+  function offsetsPrep(o) {
+    var e = OFFC && OFFC.get(o);
+    if (e) return e;
+    var a = [], b = [], j, i;
+    for (j = 0; j < o.zs.length; j++) {
+      var f = -1, l = -1;
+      for (i = 0; i < o.xs.length; i++) if (o.half[j][i] !== null) { if (f < 0) f = i; l = i; }
+      a.push(o.xs[f]); b.push(o.xs[l]);
+    }
+    var sum = 0;
+    o.half.forEach(function (r) { r.forEach(function (v) { if (v !== null) sum += v; }); });
+    e = { a: a, b: b, key: [o.L, o.B, o.D, o.zs.length, o.xs.length, Math.round(sum * 1000)].join('/') };
+    if (OFFC) OFFC.set(o, e);
+    return e;
+  }
+  function offLevel(o, z) {
+    var zs = o.zs, n = zs.length, j = 0;
+    if (z <= zs[0]) return [0, 0, 0];
+    if (z >= zs[n - 1]) return [n - 2, n - 1, 1];
+    while (j < n - 2 && z > zs[j + 1]) j++;
+    return [j, j + 1, (z - zs[j]) / (zs[j + 1] - zs[j])];
+  }
+  function offsetsXRange(h, t) {
+    var o = h.offsets, e = offsetsPrep(o), q = offLevel(o, Math.min(1, Math.max(0, t)) * o.D), s = h.loa / o.L;
+    var a = e.a[q[0]] + (e.a[q[1]] - e.a[q[0]]) * q[2], b = e.b[q[0]] + (e.b[q[1]] - e.b[q[0]]) * q[2];
+    return [h.x + a * s, h.x + b * s];
+  }
+  function offsetsHalf(h, u, t) {
+    var o = h.offsets, e = offsetsPrep(o), q = offLevel(o, Math.min(1, Math.max(0, t)) * o.D);
+    var a = e.a[q[0]] + (e.a[q[1]] - e.a[q[0]]) * q[2], b = e.b[q[0]] + (e.b[q[1]] - e.b[q[0]]) * q[2];
+    var x = a + Math.min(1, Math.max(0, u)) * (b - a), xs = o.xs, n = xs.length, i = 0;
+    while (i < n - 2 && x > xs[i + 1]) i++;
+    var fx = Math.min(1, Math.max(0, (x - xs[i]) / (xs[i + 1] - xs[i])));
+    function row(j) {
+      var r = o.half[j], v0 = r[i] === null ? 0 : r[i], v1 = r[i + 1] === null ? 0 : r[i + 1];
+      return v0 + (v1 - v0) * fx;
+    }
+    var y = row(q[0]) + (row(q[1]) - row(q[0])) * q[2];
+    return Math.min(y * h.beam / o.B, 0.5 * h.beam);
+  }
+
+  /* Parse a table of offsets from CSV text: first row = station positions (m), first column = heights (m), cells = half-breadths
+     (blank = no hull). Comma, semicolon or tab. Returns { zs, xs, half } or { error }. */
+  function parseOffsetsText(text) {
+    var lines = String(text || '').replace(/^﻿/, '').split(/\r?\n/).filter(function (l) { return l.trim() !== ''; });
+    if (lines.length < 3) return { error: 'The table needs a header row of stations and at least two heights.' };
+    var delim = ',';
+    [';', '\t', ','].some(function (d) { if (lines[0].split(d).length > 2) { delim = d; return true; } return false; });
+    var grid = lines.map(function (l) { return l.split(delim).map(function (c) { c = c.trim().replace(/^"|"$/g, ''); return c === '-' ? '' : c; }); });
+    var xs = [], i, j;
+    if (/^station/i.test(grid[0][0])) {      // the layout of our own Offsets table: stations down, heights across (header "z 0.50")
+      var zs2 = [], x2 = [], c;
+      for (c = 2; c < grid[0].length; c++) {
+        var zz = Number(String(grid[0][c]).replace(/^z\s*/i, '').replace(',', '.'));
+        if (grid[0][c] === '' || !isFinite(zz)) return { error: 'A height in the first row is not a number.' };
+        zs2.push(zz);
+      }
+      var cols = zs2.map(function () { return []; });
+      for (j = 1; j < grid.length; j++) {
+        var xx = Number(String(grid[j][1]).replace(',', '.'));
+        if (grid[j][1] === '' || !isFinite(xx)) return { error: 'A station position is not a number (row ' + (j + 1) + ').' };
+        x2.push(xx);
+        for (c = 0; c < zs2.length; c++) {
+          var cv = grid[j][c + 2];
+          if (cv === undefined || cv === '') { cols[c].push(null); continue; }
+          var nv2 = Number(cv.replace(',', '.'));
+          if (!isFinite(nv2)) return { error: 'A half-breadth is not a number (row ' + (j + 1) + ').' };
+          cols[c].push(nv2);
+        }
+      }
+      var o2 = zs2.map(function (z, k) { return k; }).sort(function (p, q) { return zs2[p] - zs2[q]; });
+      return { zs: o2.map(function (k) { return zs2[k]; }), xs: x2, half: o2.map(function (k) { return cols[k]; }) };
+    }
+    for (i = 1; i < grid[0].length; i++) {
+      if (grid[0][i] === '') { if (xs.length) break; continue; }
+      var xv = Number(grid[0][i].replace(',', '.'));
+      if (!isFinite(xv)) return { error: 'A station position in the first row is not a number.' };
+      xs.push(xv);
+    }
+    var zs = [], half = [];
+    for (j = 1; j < grid.length; j++) {
+      var zv = Number(grid[j][0].replace(',', '.'));
+      if (grid[j][0] === '' || !isFinite(zv)) return { error: 'A height in the first column is not a number (row ' + (j + 1) + ').' };
+      var row = [];
+      for (i = 0; i < xs.length; i++) {
+        var c = grid[j][i + 1];
+        if (c === undefined || c === '') { row.push(null); continue; }
+        var v = Number(c.replace(',', '.'));
+        if (!isFinite(v)) return { error: 'A half-breadth is not a number (row ' + (j + 1) + ').' };
+        row.push(v);
+      }
+      zs.push(zv); half.push(row);
+    }
+    var ord = zs.map(function (z, k) { return k; }).sort(function (a, b) { return zs[a] - zs[b]; });
+    return { zs: ord.map(function (k) { return zs[k]; }), xs: xs, half: ord.map(function (k) { return half[k]; }) };
+  }
+
+  /* Highest height whose row is complete: at least 90% of the largest number of stations. */
+  function offsetsFullDepth(tab) {
+    var cnt = tab.half.map(function (r) { return r.filter(function (v) { return v !== null; }).length; }), mx = Math.max.apply(null, cnt), d = tab.zs[0];
+    tab.zs.forEach(function (z, k) { if (cnt[k] >= 0.9 * mx) d = z; });
+    return d;
+  }
+
+  /* A hull from a parsed table: rows above the depth are cut; if the depth lies above the last row, that row is repeated up to it.
+     Returns a hull {type:'offsets', ...} (no id or name yet) or null. */
+  function offsetsToHull(tab, depth, draught) {
+    if (!tab || !tab.zs) return null;
+    var zs = [], half = [], k;
+    for (k = 0; k < tab.zs.length; k++) {
+      if (tab.zs[k] < -1e-9 || tab.zs[k] > depth + 1e-9) continue;
+      zs.push(tab.zs[k]); half.push(tab.half[k].slice());
+    }
+    if (!zs.length) return null;
+    if (zs[0] > 1e-9) { zs.unshift(0); half.unshift(half[0].slice()); }
+    if (zs[zs.length - 1] < depth - 1e-9) { zs.push(depth); half.push(half[half.length - 1].slice()); }
+    var o = cleanOffsets({ zs: zs, xs: tab.xs, half: half });
+    if (!o) return null;
+    return { type: 'offsets', offsets: o, x: 0, y: 0, loa: r2(o.L), beam: r2(o.B), depth: r2(o.D),
+      draught: Math.min(o.D, Math.max(0.1, draught == null ? o.D * 0.55 : draught)) };
+  }
+
+  /* Hull library: ready-made hulls from a table of offsets. A library hull has h.lib = key. */
+  var HULL_LIBRARY = { gunnerus: { label: 'Gunnerus-like', depth: 4.287, draught: 2.7 } };
+  var HULL_LIB_ORDER = ['gunnerus'];
+  function libraryHull(key) {
+    var L = HULL_LIBRARY[key];
+    if (!L) return null;
+    var h = offsetsToHull({ zs: GUN_OFFS.zs, xs: GUN_OFFS.xs, half: GUN_OFFS.half }, L.depth, L.draught);
+    if (h) h.lib = key;
+    return h;
+  }
+
   function hullXRange(h, t) {
+    if (h.offsets) return offsetsXRange(h, t);
     var P = hullP(h);
     return [h.x + P.sternRake * h.loa * (1 - t), h.x + h.loa - P.rake * h.loa * (1 - t)];
   }
 
   /* half-breadth (m) at plan fraction u (0 aft, 1 forward) and height fraction t (0 keel, 1 deck) */
   function hullHalf(h, u, t) {
+    if (h.offsets) return offsetsHalf(h, u, t);
     var P = hullP(h), p, sb = 0;
     if (u < P.ua && P.ua > 0) p = P.ps + (1 - P.ps) * Math.pow(u / P.ua, P.a);
     else if (u > P.ub) { sb = (u - P.ub) / (1 - P.ub); p = 1 - (1 - P.pb) * Math.pow(sb, P.c); }
@@ -3229,6 +3497,128 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
       checks: stabilityChecks({ GM: GM, GMl: GMl, heel: heel, trim: trim, L: L })
     };
   }
+
+  /* Righting lever GZ for heel to one side, in steps of 5 degrees, with the trim free. For every angle the water plane is tilted,
+     the draught and trim are found that keep the displacement and put B under G, and GZ is the sideways distance between them.
+     The hulls are counted up to the main deck only, so the curve stops where the deck edge enters the water (or at 70 degrees).
+     G is taken on the centre line, with the free surface correction as a rise of G. */
+  function gzCurve(model, st) {
+    var hs = model.hulls || [];
+    if (!hs.length || !st || st.overloaded) return null;
+    var w = weightSummary(model), W = w.total.mass, rho = model.rho || 1.025;
+    if (!(W > 0) || w.total.lcg == null || w.total.vcg == null) return null;
+    var Vt = W / rho, lcg = w.total.lcg, vcg = w.total.vcg;
+    var nz = 24, nu = 70, ny = 12, X = [], Y = [], A = [], Z0 = [], DZ = [], xa = Infinity, xf = -Infinity, ymin = Infinity, ymax = -Infinity, ys = [], maxD = 0, edge = [];
+    hs.forEach(function (h) {
+      var dz = h.depth / nz, hy = h.y || 0, i, j, q;
+      ys.push(hy); xa = Math.min(xa, h.x); xf = Math.max(xf, h.x + h.loa); maxD = Math.max(maxD, h.depth);
+      ymin = Math.min(ymin, hy - h.beam / 2); ymax = Math.max(ymax, hy + h.beam / 2);
+      for (j = 0; j < nz; j++) {
+        var t = (j + 0.5) / nz, r = hullXRange(h, t), len = r[1] - r[0];
+        for (i = 0; i < nu; i++) {
+          var half = hullHalf(h, (i + 0.5) / nu, t), x = r[0] + (i + 0.5) / nu * len;
+          for (q = 0; q < ny; q++) { X.push(x); Y.push(hy - half + (q + 0.5) * 2 * half / ny); A.push(2 * half / ny * len / nu * dz); Z0.push(j * dz); DZ.push(dz); }
+        }
+      }
+      var r1 = hullXRange(h, 1);
+      for (i = 0; i <= 40; i++) { var hf = hullHalf(h, i / 40, 1), xe = r1[0] + (r1[1] - r1[0]) * i / 40; edge.push([xe, hy + hf, h.depth], [xe, hy - hf, h.depth]); }
+    });
+    var xm = 0.5 * (xa + xf), ym = 0.5 * (Math.min.apply(null, ys) + Math.max.apply(null, ys)), n = X.length;
+    var KGfs = vcg + (st.fsT || 0);
+    function res(u0, u1, u2) {
+      var V = 0, Mx = 0, My = 0, Mz = 0, c;
+      for (c = 0; c < n; c++) {
+        var f = (u0 - u1 * (X[c] - xm) + u2 * (Y[c] - ym) - Z0[c]) / DZ[c];
+        if (f <= 0) continue;
+        if (f > 1) f = 1;
+        var dv = A[c] * f; V += dv; Mx += dv * X[c]; My += dv * Y[c]; Mz += dv * (Z0[c] + 0.5 * f * DZ[c]);
+      }
+      if (V <= 0) return null;
+      var dx = Mx / V - lcg, dy = My / V - ym, dzz = Mz / V - vcg;
+      var nn = Math.sqrt(u1 * u1 + u2 * u2 + 1), nx = u1 / nn, ny_ = -u2 / nn, nzz = 1 / nn, dn = dx * nx + dy * ny_ + dzz * nzz;
+      var px = dx - dn * nx, py = dy - dn * ny_, pz = dzz - dn * nzz;
+      var tl = Math.sqrt(1 + u1 * u1), ex = 1 / tl, ez = -u1 / tl;           // along the water plane in x
+      var tn = Math.sqrt(1 + u2 * u2), gy = 1 / tn, gz = u2 / tn;           // along the water plane in y
+      return { r0: V / Vt - 1, r1: px * ex + pz * ez, gz: py * gy + pz * gz, kb: Mz / V };
+    }
+    function solve(phi, u0, u1) {
+      var u2 = Math.tan(phi * Math.PI / 180), it;
+      for (it = 0; it < 40; it++) {
+        var r = res(u0, u1, u2);
+        if (!r) return null;
+        if (Math.abs(r.r0) < 2e-5 && Math.abs(r.r1) < 2e-4) return { u0: u0, u1: u1, gz: r.gz, T: u0 };
+        var a = res(u0 + 0.004, u1, u2), b = res(u0, u1 + 0.0004, u2);
+        if (!a || !b) return null;
+        var J = [[(a.r0 - r.r0) / 0.004, (b.r0 - r.r0) / 0.0004], [(a.r1 - r.r1) / 0.004, (b.r1 - r.r1) / 0.0004]], det = J[0][0] * J[1][1] - J[0][1] * J[1][0];
+        if (Math.abs(det) < 1e-12) return null;
+        var d0 = (-r.r0 * J[1][1] + r.r1 * J[0][1]) / det, d1 = (-r.r1 * J[0][0] + r.r0 * J[1][0]) / det;
+        d0 = Math.max(-0.5, Math.min(0.5, d0)); d1 = Math.max(-0.05, Math.min(0.05, d1));
+        u0 += d0; u1 += d1;
+      }
+      return null;
+    }
+    function immersed(sol, phi) {                                            // is the deck edge in the water?
+      var u2 = Math.tan(phi * Math.PI / 180);
+      for (var i = 0; i < edge.length; i++) if (sol.u0 - sol.u1 * (edge[i][0] - xm) + u2 * (edge[i][1] - ym) >= edge[i][2] - 1e-6) return true;
+      return false;
+    }
+    function point(phi, sol) {
+      var sn = Math.sin(phi * Math.PI / 180);
+      var z0 = function (v) { return Math.abs(v) < 5e-4 ? 0 : v; };
+      return { phi: phi, T: sol.u0, trim: -sol.u1 * (xf - xa), KN: z0(sol.gz + vcg * sn), KGfs: KGfs, gz: z0(sol.gz - (st.fsT || 0) * sn) };
+    }
+    var s0 = solve(0, st.T, 0);
+    if (!s0) return null;
+    var pts = [point(0, s0)], prev = s0, phiPrev = 0, limit = null, reason = 'max', phi;
+    for (phi = 5; phi <= 70; phi += 5) {
+      var sol = solve(phi, prev.u0, prev.u1);
+      if (!sol) { limit = phiPrev; reason = 'solve'; break; }
+      if (immersed(sol, phi)) {                                              // refine the angle where the deck edge enters
+        var lo = phiPrev, hi = phi, solLo = prev, k;
+        for (k = 0; k < 7; k++) {
+          var mid = 0.5 * (lo + hi), sm = solve(mid, solLo.u0, solLo.u1);
+          if (sm && !immersed(sm, mid)) { lo = mid; solLo = sm; } else hi = mid;
+        }
+        if (lo > phiPrev + 0.05) pts.push(point(Math.round(lo * 10) / 10, solLo));
+        limit = Math.round(lo * 10) / 10; reason = 'edge'; break;
+      }
+      pts.push(point(phi, sol)); prev = sol; phiPrev = phi;
+    }
+    if (limit == null) limit = phiPrev;
+    // numbers
+    var rad = Math.PI / 180, i;
+    function area(a, b) {                                                    // trapezoids between the points, from angle a to b (degrees)
+      var sum = 0;
+      function g(p) { for (var q = 0; q < pts.length - 1; q++) if (p >= pts[q].phi - 1e-9 && p <= pts[q + 1].phi + 1e-9) { var f = pts[q + 1].phi === pts[q].phi ? 0 : (p - pts[q].phi) / (pts[q + 1].phi - pts[q].phi); return pts[q].gz + f * (pts[q + 1].gz - pts[q].gz); } return pts[pts.length - 1].gz; }
+      var hi = Math.min(b, limit);
+      if (hi <= a) return 0;
+      var grid = [a]; pts.forEach(function (p) { if (p.phi > a && p.phi < hi) grid.push(p.phi); }); grid.push(hi);
+      for (var q = 0; q < grid.length - 1; q++) sum += 0.5 * (g(grid[q]) + g(grid[q + 1])) * (grid[q + 1] - grid[q]) * rad;
+      return sum;
+    }
+    var mx = pts[0];
+    pts.forEach(function (p) { if (p.gz > mx.gz) mx = p; });
+    var van = null;
+    for (i = 1; i < pts.length; i++) if (pts[i - 1].gz > 0 && pts[i].gz <= 0) { van = pts[i - 1].phi + pts[i - 1].gz / (pts[i - 1].gz - pts[i].gz) * (pts[i].phi - pts[i - 1].phi); break; }
+    var a30 = area(0, 30), a40 = area(0, 40), a3040 = area(30, 40), g30 = limit >= 30 ? pts.filter(function (p) { return Math.abs(p.phi - 30) < 1e-9; })[0].gz : null;
+    function cr(name, req, val, ok, unit) { return { name: name, req: req, value: val, ok: ok, unit: unit }; }
+    var upTo = reason === 'edge' && limit < 40 ? limit : 40;
+    var criteria = [
+      cr('Area under GZ, 0° to 30°', 0.055, a30, a30 >= 0.055, 'm·rad'),
+      cr('Area under GZ, 0° to ' + (upTo < 40 ? fmtA(upTo) : '40') + '°', 0.09, a40, a40 >= 0.09, 'm·rad'),
+      cr('Area under GZ, 30° to 40°', 0.03, a3040, a3040 >= 0.03, 'm·rad'),
+      cr('GZ at 30° or more', 0.2, g30 != null ? Math.max.apply(null, pts.filter(function (p) { return p.phi >= 30; }).map(function (p) { return p.gz; })) : null, null, 'm'),
+      cr('Angle of maximum GZ', 25, mx.phi, mx.phi >= 25, '°'),
+      cr('Initial GM, corrected', 0.15, st.GM, st.GM >= 0.15, 'm')
+    ];
+    criteria[3].ok = criteria[3].value != null && criteria[3].value >= 0.2;
+    if (limit < 30) { criteria[0].note = 'to deck edge at ' + fmtA(limit) + '°'; criteria[3].note = 'deck edge at ' + fmtA(limit) + '°'; criteria[3].value = null; }
+    if (reason === 'edge' && mx.phi === limit && limit < 25) criteria[4].note = 'deck edge at ' + fmtA(limit) + '°';
+    if (reason === 'edge' && limit < 40) criteria[2].note = 'deck edge at ' + fmtA(limit) + '°';
+    return { pts: pts, limit: limit, reason: reason, open: reason === 'edge' && mx.phi === limit, maxGZ: mx.gz, phiMax: mx.phi, phiVan: van, a30: a30, a40: a40, a3040: a3040, gz30: g30, criteria: criteria, KG: vcg, fsT: st.fsT || 0, GM: st.GM };
+    function fmtA(v) { return String(Math.round(v * 10) / 10); }
+  }
+
   /* A few basic, simple checks. Indicative only, not a class or flag-state assessment. */
   function stabilityChecks(s) {
     function c(name, ok, value, limit) { return { name: name, status: ok == null ? 'none' : (ok ? 'pass' : 'fail'), value: value, limit: limit }; }
@@ -3252,6 +3642,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     function add(sev, text, tab, ref) { issues.push({ sev: sev, text: text, tab: tab, ref: ref || null }); }
     function worse(a, b) { return rank[b] > rank[a] ? b : a; }
 
+    if (!model.blocks.length) add('note', 'No blocks yet. Drag a shape from the library onto the workplane, or click one to add it.', null);
     // requirements
     var n = { ok: 0, excess: 0, fail: 0, none: 0 }, sevR = 'ok', met = 0, over = 0;
     ev.forEach(function (x) {
@@ -3280,7 +3671,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
         var mp = ws.marginPct;
         valW = 'margin ' + f1(mp) + '%';
         if (mp < -1) { sevW = 'bad'; add('bad', 'The weight exceeds the displacement at the draught by ' + f1(-ws.margin) + ' t (' + f1(-mp) + '%). Use Float, or raise the draught.', 'hydro'); }
-        else if (mp > 1) { sevW = 'warn'; add('warn', 'The displacement exceeds the weight by ' + f1(ws.margin) + ' t (' + f1(mp) + '%): the vessel would float higher than the draught set. Float sets it.', 'hydro'); }
+        else if (mp > 1 && model.blocks.length) { sevW = 'warn'; add('warn', 'The displacement exceeds the weight by ' + f1(ws.margin) + ' t (' + f1(mp) + '%): the vessel would float higher than the draught set. Float sets it.', 'hydro'); }
         else good.push('Weight and displacement agree within 1% at the draught set.');
       }
       if (hc && hc.blocksBelow > 0) {
@@ -3354,7 +3745,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     N = N || (hcQuick ? 8 : 24);
     var key = '';
     if (memo) {
-      key = JSON.stringify([N, hulls.map(function (h) { return [h.type, h.shape || 0, h.x, h.y, h.loa, h.beam, h.depth, h.draught]; }),
+      key = JSON.stringify([N, hulls.map(function (h) { return [h.type, h.shape || 0, h.offsets ? offsetsPrep(h.offsets).key : 0, h.x, h.y, h.loa, h.beam, h.depth, h.draught]; }),
         model.blocks.map(function (b) { return [b.id, b.shape, b.position, b.size, b.rotation]; })]);
       if (hcMemo.key === key && hcMemo.val.model === model.blocks) return hcMemo.val.res;
     }
@@ -3650,9 +4041,10 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
 
   /* A hull name that follows its type: "Barge", "Barge 2", "Barge (copy)". A name the user typed is left alone. */
   function hullNameFor(name, newType) {
-    var labels = HULL_ORDER.map(function (k) { return HULL_TYPES[k].label; });
+    var labels = HULL_ORDER.map(function (k) { return HULL_TYPES[k].label; }).concat(HULL_LIB_ORDER.map(function (k) { return HULL_LIBRARY[k].label; }), [HULL_TYPES.offsets.label]);
     var m = /^(.*?)((?: \d+)?(?: \(copy\))?)$/.exec(String(name || ''));
-    if (m && labels.indexOf(m[1]) >= 0) return HULL_TYPES[newType].label + m[2];
+    var nl = HULL_LIBRARY[newType] ? HULL_LIBRARY[newType].label : HULL_TYPES[newType].label;
+    if (m && labels.indexOf(m[1]) >= 0) return nl + m[2];
     return name;
   }
 
@@ -3687,11 +4079,11 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     isGroupVisible: isGroupVisible, descendantIds: descendantIds,
     summarize: summarize, weightSummary: weightSummary, blockMass: blockMass, blockCentroid: blockCentroid, groupDensity: groupDensity, hullCentroid: hullCentroid, SHAPE_CENTROID: SHAPE_CENTROID, DEFAULT_DENSITY: DEFAULT_DENSITY, DEFAULT_STRUCT_PCT: DEFAULT_STRUCT_PCT, evaluateRequirements: evaluateRequirements, blockReqs: blockReqs, hasReq: hasReq,
     emptyProject: emptyProject, exampleProject: withGT(withDeck(exampleProject), /^Open cargo deck$/), containerShipExample: withGT(withDeck(containerShipExample), /^Deck stack/), tankerExample: withDeck(tankerExample), bulkCarrierExample: withDeck(bulkCarrierExample), sailingYachtExample: withGT(withDeck(sailingYachtExample), /^(Mast and rigging|Lead ballast)$/), simpleExample: withDeck(simpleExample), gunnerusExample: withGT(withDeck(gunnerusExample), /^Aft working deck$/), catamaranExample: withGT(withDeck(catamaranExample), /^Aft working deck$/), trimaranExample: withGT(withDeck(trimaranExample), /^Aft working deck$/), markedDeck: markedDeck,
-    sanitizeProject: sanitizeProject, serializeProject: serializeProject,
+    blankProject: blankProject, sanitizeProject: sanitizeProject, serializeProject: serializeProject,
     summaryCSV: summaryCSV, projectXlsx: projectXlsx, buildReport: buildReport, pdfWriter: pdfWriter, workbookSheets: workbookSheets, xlsxBuild: xlsxBuild, requirementsCSV: requirementsCSV, blocksCSV: blocksCSV,
     HULL_TYPES: HULL_TYPES, HULL_ORDER: HULL_ORDER, hullHalf: hullHalf, hullParams: hullParams, cleanShape: cleanShape, SHAPE_SPEC: SHAPE_SPEC, STERN_PRESETS: STERN_PRESETS, hullXRange: hullXRange, hullContains: hullContains,
-    hullVolumeTo: hullVolumeTo, hullOffsets: hullOffsets, hullHydro: hullHydro, modelHydro: modelHydro, hullCheck: hullCheck, setQuickCheck: setQuickCheck, addHullTo: addHullTo, mirrorHull: mirrorHull, fitHullSet: fitHullSet, MAX_HULLS: MAX_HULLS, autoDeckLine: autoDeckLine, fitHull: fitHull,
-    makeHullGeometry: makeHullGeometry, makeWaterGeometry: makeWaterGeometry, floatState: floatState, stabilityState: stabilityState, assessment: assessment, autoFloat: autoFloat, waterExtent: waterExtent, syncDraught: syncDraught, hullNameFor: hullNameFor, makeHullLines: makeHullLines,
+    hullVolumeTo: hullVolumeTo, hullOffsets: hullOffsets, HULL_LIBRARY: HULL_LIBRARY, HULL_LIB_ORDER: HULL_LIB_ORDER, libraryHull: libraryHull, parseOffsetsText: parseOffsetsText, offsetsToHull: offsetsToHull, offsetsFullDepth: offsetsFullDepth, cleanOffsets: cleanOffsets, hullHydro: hullHydro, modelHydro: modelHydro, hullCheck: hullCheck, setQuickCheck: setQuickCheck, addHullTo: addHullTo, mirrorHull: mirrorHull, fitHullSet: fitHullSet, MAX_HULLS: MAX_HULLS, autoDeckLine: autoDeckLine, fitHull: fitHull,
+    makeHullGeometry: makeHullGeometry, makeWaterGeometry: makeWaterGeometry, floatState: floatState, stabilityState: stabilityState, gzCurve: gzCurve, assessment: assessment, autoFloat: autoFloat, waterExtent: waterExtent, syncDraught: syncDraught, hullNameFor: hullNameFor, makeHullLines: makeHullLines,
     uid: uid, num: num
   };
 
@@ -4503,8 +4895,16 @@ var DBB_STL_PARTS = {"crane":{"id":"stl_ex_crane","label":"Deck crane","v":"7zp9
   function addHull() {
     var hs = S.model.hulls, h;
     if (!hs.length) {
+      if (!S.model.blocks.length) {
+        h = C.addHullTo(S.model, { type: 'osv', x: 0, y: 0, loa: 60, beam: 14, depth: 6.5, draught: 4.5 });
+        hs.push(h);
+        S.sel = null; S.selHull = h.id;
+        reconcile(); renderAll(); pushHistory();
+        toast('Hull added. Set its size in the panel, then place blocks inside it.');
+        return;
+      }
       h = C.addHullTo(S.model, C.fitHull(S.model, 'osv', C.autoDeckLine(S.model)));
-      if (!h) { toast('Add some blocks first. The hull is fitted around the blocks below the main deck.', true); return; }
+      if (!h) { toast('No block reaches below the main deck.', true); return; }
       hs.push(h);
       S.sel = null; S.selHull = h.id;
       reconcile(); renderAll(); pushHistory();
@@ -4512,6 +4912,15 @@ var DBB_STL_PARTS = {"crane":{"id":"stl_ex_crane","label":"Deck crane","v":"7zp9
       return;
     }
     if (hs.length >= C.MAX_HULLS) { toast('Up to ' + C.MAX_HULLS + ' hulls.', true); return; }
+    if (hs.some(function (q) { return q.offsets; })) {      // a table hull cannot be refitted: the new hull is a copy on the other side
+      var src = hs.filter(function (q) { return q.offsets; })[0];
+      h = C.mirrorHull(S.model, src);
+      hs.push(h);
+      S.sel = null; S.selHull = h.id;
+      reconcile(); renderAll(); pushHistory();
+      toast('Hull added as a copy of ' + src.name + '. Move it in the panel.');
+      return;
+    }
     // catamaran (2 hulls) or trimaran (3): every hull is refitted to its own group of blocks
     var k = hs.length + 1, deck = C.autoDeckLine(S.model);
     if (hs.length === 1) { hs[0].name = C.hullNameFor(hs[0].name, 'demihull'); hs[0].type = 'demihull'; delete hs[0].shape; }
@@ -4761,9 +5170,16 @@ var DBB_STL_PARTS = {"crane":{"id":"stl_ex_crane","label":"Deck crane","v":"7zp9
 
   function renderHullProps(h) {
     var form = $('#hullPropsForm'), ty = $('[data-hf="type"]', form);
-    if (!ty.options.length) ty.innerHTML = C.HULL_ORDER.map(function (k) { return '<option value="' + k + '">' + C.HULL_TYPES[k].label + '</option>'; }).join('');
+    var tyHtml = C.HULL_ORDER.map(function (k) { return '<option value="' + k + '">' + C.HULL_TYPES[k].label + '</option>'; }).join('') +
+      C.HULL_LIB_ORDER.map(function (k) { return '<option value="lib:' + k + '">' + esc(C.HULL_LIBRARY[k].label) + ' (table)</option>'; }).join('') +
+      (h.offsets && !h.lib ? '<option value="offsets">Table of offsets</option>' : '');
+    if (ty.getAttribute('data-sig') !== tyHtml) { ty.innerHTML = tyHtml; ty.setAttribute('data-sig', tyHtml); }
     setVal($('[data-hf="name"]', form), h.name);
-    ty.value = h.type;
+    ty.value = h.lib ? 'lib:' + h.lib : h.type;
+    var tbl = !!h.offsets;
+    $('#hullShape').hidden = tbl; $('#hfFit').hidden = tbl; $('#hfAuto').hidden = tbl;
+    $('#hullNote').textContent = tbl ? 'Hull from a table of offsets. Length, beam and depth scale the table. Depth is measured to the main deck; draught is the waterline below it.' :
+      'Illustrative hull, not real lines. Blocks above the main deck (such as the accommodation) do not need to be inside. Depth is measured to the main deck; draught is the waterline below it, and the hydrostatics are calculated at the draught.';
     ['x', 'y', 'loa', 'beam', 'depth'].forEach(function (f) { setVal($('[data-hf="' + f + '"]', form), fin(h[f])); });
     setVal($('[data-hf="draught"]', form), fin(S.model.draught));
     $('[data-hf="waterline"]', form).checked = S.model.waterline !== false;
@@ -4869,7 +5285,6 @@ var DBB_STL_PARTS = {"crane":{"id":"stl_ex_crane","label":"Deck crane","v":"7zp9
     $('#hud').innerHTML = e
       ? '<span><b>L</b>' + fmt(e.length, 2) + '</span><span><b>B</b>' + fmt(e.beam, 2) + '</span><span><b>H</b>' + fmt(e.height, 2) + '</span><span><b>V</b>' + fmt(C.summarize(S.model).total.vol, 0) + ' m³</span>'
       : '<span>L / B / H appear here</span>';
-    $('#vpEmpty').hidden = S.model.blocks.length > 0;
     renderFloatHud();
   }
   /* the floating condition, in the corner of the 3D view */
@@ -4899,7 +5314,7 @@ var DBB_STL_PARTS = {"crane":{"id":"stl_ex_crane","label":"Deck crane","v":"7zp9
       h.push('<ul class="issues">');
       var tag = { bad: 'Problem', warn: 'Check', note: 'Note' };
       a.issues.forEach(function (i) {
-        h.push('<li class="' + i.sev + '"><span class="tag">' + tag[i.sev] + '</span><span>' + esc(i.text) + '</span><a data-go="' + i.tab + '"' + (i.ref && i.ref.block ? ' data-blk="' + esc(i.ref.block) + '"' : '') + '>' + esc(tabName[i.tab]) + '</a></li>');
+        h.push('<li class="' + i.sev + '"><span class="tag">' + tag[i.sev] + '</span><span>' + esc(i.text) + '</span>' + (i.tab ? '<a data-go="' + i.tab + '"' + (i.ref && i.ref.block ? ' data-blk="' + esc(i.ref.block) + '"' : '') + '>' + esc(tabName[i.tab]) + '</a>' : '') + '</li>');
       });
       a.good.forEach(function (g) { h.push('<li class="good"><span class="tag">OK</span><span>' + esc(g) + '</span></li>'); });
       h.push('</ul>');
@@ -4993,10 +5408,10 @@ var DBB_STL_PARTS = {"crane":{"id":"stl_ex_crane","label":"Deck crane","v":"7zp9
   function renderStability(w) {
     var m = S.model, st = $('#stTbl'), ck = $('#stChk'), note = $('#stNote');
     w = w || C.weightSummary(m);
-    if (!w.hasHull) { note.textContent = 'Needs a hull.'; st.innerHTML = ''; ck.innerHTML = ''; return; }
+    if (!w.hasHull) { note.textContent = 'Needs a hull.'; st.innerHTML = ''; ck.innerHTML = ''; renderGz(m, null); return; }
     var s = stabilityOf(m);
-    if (!s) { note.textContent = 'Needs blocks with mass.'; st.innerHTML = ''; ck.innerHTML = ''; return; }
-    if (s.overloaded) { note.textContent = 'The weight is more than the hulls displace at full depth.'; st.innerHTML = ''; ck.innerHTML = ''; return; }
+    if (!s) { note.textContent = 'Needs blocks with mass.'; st.innerHTML = ''; ck.innerHTML = ''; renderGz(m, null); return; }
+    if (s.overloaded) { note.textContent = 'The weight is more than the hulls displace at full depth.'; st.innerHTML = ''; ck.innerHTML = ''; renderGz(m, null); return; }
     note.textContent = 'Upright, without trim, at the level draught that carries the weight. Small angles only.';
     var rows = ['<thead><tr><th>Item</th><th class="num">Value</th></tr></thead><tbody>'];
     function line(n, v, cls, rc) { rows.push('<tr' + (rc ? ' class="' + rc + '"' : '') + '><td>' + n + '</td><td class="num' + (cls || '') + '">' + v + '</td></tr>'); }
@@ -5025,6 +5440,59 @@ var DBB_STL_PARTS = {"crane":{"id":"stl_ex_crane","label":"Deck crane","v":"7zp9
     s.checks.forEach(function (c) {
       var val = c.value == null ? '–' : (c.name.indexOf('heel') >= 0 || c.name.indexOf('Static') === 0 ? fmt(Math.abs(c.value) < 0.005 ? 0 : c.value, 2) + '\u00B0' : fmt(c.value, 2) + ' m');
       cr.push('<tr><td>' + esc(c.name) + '</td><td class="num">' + val + '</td><td><small>' + esc(c.limit) + '</small></td><td class="' + (c.status === 'fail' ? 'bad' : '') + '">' + (c.status === 'pass' ? 'Met' : c.status === 'fail' ? 'Not met' : 'n/a') + '</td></tr>');
+    });
+    cr.push('</tbody>');
+    ck.innerHTML = cr.join('');
+    renderGz(m, s);
+  }
+
+  /* Righting lever: kept until the model changes, like the stability above */
+  var gzMemo = { key: '', val: null };
+  function gzOf(m, s) {
+    if (!s || s.overloaded) return null;
+    var key = stMemo.key + '|' + m.hulls.map(function (h) { return [h.x, h.y, h.loa, h.beam, h.depth, h.type, JSON.stringify(h.shape || null)]; }).join(';');
+    if (S.dragging && gzMemo.val) return gzMemo.val;
+    if (gzMemo.key === key) return gzMemo.val;
+    var g = C.gzCurve(m, s);
+    gzMemo = { key: key, val: g }; return g;
+  }
+  function gzPlotSvg(g) {
+    var W = 520, H = 250, L = 46, R = 14, T = 12, B = 34, pw = W - L - R, ph = H - T - B;
+    var xmax = Math.max(40, Math.ceil(g.limit / 10) * 10), ymaxv = 0, ymin = 0;
+    g.pts.forEach(function (p) { ymaxv = Math.max(ymaxv, p.gz); ymin = Math.min(ymin, p.gz); });
+    var step = ymaxv > 4 ? 1 : ymaxv > 2 ? 0.5 : ymaxv > 1 ? 0.25 : 0.1, ytop = Math.ceil(ymaxv / step + 0.2) * step, ybot = Math.floor(ymin / step) * step;
+    function X(v) { return L + v / xmax * pw; }
+    function Y(v) { return T + (ytop - v) / (ytop - ybot) * ph; }
+    var o = ['<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Righting lever GZ against heel angle">'], v;
+    for (v = ybot; v <= ytop + 1e-9; v += step) o.push('<line x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(v) + '" y2="' + Y(v) + '" class="gzgrid"/><text x="' + (L - 6) + '" y="' + (Y(v) + 4) + '" text-anchor="end" class="gztx">' + (Math.round(v * 100) / 100) + '</text>');
+    for (v = 0; v <= xmax; v += 10) o.push('<line x1="' + X(v) + '" x2="' + X(v) + '" y1="' + T + '" y2="' + (T + ph) + '" class="gzgrid"/><text x="' + X(v) + '" y="' + (H - 16) + '" text-anchor="middle" class="gztx">' + v + '</text>');
+    o.push('<line x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(0) + '" y2="' + Y(0) + '" class="gzaxis"/>');
+    o.push('<text x="' + (L + pw / 2) + '" y="' + (H - 2) + '" text-anchor="middle" class="gztx">Heel angle, degrees</text>');
+    o.push('<text x="12" y="' + (T + ph / 2) + '" text-anchor="middle" class="gztx" transform="rotate(-90 12 ' + (T + ph / 2) + ')">GZ, m</text>');
+    o.push('<polyline class="gzline" points="' + g.pts.map(function (p) { return X(p.phi).toFixed(1) + ',' + Y(p.gz).toFixed(1); }).join(' ') + '"/>');
+    g.pts.forEach(function (p) { o.push('<circle cx="' + X(p.phi).toFixed(1) + '" cy="' + Y(p.gz).toFixed(1) + '" r="2.6" class="gzdot"/>'); });
+    if (g.reason === 'edge') o.push('<line x1="' + X(g.limit) + '" x2="' + X(g.limit) + '" y1="' + T + '" y2="' + (T + ph) + '" class="gzedge"/><text x="' + (X(g.limit) - 4) + '" y="' + (T + 12) + '" text-anchor="end" class="gztx">deck edge in the water</text>');
+    return o.join('') + '</svg>';
+  }
+  function renderGz(m, s) {
+    var box = $('#gzPlot'), tb = $('#gzTbl'), ck = $('#gzChk'), note = $('#gzNote');
+    var g = s ? gzOf(m, s) : null;
+    if (!g) { box.innerHTML = ''; tb.innerHTML = ''; ck.innerHTML = ''; note.textContent = s && s.overloaded ? 'The weight is more than the hulls displace at full depth.' : 'Needs a hull and blocks with mass.'; return; }
+    note.textContent = 'Heel to one side, trim free, G on the centre line' + (g.fsT > 0 ? ', free surface included' : '') + '. The curve ends where the deck edge enters the water.';
+    box.innerHTML = gzPlotSvg(g);
+    var f1 = function (v) { return fmt(v, 1) + '°'; };
+    var rows = ['<thead><tr><th>Item</th><th class="num">Value</th></tr></thead><tbody>'];
+    function line(n, v) { rows.push('<tr><td>' + n + '</td><td class="num">' + v + '</td></tr>'); }
+    line('Maximum GZ <small>m</small>', (g.open ? 'at least ' : '') + fmt(g.maxGZ, 2));
+    line('Angle of maximum GZ', (g.open ? 'at least ' : '') + f1(g.phiMax));
+    line('Range of positive stability', g.phiVan != null ? '0° to ' + f1(g.phiVan) : (g.reason === 'edge' ? 'beyond ' + f1(g.limit) + ' (deck edge)' : 'beyond ' + f1(g.limit)));
+    line('Deck edge in the water', g.reason === 'edge' ? f1(g.limit) : 'not reached');
+    rows.push('</tbody>');
+    tb.innerHTML = rows.join('');
+    var cr = ['<thead><tr><th>Criterion</th><th class="num">Needed</th><th class="num">Value</th><th>Result</th></tr></thead><tbody>'];
+    g.criteria.forEach(function (c) {
+      var d = c.unit === 'm·rad' ? 3 : c.unit === '°' ? 1 : 2;
+      cr.push('<tr><td>' + esc(c.name) + '</td><td class="num">' + fmt(c.req, d) + ' ' + c.unit + '</td><td class="num">' + (c.value == null ? '–' : fmt(c.value, d)) + '</td><td class="' + (c.ok ? '' : 'bad') + '">' + (c.ok ? 'Met' : 'Not met') + (c.note ? ' <small>(' + c.note + ')</small>' : '') + '</td></tr>');
     });
     cr.push('</tbody>');
     ck.innerHTML = cr.join('');
@@ -5289,6 +5757,7 @@ var DBB_STL_PARTS = {"crane":{"id":"stl_ex_crane","label":"Deck crane","v":"7zp9
       ['KG', 'Height of the centre of gravity above the baseline, from the block centroids and the structure estimate.'],
       ['BM', 'Metacentric radius: the second moment of the waterplane about its centre, divided by the displaced volume. Multihulls get a large BM from the distance between the hulls.'],
       ['KM, GM', 'KM = KB + BM is the height of the metacentre. GM = KM − KG is the initial metacentric height: the larger it is, the stiffer the vessel at small heel angles.'],
+      ['GZ', 'The righting lever: the sideways distance between the centre of buoyancy and the centre of gravity when the ship is heeled. The curve is drawn up to the angle where the deck edge enters the water.'],
       ['Free surface', 'Liquid in a partly filled tank moves when the vessel heels, which acts like a higher centre of gravity. Mark a block as Free surface to include it; it is taken as a rectangular tank of its bounding box.'],
       ['Trim', 'Aft draught minus forward draught. It follows from the longitudinal centre of gravity lying ahead of or behind the centre of buoyancy.'],
       ['Outside hulls', 'The part of a block below the main deck that is not inside any hull. An estimate from sampling points in the block.']
@@ -5336,11 +5805,11 @@ var DBB_STL_PARTS = {"crane":{"id":"stl_ex_crane","label":"Deck crane","v":"7zp9
       '<li><b>Set up groups.</b> The hierarchy on the left starts with Levander’s OSV breakdown. Rename, recolour, add (<i>+ Group</i>, or + on a row) or delete groups to match your own division.</li>' +
       '<li><b>Write requirements.</b> In the <i>Requirements</i> tab choose a metric (volume, area, weight, length, beam, height, total weight, gross tonnage), at least or at most, and the <i>shall</i> and <i>should</i> values. Pick the group and requirement for new blocks in the two menus under the shape library. To link a block to several requirements, tick them in the block panel, or press the block count in the Requirements tab to pick the blocks (<i>Add all</i> ticks a whole group). A block counts in full for each requirement it serves.</li>' +
       '<li><b>Add and shape blocks.</b> Click a shape, or drag it onto the workplane. Select a block and use <i>Move</i>, <i>Rotate</i> or <i>Scale</i>. <b>To resize, choose Scale and drag the small coloured cubes.</b> The opposite face stays fixed, so one drag stretches the block from the face you did not grab. You can also type exact values in the right panel, which appears when something is selected. Snap aligns block faces to the step you choose. <b>Import STL</b> (or drop an STL file on the workplane) adds your own shape to the library: one file is one block. Units are guessed and can be changed. Large files (up to 500 MB) are reduced on import, and volume and centre of gravity come from the real mesh.</li>' +
-      '<li><b>Add a hull (optional).</b> Press <i>+ Hull</i>. It is fitted around the blocks below the main deck, whose height is the hull <i>depth</i>. Tick <i>Defines main deck</i> on a block to set the deck at its top; otherwise the depth is a guess. Click the hull row to edit it: move and scale it with the gizmo, set the <i>draught</i>, or open <i>Shape</i> for the sliders. A second <i>+ Hull</i> makes a catamaran and a third a trimaran, up to five hulls: each hull is fitted to its own group of blocks, so keep the blocks of each hull apart. The hulls are illustrative shapes, not real lines.</li>' +
+      '<li><b>Add a hull (optional).</b> Press <i>+ Hull</i>. It is fitted around the blocks below the main deck, whose height is the hull <i>depth</i>. Tick <i>Defines main deck</i> on a block to set the deck at its top; otherwise the depth is a guess. Click the hull row to edit it: move and scale it with the gizmo, set the <i>draught</i>, or open <i>Shape</i> for the sliders. A second <i>+ Hull</i> makes a catamaran and a third a trimaran, up to five hulls: each hull is fitted to its own group of blocks, so keep the blocks of each hull apart. The hulls are illustrative shapes, not real lines. Instead of a preset you can pick <i>Gunnerus-like (table)</i> as the hull type, or press <i>Hull from table\u2026</i> to add a hull from a table of offsets (a CSV file, or the table copied from <i>Offsets</i>): stations and heights in metres, half-breadths in the cells. A table hull cannot be refitted to the blocks, and its size fields scale the table.</li>' +
       '<li><b>Add weight.</b> In the <i>Hydrostatics</i> tab set a density per group, and override it on a block if needed, with a fill % for tanks or a typed mass. Tick <i>Free surface</i> on a part-filled liquid tank. The structure share is set in the same tab.</li>' +
-      '<li><b>Float it.</b> Press <i>Float</i> in the toolbar and the draught, trim and heel follow the weight as you move blocks. The <i>Hydrostatics</i> tab shows the floating condition, the weight balance, and the initial stability: KB, BM, KM and GM, with a few basic checks.</li>' +
+      '<li><b>Float it.</b> Press <i>Float</i> in the toolbar and the draught, trim and heel follow the weight as you move blocks. The <i>Hydrostatics</i> tab shows the floating condition, the weight balance, and the initial stability: KB, BM, KM and GM, with a few basic checks. Below it, the righting lever (GZ) is drawn with the standard criteria for guidance.</li>' +
       '<li><b>Read the Summary.</b> It opens with an assessment: chips for requirements, weight and hull, floating and stability, then the problems, notes and what passes. Click an item to go to the tab or block. Below it come the geometry and the hulls. <i>Requirements</i> shows each target with its margin: red if the shall is not met, green between shall and should, orange beyond the should (an excess), and <i>Blocks</i> lists every block; choose its column sets and click a title to sort.</li>' +
-      '<li><b>Iterate and save.</b> <i>Save</i> writes a JSON file you can reopen later, with imported shapes inside. <i>XLSX</i> saves the whole project as an Excel workbook, and <i>PDF</i> writes a report: views, assessment, requirements, weights, hydrostatics, stability and a list of all blocks. Nothing is kept in the browser, so save before you leave.</li>' +
+      '<li><b>Iterate and save.</b> <i>Save</i> writes a JSON file you can reopen later, with imported shapes inside. <i>XLSX</i> saves the whole project as an Excel workbook, and <i>PDF</i> writes a report: views, assessment, requirements, weights, hydrostatics, stability, the GZ curve and a list of all blocks. Nothing is kept in the browser, so save before you leave.</li>' +
       '</ol>' +
       '<p class="note">Axes: X forward from the aft end, Y to port, Z up from the baseline, in metres. For educational use only: hulls are illustrative and weights, hydrostatics and stability are indicative.</p>';
   }
@@ -5366,7 +5835,7 @@ var DBB_STL_PARTS = {"crane":{"id":"stl_ex_crane","label":"Deck crane","v":"7zp9
 
   function helpAbout() {
     return '<p class="aboutp">The Ship Design Building Block Editor is an app for early-stage ship design, inspired by the Design Building Block (DBB) approach. Spaces and systems are modelled as blocks in 3D; the app sums volume, area, weight and centres of gravity by system, checks them against shall and should requirements, floats the design on an illustrative hull, gives its hydrostatics and initial stability (GM), estimates the gross tonnage and writes a PDF report. You can bring in your own shapes as STL files.</p>' +
-      '<h3>Educational use only</h3><p class="aboutp">This tool is made for teaching and for early concept exploration. The hulls are illustrative parametric shapes, not real lines, and the weights, hydrostatics, trim, heel and stability are simplified estimates. Stability covers small angles only, with no righting-arm curve, wind, waves or damage. The results must not be used for design approval, class or flag-state documentation, or any safety-critical decision. The software is provided as it is, without warranty.</p>' +
+      '<h3>Educational use only</h3><p class="aboutp">This tool is made for teaching and for early concept exploration. The hulls are illustrative parametric shapes, not real lines (the hull in the Gunnerus example, called Gunnerus-like, comes from an approximate table of offsets of R/V Gunnerus, from the shiplab/gunnerus data, CC BY-NC 4.0, courtesy of polarkonsult and NTNU), and the weights, hydrostatics, trim, heel and stability are simplified estimates. The righting-arm curve (GZ) stops where the deck edge enters the water, and there is no wind, wave, opening or damage case. The results must not be used for design approval, class or flag-state documentation, or any safety-critical decision. The software is provided as it is, without warranty.</p>' +
       '<img class="ntnuword" src="data:image/png;base64,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" alt="NTNU" width="181" height="36">' +
       '<h3>Credits</h3><p class="aboutp">Developed by Henrique Gaspar, NTNU, October 2026. It builds on a block layout prototype from 2015.</p>' +
       '<h3>Acknowledgements</h3><p class="aboutp">Professor David Andrews, University College London, for his support over the years and the long collaboration between NTNU and UCL.</p>' +
@@ -5685,6 +6154,72 @@ var DBB_STL_PARTS = {"crane":{"id":"stl_ex_crane","label":"Deck crane","v":"7zp9
     fr.readAsArrayBuffer(file);
   }
 
+  /* add a hull from a table of offsets (CSV file or pasted text) */
+  function tableDialog() {
+    var first = !S.model.hulls.length, ov = document.createElement('div'), fname = '';
+    ov.className = 'overlay';
+    ov.innerHTML = '<div class="dialog offs" role="dialog" aria-modal="true" aria-label="Hull from a table of offsets"><h2>Hull from a table of offsets</h2>' +
+      '<p class="stlnote">CSV or pasted table: stations (m) and heights (m), half-breadths (m), blank = no hull.</p>' +
+      '<textarea class="tabtxt" rows="8" spellcheck="false" data-t="text"></textarea>' +
+      '<div class="offctl"><button class="btn sm" data-x="file">Open file…</button>' +
+      '<label>Depth (m) <input type="number" step="0.01" min="0.5" data-t="depth"></label>' +
+      (first ? '<label>Draught (m) <input type="number" step="0.1" min="0.1" data-t="draught"></label>' : '') + '</div>' +
+      '<p class="stlnote" data-t="info"></p>' +
+      '<div class="actions"><button class="btn" data-x="close">Cancel</button><button class="btn primary" data-x="add" disabled>Add hull</button></div></div>';
+    document.body.appendChild(ov);
+    var txt = $('[data-t="text"]', ov), dep = $('[data-t="depth"]', ov), dr = $('[data-t="draught"]', ov), info = $('[data-t="info"]', ov), addBtn = $('[data-x="add"]', ov), tab = null;
+    function parse(reset) {
+      var t = C.parseOffsetsText(txt.value);
+      tab = null; addBtn.disabled = true;
+      if (!txt.value.trim()) { info.textContent = ''; return; }
+      if (t.error) { info.textContent = t.error; return; }
+      tab = t;
+      if (reset) { dep.value = C.offsetsFullDepth(t); if (dr) dr.value = Math.round(0.55 * (+dep.value) * 10) / 10; }
+      var h = C.offsetsToHull(t, +dep.value || 0, dr ? +dr.value : null);
+      if (!h) { info.textContent = 'No rows up to this depth.'; return; }
+      info.textContent = t.xs.length + ' stations, ' + t.zs.length + ' heights. Length ' + fmt(h.loa, 2) + ' m, beam ' + fmt(h.beam, 2) + ' m, depth ' + fmt(h.depth, 2) + ' m.';
+      addBtn.disabled = false;
+    }
+    txt.addEventListener('input', function () { parse(true); });
+    dep.addEventListener('input', function () { parse(false); });
+    if (dr) dr.addEventListener('input', function () { parse(false); });
+    function close() { ov.remove(); document.removeEventListener('keydown', esc); }
+    function esc(e) { if (e.key === 'Escape') close(); }
+    document.addEventListener('keydown', esc);
+    ov.addEventListener('click', function (e) {
+      var x = e.target.getAttribute('data-x');
+      if (e.target === ov || x === 'close') close();
+      else if (x === 'file') {
+        var inp = document.createElement('input'); inp.type = 'file'; inp.accept = '.csv,.tsv,.txt,text/csv,text/plain';
+        inp.addEventListener('change', function () {
+          var f = inp.files && inp.files[0]; if (!f) return;
+          fname = f.name.replace(/\.[^.]*$/, '');
+          var rd = new FileReader();
+          rd.onload = function () { txt.value = String(rd.result || ''); parse(true); };
+          rd.readAsText(f);
+        });
+        inp.click();
+      } else if (x === 'add') {
+        if (!tab) return;
+        if (S.model.hulls.length >= C.MAX_HULLS) { toast('Up to ' + C.MAX_HULLS + ' hulls.', true); return; }
+        var h = C.offsetsToHull(tab, +dep.value, dr ? +dr.value : null);
+        if (!h) return;
+        var far = 0; S.model.hulls.forEach(function (q) { far = Math.max(far, Math.abs(q.y || 0) + q.beam / 2); });
+        if (S.model.hulls.length) h.y = r2(far + h.beam / 2 + 1);
+        h = C.addHullTo(S.model, h);
+        h.name = fname || h.name;
+        S.model.hulls.push(h);
+        C.syncDraught(S.model);
+        S.sel = null; S.selHull = h.id;
+        close();
+        reconcile(); renderAll(); pushHistory();
+        toast('Hull added from the table. Set its position in the panel.');
+      }
+    });
+    txt.focus();
+  }
+  function r2(v) { return Math.round(v * 100) / 100; }
+
   function offsetsDialog(h) {
     var ov = document.createElement('div');
     ov.className = 'overlay';
@@ -5869,7 +6404,7 @@ var DBB_STL_PARTS = {"crane":{"id":"stl_ex_crane","label":"Deck crane","v":"7zp9
     $('#projName').addEventListener('change', function (e) { S.model.name = e.target.value.trim() || 'Untitled design'; renderAll(); pushHistory(); });
     $('#btnUndo').addEventListener('click', undo);
     $('#btnRedo').addEventListener('click', redo);
-    $('#btnNew').addEventListener('click', function () { setModel(C.emptyProject(), 'New project. Undo brings back the previous one.'); });
+    $('#btnNew').addEventListener('click', function () { setModel(C.blankProject(), 'New project. Undo brings back the previous one.'); });
     var exSel = $('#exampleSel');
     EXAMPLES.forEach(function (ex) { var o = document.createElement('option'); o.value = ex.id; o.textContent = ex.label; exSel.appendChild(o); });
     exSel.addEventListener('change', function () {
@@ -6024,7 +6559,16 @@ var DBB_STL_PARTS = {"crane":{"id":"stl_ex_crane","label":"Deck crane","v":"7zp9
       var f = e.target.getAttribute('data-hf'), h = selHullObj();
       if (!f || !h) return;
       if (f === 'name') h.name = e.target.value.trim() || h.name;
-      else if (f === 'type') { h.name = C.hullNameFor(h.name, e.target.value); h.type = e.target.value; delete h.shape; }
+      else if (f === 'type') {
+        var tv = e.target.value;
+        if (tv.indexOf('lib:') === 0) {
+          var L = C.libraryHull(tv.slice(4));
+          if (!L) return;
+          h.name = C.hullNameFor(h.name, tv.slice(4));
+          h.type = 'offsets'; h.offsets = L.offsets; h.lib = L.lib; h.loa = L.loa; h.beam = L.beam; h.depth = L.depth; delete h.shape;
+        } else if (tv === 'offsets') return;
+        else { h.name = C.hullNameFor(h.name, tv); h.type = tv; delete h.shape; delete h.offsets; delete h.lib; }
+      }
       else if (f === 'waterline') S.model.waterline = e.target.checked;
       else if (f === 'hullcolor') { S.hullColor = e.target.value; renderAll(); return; }
       else if (f === 'watercolor') { S.waterColor = e.target.value; renderAll(); return; }
@@ -6058,6 +6602,7 @@ var DBB_STL_PARTS = {"crane":{"id":"stl_ex_crane","label":"Deck crane","v":"7zp9
     });
     $('#shapeReset').addEventListener('click', function () { setShape(null); });
     $('#hfOff').addEventListener('click', function () { var h = selHullObj(); if (h) offsetsDialog(h); });
+    $('#hfTab').addEventListener('click', tableDialog);
     $('#hfFit').addEventListener('click', function () { var h = selHullObj(); if (h) refitHull(h, false); });
     $('#hfAuto').addEventListener('click', function () { var h = selHullObj(); if (h) refitHull(h, true); });
     $('#hfDel').addEventListener('click', function () { if (S.selHull) deleteHull(S.selHull); });

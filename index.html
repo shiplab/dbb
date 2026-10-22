@@ -149,6 +149,16 @@ button { cursor: pointer; }
 .tile:hover { border-color: var(--accent); color: var(--fg); background: var(--panel-2); }
 .tile svg { width: 28px; height: 28px; color: var(--fg); }
 .tile span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.tilew { position: relative; display: grid; min-width: 0; }
+.tilew .rm { position: absolute; top: 1px; right: 2px; width: 16px; height: 16px; padding: 0; border: 0; background: transparent; color: var(--fg-dim); font-size: 14px; line-height: 1; cursor: pointer; border-radius: 3px; opacity: 0; }
+.tilew:hover .rm, .tilew .rm:focus-visible { opacity: 1; }
+.tilew .rm:hover { color: var(--bad, #d94b4b); background: var(--panel-2); }
+.tile.imp { border-style: dashed; cursor: pointer; }
+.dialog.stl { width: min(520px, 100%); }
+.dialog.stl .stlfile { font-family: var(--font-mono); font-size: 12px; overflow-wrap: anywhere; }
+.stlgrid { display: grid; gap: 8px; }
+.stlgrid label { display: grid; grid-template-columns: 150px 1fr; align-items: center; gap: 8px; font-size: 13px; color: var(--fg-dim); }
+.dialog.stl .stlnote { font-size: 12px; }
 .newbar { display: grid; gap: 6px; padding: 0 10px 8px; border-bottom: 1px solid var(--line); }
 .newbar label { display: grid; grid-template-columns: 74px 1fr; align-items: center; gap: 6px; font-size: 12px; color: var(--fg-dim); }
 select, input[type="text"], input[type="number"] { height: 28px; min-width: 0; width: 100%; padding: 0 6px; background: var(--bg); border: 1px solid var(--line); border-radius: 4px; font-size: 13px; }
@@ -242,8 +252,8 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
 .tbl td input[type="number"] { width: 84px; text-align: right; }
 .tbl td select { min-width: 96px; }
 .chip { display: inline-flex; align-items: center; gap: 5px; padding: 1px 9px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; }
-.chip.should { background: var(--ok-bg); color: var(--ok); }
-.chip.shall { background: var(--warn-bg); color: var(--warn); }
+.chip.ok { background: var(--ok-bg); color: var(--ok); }
+.chip.excess { background: var(--warn-bg); color: var(--warn); }
 .chip.fail { background: var(--bad-bg); color: var(--bad); }
 .chip.none { background: var(--panel-2); color: var(--fg-dim); }
 .addrow { padding: 8px 12px 12px; }
@@ -411,6 +421,15 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
 
 .deckmk { font: 600 10px var(--font-cond); letter-spacing: 0.06em; text-transform: uppercase; color: #b9780a; border: 1px solid currentColor; border-radius: 3px; padding: 0 3px; margin-right: 6px; flex: none; }
 
+.dialog.offs{width:min(960px,96vw);max-width:96vw}
+.offwrap{max-height:55vh;overflow:auto;margin:8px 0}
+.offt{border-collapse:collapse;font-size:12px;font-variant-numeric:tabular-nums}
+.offt th,.offt td{white-space:nowrap;padding:2px 7px;text-align:right;border-bottom:1px solid var(--line,#8884)}
+.offt th{position:sticky;top:0;background:var(--panel,Canvas)}
+.offctl{display:flex;gap:16px;flex-wrap:wrap}
+.offctl label{display:flex;align-items:center;gap:8px}
+.offctl select{width:auto}
+
 </style>
 </head>
 <body>
@@ -431,6 +450,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     <button class="btn" id="btnOpen" title="Open a project .json file">Open</button>
     <button class="btn primary" id="btnSave" title="Save the project as .json">Save</button>
     <input type="file" id="fileIn" accept=".json,application/json" hidden>
+    <input type="file" id="stlIn" accept=".stl,model/stl" hidden>
   </header>
 
   <main class="main">
@@ -444,7 +464,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
       <div class="ph hier">Hierarchy <button class="ic" id="btnBlocksEye" type="button" aria-pressed="false" title="Hide all blocks (view only)"></button> <span class="spacer"></span>
         <button class="btn sm" id="btnShowAll" title="Show every group and block">Show all</button>
         <button class="btn sm" id="btnAddGroup">+ Group</button>
-        <button class="btn sm" id="btnAddHull" title="Add a hull around the blocks (a second one adds a mirrored copy)">+ Hull</button>
+        <button class="btn sm" id="btnAddHull" title="Add a hull around the blocks (a second makes a catamaran, a third a trimaran, up to five)">+ Hull</button>
       </div>
       <div class="tree" id="tree"></div>
     </aside>
@@ -496,7 +516,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
             <button class="tab" role="tab" id="tabBtn-hydro" data-tab="hydro" aria-selected="false">Hydrostatics</button>
           </div>
           <div class="spacer"></div>
-          <button class="btn sm" id="btnCsv" title="Export the table of the open tab as CSV (comma separated)">CSV</button>
+          <button class="btn sm" id="btnPdf" title="Make a PDF report: the views, the assessment and the tables">PDF</button>
           <button class="btn sm" id="btnXlsx" title="Export the whole project as an Excel workbook, with formulas for the masses and totals">XLSX</button>
           <button class="btn sm" id="btnDrawer" aria-label="Collapse tables" aria-expanded="true" title="Collapse or expand the tables">&#9662;</button>
         </div>
@@ -558,6 +578,9 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
               <summary>Assumptions and limits</summary>
               <ul>
                 <li>Buoyancy comes only from the hulls, which are illustrative shapes. Blocks outside a hull, appendages, bulbs and propellers add nothing.</li>
+                <li>The envelope is the box around all blocks, rotated ones included. Overall length, beam and height, and the requirements on them, are read from the envelope, not from the hulls. The hulls are fitted to the blocks below the main deck, so they can be longer or wider than the envelope.</li>
+                <li>The hull drawings and the table of offsets in the PDF come from the same parametric formula as the hydrostatics. They show the illustrative shape the numbers are based on; they are not faired lines.</li>
+                <li>Gross tonnage is an estimate by the 1969 Tonnage Convention from the blocks that count as enclosed spaces. Overlapping blocks count twice. It is not a tonnage certificate.</li>
                 <li>Each block's weight acts at its own centroid. The structure is a percentage of the displacement, spread over the hull volume.</li>
                 <li>Draught is solved with Archimedes' principle: displacement equals the total weight, in a flat sea with one water density.</li>
                 <li>Trim and heel are an exact tilted water plane on the hull shapes, solved so that the volume equals the weight and the centre of buoyancy sits on the vertical through the centre of gravity. All hulls share the plane.</li>
@@ -630,6 +653,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
         </details>
         <div class="actions">
           <button type="button" class="btn sm" id="hfFit" title="Resize the hull around the blocks below the main deck">Fit to blocks</button>
+          <button type="button" class="btn sm" id="hfOff" title="Show the table of offsets of this hull">Offsets</button>
           <button type="button" class="btn sm" id="hfAuto" title="Guess the depth (main deck level) from the blocks, then fit">Auto depth</button>
         </div>
         <div id="hullOut"></div>
@@ -642,6 +666,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
         <label class="f"><span>Group</span><select data-f="group"></select></label>
         <div class="f"><span>Requirements</span><div class="reqchk" data-f="reqs"></div></div>
         <label class="check" title="The top of this block is the main deck. The hull depth follows it when you press + Hull or Auto"><input type="checkbox" data-f="deck"> Defines main deck (its top)</label>
+        <label class="check" title="An enclosed space counts towards the gross tonnage (GT). Untick open spaces such as an open cargo deck, a crane or a mast"><input type="checkbox" data-f="gt"> Counts for GT (enclosed space)</label>
         <div class="grp"><b>Size (m)</b>
           <div class="f3">
             <label class="f"><span>L</span><input type="number" step="0.1" min="0.05" data-f="size" data-i="0"></label>
@@ -722,7 +747,10 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     area:   { label: 'Area',                 unit: 'm²' },
     length: { label: 'Overall length (X)',   unit: 'm' },
     beam:   { label: 'Overall beam (Y)',     unit: 'm' },
-    height: { label: 'Overall height (Z)',   unit: 'm' }
+    height: { label: 'Overall height (Z)',   unit: 'm' },
+    mass:   { label: 'Weight of linked blocks', unit: 't' },
+    totalmass: { label: 'Total weight (with structure)', unit: 't' },
+    gt: { label: 'Gross tonnage (GT, estimate)', unit: 'GT' }
   };
 
   var geomCache = {};
@@ -739,7 +767,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
       case 'pyramid':  { var s = 0.5 * (0.5 - w); return w >= -0.5 - eps && Math.max(Math.abs(u), Math.abs(v)) <= s + eps; }
       case 'halfcyl':  { var q = (w + 0.5); return w >= -0.5 - eps && (u * u) / 0.25 + q * q <= 1 + eps; }
       case 'wedge':    return w >= -0.5 - eps && w <= u + eps;
-      default:         return true;
+      default:         { var rt = RT[kind]; if (!rt) return true; var G = STL_GRID, gi = Math.min(G - 1, Math.max(0, Math.floor((u + 0.5) * G))), gj = Math.min(G - 1, Math.max(0, Math.floor((v + 0.5) * G))), gk = Math.min(G - 1, Math.max(0, Math.floor((w + 0.5) * G))); return rt.grid[(gi * G + gj) * G + gk] === 1; }
     }
   }
 
@@ -795,6 +823,198 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     return edgeCache[kind];
   }
 
+
+  /* ---------- imported (STL) shapes ----------
+     An STL becomes one shape in the library. The mesh is reduced on import (vertex clustering) to a few thousand triangles and
+     stored as 16-bit coordinates in the unit cube, so a project file stays small. Volume and centroid come from the original mesh.
+     CUSTOM holds the stored data by id, RT the runtime data (point-in-shape grid, vertices). Nothing is ever removed from them, so undo works. */
+  var CUSTOM = {}, RT = {}, STL_GRID = 96, STL_TARGET = 25000, STL_MAX_BYTES = 500 * 1024 * 1024;
+
+  function b64u16(a) {
+    var u8 = new Uint8Array(a.buffer, a.byteOffset, a.byteLength), s = '', k = 0x8000;
+    for (var i = 0; i < u8.length; i += k) s += String.fromCharCode.apply(null, u8.subarray(i, i + k));
+    return btoa(s);
+  }
+  function u16b64(s) {
+    var bin = atob(s), u8 = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+    return new Uint16Array(u8.buffer, 0, u8.length >> 1);
+  }
+
+  /* point-in-shape grid by casting a ray along z through the centre of every column (odd-even rule); also the footprint fraction */
+  function buildGrid(pos, ntri) {
+    var G = STL_GRID, cols = new Array(G * G), t, i, j, k;
+    for (t = 0; t < ntri; t++) {
+      var o = t * 9, ax = pos[o], ay = pos[o + 1], az = pos[o + 2], bx = pos[o + 3], by = pos[o + 4], bz = pos[o + 5], cx = pos[o + 6], cy = pos[o + 7], cz = pos[o + 8];
+      var det = (by - cy) * (ax - cx) + (cx - bx) * (ay - cy);
+      if (Math.abs(det) < 1e-14) continue;
+      var i0 = Math.max(0, Math.floor((Math.min(ax, bx, cx) + 0.5) * G - 0.5)), i1 = Math.min(G - 1, Math.ceil((Math.max(ax, bx, cx) + 0.5) * G));
+      var j0 = Math.max(0, Math.floor((Math.min(ay, by, cy) + 0.5) * G - 0.5)), j1 = Math.min(G - 1, Math.ceil((Math.max(ay, by, cy) + 0.5) * G));
+      for (i = i0; i <= i1; i++) for (j = j0; j <= j1; j++) {
+        var px = (i + 0.5 + 0.0137) / G - 0.5, py = (j + 0.5 + 0.0291) / G - 0.5;
+        var l1 = ((by - cy) * (px - cx) + (cx - bx) * (py - cy)) / det, l2 = ((cy - ay) * (px - cx) + (ax - cx) * (py - cy)) / det, l3 = 1 - l1 - l2;
+        if (l1 < 0 || l2 < 0 || l3 < 0) continue;
+        (cols[i * G + j] || (cols[i * G + j] = [])).push(l1 * az + l2 * bz + l3 * cz);
+      }
+    }
+    var grid = new Uint8Array(G * G * G), occ = 0;
+    for (i = 0; i < G * G; i++) {
+      var c = cols[i];
+      if (!c || c.length < 2) continue;
+      c.sort(function (a, b) { return a - b; });
+      var any = false;
+      for (j = 0; j + 1 < c.length; j += 2) {
+        var k0 = Math.max(0, Math.ceil((c[j] + 0.5) * G - 0.5)), k1 = Math.min(G - 1, Math.floor((c[j + 1] + 0.5) * G - 0.5));
+        for (k = k0; k <= k1; k++) { grid[i * G + k] = 1; any = true; }
+      }
+      if (any) occ++;
+    }
+    return { grid: grid, plan: occ / (G * G) };
+  }
+
+  function customGeometry(pos, ntri) {
+    var g = new T.BufferGeometry();
+    g.setAttribute('position', new T.BufferAttribute(pos, 3));
+    g.computeVertexNormals();
+    return g;
+  }
+
+  /* is a stored shape well formed? */
+  function validShape(d) {
+    if (!d || typeof d !== 'object' || typeof d.id !== 'string' || !/^stl_[a-z0-9_]{1,40}$/.test(d.id)) return false;
+    if (typeof d.v !== 'string' || typeof d.i !== 'string' || d.v.length > 8e6 || d.i.length > 8e6) return false;
+    if (!(d.vf > 0 && d.vf <= 1) || !Array.isArray(d.c) || d.c.length !== 3 || !d.c.every(function (x) { return isFinite(x) && Math.abs(x) <= 0.5; })) return false;
+    if (!Array.isArray(d.size) || d.size.length !== 3 || !d.size.every(function (x) { return isFinite(x) && x > 0; })) return false;
+    try {
+      var v = u16b64(d.v), ix = u16b64(d.i), nv = v.length / 3;
+      if (nv < 4 || v.length % 3 || ix.length < 12 || ix.length % 3) return false;
+      for (var q = 0; q < ix.length; q++) if (ix[q] >= nv) return false;
+    } catch (e) { return false; }
+    return true;
+  }
+
+  function registerShape(d) {
+    if (SHAPES[d.id] && SHAPES[d.id].custom) return true;
+    if (!validShape(d)) return false;
+    var v = u16b64(d.v), ix = u16b64(d.i), nt = ix.length / 3, pos = new Float32Array(nt * 9), pts = new Float32Array(v.length), q, k;
+    for (q = 0; q < v.length; q++) pts[q] = v[q] / 65535 - 0.5;
+    for (q = 0; q < nt; q++) for (var a = 0; a < 3; a++) for (k = 0; k < 3; k++) pos[q * 9 + a * 3 + k] = pts[ix[q * 3 + a] * 3 + k];
+    var gr = buildGrid(pos, nt);
+    CUSTOM[d.id] = d;
+    RT[d.id] = { grid: gr.grid, pts: pts };
+    SHAPES[d.id] = { label: String(d.label || 'Imported shape').slice(0, 40), vf: d.vf, plan: gr.plan, custom: true };
+    SHAPE_CENTROID[d.id] = d.c.slice();
+    geomCache[d.id] = customGeometry(pos, nt);
+    delete edgeCache[d.id];
+    return true;
+  }
+
+  /* STL reader: binary or ASCII; returns {n, get(i, out9)} */
+  function parseSTL(buf) {
+    if (buf.byteLength > STL_MAX_BYTES) throw new Error('The file is larger than 500 MB.');
+    var n = 0, bin = false, dv = new DataView(buf), u8 = new Uint8Array(buf);
+    if (buf.byteLength >= 84) {
+      n = dv.getUint32(80, true);
+      var head = String.fromCharCode.apply(null, u8.subarray(0, 5)).toLowerCase();
+      bin = 84 + 50 * n === buf.byteLength || (head !== 'solid' && 84 + 50 * n <= buf.byteLength);
+    }
+    if (bin) {
+      return { n: n, ascii: false, get: function (i, o) { var p = 84 + 50 * i + 12; for (var k = 0; k < 9; k++) o[k] = dv.getFloat32(p + 4 * k, true); } };
+    }
+    var txt = new TextDecoder().decode(buf), re = /vertex\s+(\S+)\s+(\S+)\s+(\S+)/g, m, f = [];
+    while ((m = re.exec(txt))) { f.push(+m[1], +m[2], +m[3]); }
+    if (!f.length || f.length % 9) throw new Error('This does not look like an STL file.');
+    var fa = new Float32Array(f);
+    return { n: fa.length / 9, ascii: true, get: function (i, o) { for (var k = 0; k < 9; k++) o[k] = fa[i * 9 + k]; } };
+  }
+
+  /* guess the unit of an STL from its largest size: more than 300 is taken as millimetres */
+  function guessUnit(dims) { return Math.max(dims[0], dims[1], dims[2]) > 300 ? 'mm' : 'm'; }
+  var UNIT_SCALE = { mm: 0.001, cm: 0.01, m: 1, in: 0.0254 };
+
+  /* reduce a parsed STL: opts.up is 'z' (default) or 'y'. Result: {v, i (Uint16 arrays), vf, c, dims, closed, tris0, tris, verts} */
+  function reduceSTL(src, opts) {
+    opts = opts || {};
+    var n = src.n, o = new Float64Array(9), up = opts.up === 'y', t, k;
+    if (!n) throw new Error('The file has no triangles.');
+    function get(i) {
+      src.get(i, o);
+      if (up) for (var q = 0; q < 9; q += 3) { var y = o[q + 1], z = o[q + 2]; o[q + 1] = -z; o[q + 2] = y; }
+    }
+    var mn = [Infinity, Infinity, Infinity], mx = [-Infinity, -Infinity, -Infinity];
+    for (t = 0; t < n; t++) {
+      get(t);
+      for (k = 0; k < 9; k++) { var c = k % 3, x = o[k]; if (!isFinite(x)) throw new Error('The file has invalid numbers.'); if (x < mn[c]) mn[c] = x; if (x > mx[c]) mx[c] = x; }
+    }
+    var dims = [mx[0] - mn[0], mx[1] - mn[1], mx[2] - mn[2]], mid = [(mx[0] + mn[0]) / 2, (mx[1] + mn[1]) / 2, (mx[2] + mn[2]) / 2];
+    var maxd = Math.max(dims[0], dims[1], dims[2]);
+    if (!(maxd > 0)) throw new Error('The model has no size.');
+    var dd = dims.map(function (d) { return Math.max(d, maxd * 1e-4); });
+    // volume, centroid and closedness of the original mesh (relative to the box centre)
+    var V = 0, cs = [0, 0, 0], av = [0, 0, 0], aabs = 0;
+    for (t = 0; t < n; t++) {
+      get(t);
+      var ax = o[0] - mid[0], ay = o[1] - mid[1], az = o[2] - mid[2], bx = o[3] - mid[0], by = o[4] - mid[1], bz = o[5] - mid[2], cx = o[6] - mid[0], cy = o[7] - mid[1], cz = o[8] - mid[2];
+      var vol = (ax * (by * cz - bz * cy) - ay * (bx * cz - bz * cx) + az * (bx * cy - by * cx)) / 6;
+      V += vol; cs[0] += vol * (ax + bx + cx) / 4; cs[1] += vol * (ay + by + cy) / 4; cs[2] += vol * (az + bz + cz) / 4;
+      var ux = bx - ax, uy = by - ay, uz = bz - az, wx = cx - ax, wy = cy - ay, wz = cz - az;
+      var nx = (uy * wz - uz * wy) / 2, ny = (uz * wx - ux * wz) / 2, nz = (ux * wy - uy * wx) / 2;
+      av[0] += nx; av[1] += ny; av[2] += nz; aabs += Math.sqrt(nx * nx + ny * ny + nz * nz);
+    }
+    var closed = aabs > 0 && Math.sqrt(av[0] * av[0] + av[1] * av[1] + av[2] * av[2]) / aabs < 0.01 && Math.abs(V) > 1e-9 * maxd * maxd * maxd;
+    var boxV = dd[0] * dd[1] * dd[2], vf = Math.min(1, Math.max(0.02, Math.abs(V) / boxV));
+    var cen = Math.abs(V) > 0 ? [cs[0] / V / dd[0], cs[1] / V / dd[1], cs[2] / V / dd[2]] : [0, 0, 0];
+    cen = cen.map(function (x) { return Math.max(-0.5, Math.min(0.5, x)); });
+
+    // vertex clustering
+    function cluster(R) {
+      var h = maxd / R, map = new Map(), sx = [], sy = [], sz = [], cnt = [], tri = [], id = [0, 0, 0];
+      for (var tt = 0; tt < n; tt++) {
+        get(tt);
+        for (var a = 0; a < 3; a++) {
+          var ix = Math.min(4095, Math.floor((o[a * 3] - mn[0]) / h)), iy = Math.min(4095, Math.floor((o[a * 3 + 1] - mn[1]) / h)), iz = Math.min(4095, Math.floor((o[a * 3 + 2] - mn[2]) / h));
+          var key = (ix * 4096 + iy) * 4096 + iz, ci = map.get(key);
+          if (ci === undefined) { ci = cnt.length; map.set(key, ci); sx.push(0); sy.push(0); sz.push(0); cnt.push(0); }
+          sx[ci] += o[a * 3]; sy[ci] += o[a * 3 + 1]; sz[ci] += o[a * 3 + 2]; cnt[ci]++;
+          id[a] = ci;
+        }
+        if (id[0] !== id[1] && id[1] !== id[2] && id[0] !== id[2]) tri.push(id[0], id[1], id[2]);
+      }
+      return { sx: sx, sy: sy, sz: sz, cnt: cnt, tri: tri };
+    }
+    var R = n <= STL_TARGET ? 4000 : 48, cl = cluster(R), guard = 0;
+    while (n > STL_TARGET && guard++ < 4) {
+      var nt = cl.tri.length / 3;
+      if ((nt <= STL_TARGET * 1.15 && nt >= STL_TARGET * 0.5 && cl.cnt.length < 65000) || R >= 4000) break;
+      R = Math.max(8, Math.min(4000, R * Math.sqrt(STL_TARGET * 0.9 / Math.max(1, nt))));
+      cl = cluster(R);
+    }
+    while (cl.cnt.length >= 65000 && R > 8) { R = Math.floor(R * 0.8); cl = cluster(R); }
+    // keep the used vertices only, and write them as 16-bit coordinates in the unit cube
+    var remap = new Int32Array(cl.cnt.length).fill(-1), nv = 0, idx = new Uint16Array(cl.tri.length), vs = [];
+    for (t = 0; t < cl.tri.length; t++) {
+      var c0 = cl.tri[t];
+      if (remap[c0] < 0) {
+        remap[c0] = nv++;
+        var q = [(cl.sx[c0] / cl.cnt[c0] - mid[0]) / dd[0], (cl.sy[c0] / cl.cnt[c0] - mid[1]) / dd[1], (cl.sz[c0] / cl.cnt[c0] - mid[2]) / dd[2]];
+        for (k = 0; k < 3; k++) vs.push(Math.max(0, Math.min(65535, Math.round((q[k] + 0.5) * 65535))));
+      }
+      idx[t] = remap[c0];
+    }
+    if (idx.length < 12 || nv < 4) throw new Error('The model is too small or too flat to import.');
+    return { v: new Uint16Array(vs), i: idx, vf: vf, c: cen, dims: dims, closed: closed, tris0: n, tris: idx.length / 3, verts: nv };
+  }
+
+  /* the stored data of a shape, from a reduced mesh; scale turns the file units into metres */
+  function makeShapeData(red, label, scale, id, bytes0) {
+    return {
+      id: id, label: String(label || 'Imported shape').slice(0, 40), v: b64u16(red.v), i: b64u16(red.i), vf: Math.round(red.vf * 1e5) / 1e5,
+      c: red.c.map(function (x) { return Math.round(x * 1e5) / 1e5; }),
+      size: red.dims.map(function (d) { return Math.round(d * scale * 1e4) / 1e4 || 0.0001; }),
+      closed: red.closed, tris0: red.tris0, tris: red.tris, bytes0: bytes0 || 0
+    };
+  }
+
   /* ---------- block maths ---------- */
   function num(v, d) {
     v = Number(v);
@@ -812,13 +1032,24 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     return SHAPES[b.shape].vf * b.size[0] * b.size[1] * b.size[2];
   }
 
+  /* Gross tonnage, estimate by the 1969 Tonnage Convention: GT = K1 x V, K1 = 0.2 + 0.02 log10(V), V the volume of the enclosed spaces in m3.
+     A block counts when it is not marked as an open space (b.gt === false). Overlapping blocks count twice. */
+  function grossTonnage(model) {
+    var V = 0, n = 0;
+    model.blocks.forEach(function (b) { if (b.gt !== false) { V += blockVolume(b); n++; } });
+    var K1 = V > 0 ? 0.2 + 0.02 * Math.log(V) / Math.LN10 : 0;
+    return { V: V, K1: K1, GT: K1 * V, n: n };
+  }
+
   function worldVerts(b) {
-    var pa = makeGeometry(b.shape).attributes.position;
+    var rt = RT[b.shape], pa = rt ? null : makeGeometry(b.shape).attributes.position;
     var m = blockMatrix(b);
     var v = new T.Vector3();
-    var out = new Array(pa.count * 3);
-    for (var i = 0; i < pa.count; i++) {
-      v.fromBufferAttribute(pa, i).applyMatrix4(m);
+    var cnt = rt ? rt.pts.length / 3 : pa.count;
+    var out = new Array(cnt * 3);
+    for (var i = 0; i < cnt; i++) {
+      if (rt) v.set(rt.pts[i * 3], rt.pts[i * 3 + 1], rt.pts[i * 3 + 2]); else v.fromBufferAttribute(pa, i);
+      v.applyMatrix4(m);
       out[i * 3] = v.x; out[i * 3 + 1] = v.y; out[i * 3 + 2] = v.z;
     }
     return out;
@@ -1073,13 +1304,19 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     var env = (summary || summarize(model)).envelope, hc = hullCheck(model);
     return model.requirements.map(function (r) {
       var achieved = 0, n = 0, shared = 0, names = [];
-      if (r.metric === 'volume' || r.metric === 'area') {
+      if (r.metric === 'volume' || r.metric === 'area' || r.metric === 'mass') {
         model.blocks.forEach(function (b) {
           if (hasReq(b, r.id)) {
             n++; names.push(b.name); if (blockReqs(b).length > 1) shared++;
-            achieved += r.metric === 'volume' ? blockVolume(b) : blockArea(b);
+            achieved += r.metric === 'volume' ? blockVolume(b) : r.metric === 'area' ? blockArea(b) : blockMass(model, b).mass;
           }
         });
+      } else if (r.metric === 'gt') {
+        var gtr = grossTonnage(model);
+        achieved = gtr.GT; n = gtr.n;
+      } else if (r.metric === 'totalmass') {
+        achieved = weightSummary(model).total.mass;
+        n = model.blocks.length;
       } else {
         achieved = env ? env[r.metric] : 0;
         n = model.blocks.length;
@@ -1088,15 +1325,20 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
         if (thr == null) return null;
         return r.sense === 'max' ? achieved <= thr + tol(thr) : achieved >= thr - tol(thr);
       }
+      /* fail: the shall is not met. ok: the shall is met, within the should. excess: beyond the should (more than asked for).
+         With only a should, meeting it is ok and missing it is fail. */
       function statusOf(val) {
         var s = r.sense === 'max';
         function o(thr) { return thr == null ? null : (s ? val <= thr + tol(thr) : val >= thr - tol(thr)); }
         if (r.shall == null && r.should == null) return 'none';
-        if (o(r.should) === true) return 'should';
-        if (o(r.shall) === true) return 'shall';
-        return 'fail';
+        if (r.shall == null) return o(r.should) === true ? 'ok' : 'fail';
+        if (o(r.shall) !== true) return 'fail';
+        if (r.should != null && (s ? val < r.should - tol(r.should) : val > r.should + tol(r.should))) return 'excess';
+        return 'ok';
       }
       var status = statusOf(achieved);
+      var mS = margin(achieved, r.sense, r.shall), mH = margin(achieved, r.sense, r.should);
+      var mShow = status === 'excess' ? mH : (r.shall != null ? mS : mH);
       // what is left once only the part of each block inside the hulls counts (estimate; volume and area requirements)
       var insideVal = null, statusIn = null;
       if (hc && (r.metric === 'volume' || r.metric === 'area')) {
@@ -1108,11 +1350,22 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
         });
         statusIn = statusOf(insideVal);
       }
-      return { req: r, achieved: achieved, n: n, shared: shared, blocks: names, status: status, inside: insideVal, statusInside: statusIn };
+      return { req: r, achieved: achieved, n: n, shared: shared, blocks: names, status: status, marginShall: mS, marginShould: mH, margin: mShow, inside: insideVal, statusInside: statusIn };
     });
   }
 
-  var STATUS_LABEL = { should: 'Meets should', shall: 'Meets shall', fail: 'Not met', none: 'No target' };
+  var STATUS_LABEL = { ok: 'Within range', excess: 'Excess over should', fail: 'Not met', none: 'No target' };
+  /* signed margin against a target, in percent: plus is better than the target (more for "at least", less for "at most") */
+  function margin(val, sense, thr) {
+    if (thr == null || thr === 0) return null;
+    return (sense === 'max' ? (thr - val) : (val - thr)) / Math.abs(thr) * 100;
+  }
+  function mpc(m) { return m == null ? null : Math.round(m * 10) / 10; }
+  function fmtMargin(m) { return m == null ? '' : (m >= 0 ? '+' : '\u2212') + Math.abs(m).toFixed(Math.abs(m) < 10 ? 1 : 0) + '%'; }
+  function statusText(status, r) {
+    var only = r.shall == null;
+    return status === 'ok' ? (only ? 'Meets should' : 'Meets shall') : status === 'fail' ? (only ? 'Fails should' : 'Fails shall') : status === 'excess' ? 'Excess over should' : 'No target';
+  }
 
   /* ---------- project model ---------- */
   function emptyProject(name) {
@@ -1124,7 +1377,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
       id: id, name: name, shape: shape, group: group, reqs: req ? [req] : [],
       position: [(x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2],
       size: [x1 - x0, y1 - y0, z1 - z0],
-      rotation: [0, 0, 0], areaOverride: null, hidden: false, density: null, fill: 100, massOverride: null, freeSurface: false, deck: false
+      rotation: [0, 0, 0], areaOverride: null, hidden: false, density: null, fill: 100, massOverride: null, freeSurface: false, deck: false, gt: true
     };
   }
 
@@ -1176,9 +1429,9 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
   function catamaranExample() {
     var m = emptyProject('Catamaran example');
     m.requirements = [
-      { id: 'r_pax',  name: 'Passenger saloon area', metric: 'area',   sense: 'min', shall: 150, should: 190 },
-      { id: 'r_fuel', name: 'Fuel oil volume',       metric: 'volume', sense: 'min', shall: 25,  should: 35 },
-      { id: 'r_loa',  name: 'Overall length',        metric: 'length', sense: 'max', shall: 26,  should: 24 },
+      { id: 'r_pax',  name: 'Passenger saloon area', metric: 'area',   sense: 'min', shall: 150, should: 210 },
+      { id: 'r_fuel', name: 'Fuel oil volume',       metric: 'volume', sense: 'min', shall: 25,  should: 60 },
+      { id: 'r_loa',  name: 'Overall length',        metric: 'length', sense: 'max', shall: 26,  should: 20 },
       { id: 'r_beam', name: 'Overall beam',          metric: 'beam',   sense: 'max', shall: 14,  should: 13 }
     ];
     var B = [];
@@ -1206,10 +1459,10 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
   function trimaranExample() {
     var m = emptyProject('Trimaran example');
     m.requirements = [
-      { id: 'r_acc',  name: 'Accommodation area', metric: 'area',   sense: 'min', shall: 150, should: 200 },
-      { id: 'r_fuel', name: 'Fuel oil volume',    metric: 'volume', sense: 'min', shall: 25,  should: 35 },
-      { id: 'r_loa',  name: 'Overall length',     metric: 'length', sense: 'max', shall: 40,  should: 37 },
-      { id: 'r_beam', name: 'Overall beam',       metric: 'beam',   sense: 'max', shall: 14,  should: 13 }
+      { id: 'r_acc',  name: 'Accommodation area', metric: 'area',   sense: 'min', shall: 150, should: 250 },
+      { id: 'r_fuel', name: 'Fuel oil volume',    metric: 'volume', sense: 'min', shall: 25,  should: 50 },
+      { id: 'r_loa',  name: 'Overall length',     metric: 'length', sense: 'max', shall: 40,  should: 33 },
+      { id: 'r_beam', name: 'Overall beam',       metric: 'beam',   sense: 'max', shall: 14,  should: 12.5 }
     ];
     var B = [];
     B.push(mkBlock('b1', 'Steering and waterjet room', 'box', 'g_mach',   null,     1, 6,   -1.3, 1.3, 0.4, 3.5));
@@ -1245,7 +1498,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
       { id: 'r_work', name: 'Aft working deck area',    metric: 'area',   sense: 'min', shall: 70,  should: 90 },
       { id: 'r_cab',  name: 'Cabin area',               metric: 'area',   sense: 'min', shall: 100, should: 120 },
       { id: 'r_fuel', name: 'Fuel oil volume',          metric: 'volume', sense: 'min', shall: 55,  should: 65 },
-      { id: 'r_loa',  name: 'Overall length',           metric: 'length', sense: 'max', shall: 38,  should: 36.5 },
+      { id: 'r_loa',  name: 'Overall length',           metric: 'length', sense: 'max', shall: 38,  should: 36 },
       { id: 'r_beam', name: 'Overall beam',             metric: 'beam',   sense: 'max', shall: 10,  should: 9.6 }
     ];
     var B = [];
@@ -1350,10 +1603,10 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     m.requirements = [
       { id: 'r_hold',  name: 'Container space in the holds', metric: 'volume', sense: 'min', shall: 11500, should: 13000 },
       { id: 'r_stack', name: 'Container space on deck',      metric: 'volume', sense: 'min', shall: 13000, should: 15500 },
-      { id: 'r_acc',   name: 'Accommodation area',           metric: 'area',   sense: 'min', shall: 800,   should: 1000 },
+      { id: 'r_acc',   name: 'Accommodation area',           metric: 'area',   sense: 'min', shall: 800,   should: 1150 },
       { id: 'r_fuel',  name: 'Fuel oil volume',              metric: 'volume', sense: 'min', shall: 450,   should: 600 },
-      { id: 'r_loa',   name: 'Overall length',               metric: 'length', sense: 'max', shall: 140,   should: 132 },
-      { id: 'r_beam',  name: 'Overall beam',                 metric: 'beam',   sense: 'max', shall: 24,    should: 20 }
+      { id: 'r_loa',   name: 'Overall length',               metric: 'length', sense: 'max', shall: 140,   should: 128 },
+      { id: 'r_beam',  name: 'Overall beam',                 metric: 'beam',   sense: 'max', shall: 24,    should: 19 }
     ];
     m.hulls = [addHullTo(m, { type: 'cargo', x: 0, y: 0, loa: 138, beam: 23, depth: 10.2, draught: 7.4, shape: { par: 0.42, c: 2.0, ua: 0.18, ps: 0.6, fb: 0.85 } })];
     var B = [];
@@ -1390,10 +1643,10 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     var m = emptyProject('Tanker (product, double hull)');
     m.requirements = [
       { id: 'r_cargo', name: 'Cargo oil volume',   metric: 'volume', sense: 'min', shall: 8500,  should: 10000 },
-      { id: 'r_acc',   name: 'Accommodation area', metric: 'area',   sense: 'min', shall: 700,   should: 850 },
+      { id: 'r_acc',   name: 'Accommodation area', metric: 'area',   sense: 'min', shall: 700,   should: 950 },
       { id: 'r_fuel',  name: 'Fuel oil volume',    metric: 'volume', sense: 'min', shall: 350,   should: 450 },
-      { id: 'r_loa',   name: 'Overall length',     metric: 'length', sense: 'max', shall: 135,   should: 125 },
-      { id: 'r_beam',  name: 'Overall beam',       metric: 'beam',   sense: 'max', shall: 22,    should: 21 }
+      { id: 'r_loa',   name: 'Overall length',     metric: 'length', sense: 'max', shall: 135,   should: 115 },
+      { id: 'r_beam',  name: 'Overall beam',       metric: 'beam',   sense: 'max', shall: 22,    should: 19 }
     ];
     m.hulls = [addHullTo(m, { type: 'cargo', x: 0, y: 0, loa: 128, beam: 21, depth: 9.2, draught: 7.5, shape: { par: 0.6, c: 2.8, ua: 0.12, ps: 0.85, fb: 0.95 } })];
     var B = [], rows = [[26, 52], [52, 78], [78, 104]], n = 1;
@@ -1424,6 +1677,44 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     return m;
   }
 
+  /* Illustrative cruising sailing yacht (about 15 m). Cabins and tanks below deck, a deckhouse, a tall mast, and lead ballast
+     low in the hull (the hull model has no separate keel fin, so the ballast is a dense block in the bottom). The mast sets the
+     height requirement. */
+  function sailingYachtExample() {
+    var m = emptyProject('Sailing yacht (15 m cruiser)');
+    m.requirements = [
+      { id: 'r_acc',  name: 'Accommodation area',  metric: 'area',   sense: 'min', shall: 20,   should: 26 },
+      { id: 'r_tank', name: 'Fuel and water volume', metric: 'volume', sense: 'min', shall: 0.9, should: 1.8 },
+      { id: 'r_loa',  name: 'Overall length',      metric: 'length', sense: 'max', shall: 15,   should: 13.5 },
+      { id: 'r_beam', name: 'Overall beam',        metric: 'beam',   sense: 'max', shall: 4.6,  should: 3.2 },
+      { id: 'r_air',  name: 'Height above baseline (air draft)', metric: 'height', sense: 'max', shall: 22, should: 20 }
+    ];
+    m.hulls = [addHullTo(m, { type: 'demihull', x: 0, y: 0, loa: 15.2, beam: 4.4, depth: 1.9, draught: 0.9, shape: { fb: 0.35, par: 0.5, m: 5, flare: 0.1, c: 2 } })];
+    var B = [];
+    B.push(mkBlock('b1',  'Lead ballast',            'box',      'g_struct', null,     4.2, 7.2, -0.25, 0.25, 0, 0.3));
+    B.push(mkBlock('b2',  'Engine room',             'box',      'g_mach',   null,     4.6, 6.4, -0.6, 0.6, 0.4, 1.9));
+    B.push(mkBlock('b3',  'Aft cabin P',             'box',      'g_acc',    'r_acc',  1.4, 4.4, 0.15, 1.7, 0.4, 1.9));
+    B.push(mkBlock('b4',  'Aft cabin S',             'box',      'g_acc',    'r_acc',  1.4, 4.4, -1.7, -0.15, 0.4, 1.9));
+    B.push(mkBlock('b5',  'Saloon and galley',       'box',      'g_acc',    'r_acc',  6.4, 10.4, -1.7, 1.7, 0.4, 1.9));
+    B.push(mkBlock('b6',  'Forward cabin',           'box',      'g_acc',    'r_acc',  10.8, 13.0, -1.3, 1.3, 0.4, 1.9));
+    B.push(mkBlock('b7',  'Water tank P',            'box',      'g_tanks',  'r_tank', 6.8, 8.8, 0.4, 1.2, 0.3, 0.7));
+    B.push(mkBlock('b8',  'Water tank S',            'box',      'g_tanks',  'r_tank', 6.8, 8.8, -1.2, -0.4, 0.3, 0.7));
+    B.push(mkBlock('b9',  'Fuel tank',               'box',      'g_tanks',  'r_tank', 3.2, 4.4, -0.5, 0.5, 0.3, 0.7));
+    B.push(mkBlock('b10', 'Sail and anchor locker',  'box',      'g_outfit', null,     13.1, 14.1, -0.8, 0.8, 0.9, 1.9));
+    B.push(mkBlock('b11', 'Steering and lazarette',  'box',      'g_outfit', null,     0.2, 1.4, -1.2, 1.2, 0.3, 1.9));
+    B.push(mkBlock('b12', 'Deckhouse',               'box',      'g_outfit', null,     5.8, 10.0, -1.1, 1.1, 1.9, 2.6));
+    B.push(mkBlock('b13', 'Mast and rigging',        'cylinder', 'g_outfit', null,     8.0, 8.3, -0.15, 0.15, 1.9, 20.4));
+    m.hulls[0].name = 'Monohull';
+    m.blocks = B; fitWidths(m, 0.97);
+    gdens(m, 'g_acc', 0.08); gdens(m, 'g_mach', 0.12); gdens(m, 'g_outfit', 0.1); gdens(m, 'g_tanks', 0.85);
+    tune(m, 'b1', { density: 11.3 }); tune(m, 'b13', { density: 0.3 });
+    tune(m, 'b7', { fill: 100 }); tune(m, 'b8', { fill: 100 }); tune(m, 'b9', { fill: 80 });
+    m.structPct = 27;
+    pruneGroups(m);
+    settle(m);
+    return m;
+  }
+
   /* Illustrative handysize bulk carrier (about 28,000 dwt). Five holds, hopper and topside ballast tanks, accommodation
      and engine room aft. Heavy bulk cargo, so the holds are not full. */
   function bulkCarrierExample() {
@@ -1431,9 +1722,9 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     m.requirements = [
       { id: 'r_hold', name: 'Cargo hold volume',   metric: 'volume', sense: 'min', shall: 16000, should: 20000 },
       { id: 'r_acc',  name: 'Accommodation area',  metric: 'area',   sense: 'min', shall: 900,   should: 1200 },
-      { id: 'r_fuel', name: 'Fuel oil volume',     metric: 'volume', sense: 'min', shall: 600,   should: 700 },
+      { id: 'r_fuel', name: 'Fuel oil volume',     metric: 'volume', sense: 'min', shall: 600,   should: 750 },
       { id: 'r_loa',  name: 'Overall length',      metric: 'length', sense: 'max', shall: 160,   should: 150 },
-      { id: 'r_beam', name: 'Overall beam',        metric: 'beam',   sense: 'max', shall: 27,    should: 25 }
+      { id: 'r_beam', name: 'Overall beam',        metric: 'beam',   sense: 'max', shall: 27,    should: 24 }
     ];
     m.hulls = [addHullTo(m, { type: 'cargo', x: 0, y: 0, loa: 152, beam: 25, depth: 12.5, draught: 9.8, shape: { par: 0.6, c: 2.8, ua: 0.12, ps: 0.85, fb: 0.95 } })];
     var B = [], k;
@@ -1468,7 +1759,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     if (!Array.isArray(raw.blocks) && !Array.isArray(raw.groups)) throw new Error('No groups or blocks found in this file.');
     if (raw.version && raw.version > VERSION) warnings.push('File version ' + raw.version + ' is newer than this editor. Some data may be ignored.');
 
-    var model = { app: FORMAT, version: VERSION, name: typeof raw.name === 'string' && raw.name.trim() ? raw.name.trim() : 'Untitled design', groups: [], requirements: [], blocks: [], hulls: [] };
+    var model = { app: FORMAT, version: VERSION, name: typeof raw.name === 'string' && raw.name.trim() ? raw.name.trim() : 'Untitled design', groups: [], requirements: [], blocks: [], hulls: [], customShapes: [] };
 
     // groups
     var seen = {};
@@ -1513,13 +1804,19 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
       });
     });
 
+    // imported (STL) shapes
+    (Array.isArray(raw.customShapes) ? raw.customShapes : []).slice(0, 24).forEach(function (d) {
+      if (d && registerShape(d)) { if (model.customShapes.indexOf(d.id) < 0) model.customShapes.push(d.id); }
+      else warnings.push('An imported shape could not be read and was skipped.');
+    });
+
     // blocks
     var bseen = {}, fallbackGroup = leafFallback(model), dropped = 0;
     (Array.isArray(raw.blocks) ? raw.blocks : []).forEach(function (b, i) {
       if (!b || typeof b !== 'object') { dropped++; return; }
       var id = typeof b.id === 'string' && b.id && !bseen[b.id] ? b.id : uid('b', bseen);
       bseen[id] = true;
-      var shape = SHAPES[b.shape] ? b.shape : 'box';
+      var shape = SHAPES[b.shape] && (!SHAPES[b.shape].custom || model.customShapes.indexOf(b.shape) >= 0) ? b.shape : 'box';
       if (b.shape && shape !== b.shape) warnings.push('Block "' + (b.name || id) + '" has an unknown shape and became a box.');
       var group = gm[b.group] ? b.group : fallbackGroup;
       if (b.group && group !== b.group) warnings.push('Block "' + (b.name || id) + '" had no valid group and was moved to ' + gm[group].name + '.');
@@ -1541,7 +1838,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
         fill: typeof b.fill === 'number' && isFinite(b.fill) ? Math.min(100, Math.max(0, b.fill)) : 100,
         massOverride: typeof b.massOverride === 'number' && isFinite(b.massOverride) ? Math.max(0, b.massOverride) : null,
         freeSurface: b.freeSurface === true,
-        deck: b.deck === true
+        deck: b.deck === true, gt: b.gt !== false
       });
     });
     if (dropped) warnings.push(dropped + ' unreadable block entries were skipped.');
@@ -1601,6 +1898,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
       axes: 'x forward from the aft end, y to port from the centreline, z up from the baseline; positions are block centres; rotation is Euler XYZ in degrees',
       taxonomy: 'Levander system based design (editable)',
       shapes: SHAPE_ORDER.map(function (k) { return { id: k, label: SHAPES[k].label, volumeFactor: r4(SHAPES[k].vf), planFactor: r4(SHAPES[k].plan) }; }),
+      customShapes: (model.customShapes || []).map(function (id) { return CUSTOM[id]; }).filter(Boolean),
       groups: model.groups.map(function (g) { return { id: g.id, name: g.name, color: g.color, parent: g.parent, visible: g.visible !== false, density: typeof g.density === 'number' ? r4(g.density) : null }; }),
       requirements: model.requirements.map(function (r) { return { id: r.id, name: r.name, metric: r.metric, sense: r.sense, shall: r.shall, should: r.should }; }),
       waterDensity: model.rho || 1.025,
@@ -1620,7 +1918,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
           id: b.id, name: b.name, shape: b.shape, group: b.group, reqs: blockReqs(b).slice(),
           position: b.position.map(r4), size: b.size.map(r4), rotation: b.rotation.map(r4),
           areaOverride: b.areaOverride == null ? null : r4(b.areaOverride), hidden: !!b.hidden,
-          density: typeof b.density === 'number' ? r4(b.density) : null, fill: typeof b.fill === 'number' ? r4(b.fill) : 100, massOverride: typeof b.massOverride === 'number' ? r4(b.massOverride) : null, freeSurface: !!b.freeSurface, deck: !!b.deck,
+          density: typeof b.density === 'number' ? r4(b.density) : null, fill: typeof b.fill === 'number' ? r4(b.fill) : 100, massOverride: typeof b.massOverride === 'number' ? r4(b.massOverride) : null, freeSurface: !!b.freeSurface, deck: !!b.deck, gt: b.gt !== false,
           computed: (function () { var q = blockMass(model, b), c = blockCentroid(b); return { volume: r4(blockVolume(b)), area: r4(blockArea(b)), density: r4(q.density), mass: r4(q.mass), cg: c.map(r4) }; })()
         };
       })
@@ -1694,12 +1992,12 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
   }
 
   function requirementsCSV(model, delim) {
-    var rows = [['Requirement', 'Metric', 'Unit', 'Sense', 'Shall', 'Should', 'Achieved', 'Linked blocks', 'Status', 'Inside hulls, estimate', 'Status inside hulls', 'Block names']];
+    var rows = [['Requirement', 'Metric', 'Unit', 'Sense', 'Shall', 'Should', 'Achieved', 'Linked blocks', 'Status', 'Margin vs shall (%)', 'Margin vs should (%)', 'Inside hulls, estimate', 'Status inside hulls', 'Block names']];
     evaluateRequirements(model).forEach(function (e) {
       var r = e.req;
       rows.push([r.name, METRICS[r.metric].label, METRICS[r.metric].unit, r.sense === 'max' ? 'at most' : 'at least',
-        r.shall == null ? '' : r.shall, r.should == null ? '' : r.should, r4(e.achieved), e.n, STATUS_LABEL[e.status],
-        e.inside == null ? '' : r4(e.inside), e.statusInside ? STATUS_LABEL[e.statusInside] : '', e.blocks.join('; ')]);
+        r.shall == null ? '' : r.shall, r.should == null ? '' : r.should, r4(e.achieved), e.n, statusText(e.status, r), mpc(e.marginShall), mpc(e.marginShould),
+        e.inside == null ? '' : r4(e.inside), e.statusInside ? statusText(e.statusInside, r) : '', e.blocks.join('; ')]);
     });
     return toCSV(rows, delim);
   }
@@ -1707,7 +2005,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
   function blocksCSV(model, delim) {
     var rmap = {};
     model.requirements.forEach(function (r) { rmap[r.id] = r.name; });
-    var rows = [['Id', 'Name', 'Group path', 'Group', 'Requirement', 'Shape', 'X (m)', 'Y (m)', 'Z (m)', 'Length (m)', 'Beam (m)', 'Height (m)', 'Rot X (deg)', 'Rot Y (deg)', 'Rot Z (deg)', 'Volume (m3)', 'Area (m2)', 'Area overridden', 'Volume below main deck (m3)', 'Volume outside hulls, estimate (m3)', 'Outside share of block (%)', 'Density (t/m3)', 'Fill (%)', 'Mass (t)', 'Mass typed', 'CG x (m)', 'CG y (m)', 'CG z (m)']];
+    var rows = [['Id', 'Name', 'Group path', 'Group', 'Requirement', 'Shape', 'X (m)', 'Y (m)', 'Z (m)', 'Length (m)', 'Beam (m)', 'Height (m)', 'Rot X (deg)', 'Rot Y (deg)', 'Rot Z (deg)', 'Volume (m3)', 'Area (m2)', 'Area overridden', 'Volume below main deck (m3)', 'Volume outside hulls, estimate (m3)', 'Outside share of block (%)', 'Density (t/m3)', 'Fill (%)', 'Mass (t)', 'Mass typed', 'CG x (m)', 'CG y (m)', 'CG z (m)', 'Counts for GT']];
     var gm = groupMap(model), hc = hullCheck(model);
     model.blocks.forEach(function (b) {
       var q = blockMass(model, b), cg = blockCentroid(b);
@@ -1715,7 +2013,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
         r4(b.position[0]), r4(b.position[1]), r4(b.position[2]), r4(b.size[0]), r4(b.size[1]), r4(b.size[2]),
         r4(b.rotation[0]), r4(b.rotation[1]), r4(b.rotation[2]), r4(blockVolume(b)), r4(blockArea(b)), b.areaOverride != null ? 'yes' : 'no',
         hc ? r4(hc.byId[b.id].below) : '', hc ? r4(hc.byId[b.id].out) : '', hc ? r4(100 * hc.byId[b.id].shareBlock) : '',
-        r4(q.density), r4(q.fill), r4(q.mass), q.typed ? 'yes' : 'no', r4(cg[0]), r4(cg[1]), r4(cg[2])]);
+        r4(q.density), r4(q.fill), r4(q.mass), q.typed ? 'yes' : 'no', r4(cg[0]), r4(cg[1]), r4(cg[2]), b.gt === false ? 'no' : 'yes']);
     });
     return toCSV(rows, delim);
   }
@@ -1823,6 +2121,497 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     parts.forEach(function (p) { out.set(p, pos); pos += p.length; });
     return out;
   }
+
+  /* ---------- PDF report ----------
+     A small PDF writer (standard Helvetica, WinAnsi text, JPEG images, lines and rectangles) and the report layout. Units are points,
+     the origin is the top left of the page, y grows downwards. */
+  var HELV = [278,278,355,556,556,889,667,191,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,278,278,584,584,584,556,1015,667,667,722,722,667,611,778,722,278,500,667,556,833,722,778,667,778,722,667,611,722,667,944,667,667,611,278,278,278,469,556,333,556,556,500,556,556,278,556,556,222,222,500,222,833,556,556,556,556,333,500,278,556,500,722,500,500,500,334,260,334,584];
+  var HELVB = [278,333,474,556,556,889,722,238,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,333,333,584,584,584,611,975,722,722,722,722,667,611,778,722,278,556,722,611,833,722,778,667,778,722,667,611,722,667,944,667,667,611,333,278,333,584,556,333,556,611,556,611,556,333,611,611,278,278,556,278,889,611,611,611,611,389,556,333,611,556,778,556,556,500,389,280,389,584];
+  var WIN1252 = { 0x20AC: 0x80, 0x2026: 0x85, 0x2018: 0x91, 0x2019: 0x92, 0x201C: 0x93, 0x201D: 0x94, 0x2022: 0x95, 0x2013: 0x96, 0x2014: 0x97 };
+  var LATIN_W = { 0xE6: 889, 0xF8: 611, 0xE5: 556, 0xC6: 1000, 0xD8: 778, 0xC5: 667, 0xB2: 333, 0xB3: 333, 0xB0: 400, 0xB1: 584, 0xD7: 584, 0xB7: 278, 0x96: 556, 0x97: 1000, 0x95: 350, 0x85: 1000, 0x91: 222, 0x92: 222, 0x93: 333, 0x94: 333 };
+  function pdfText(s) {      // unicode -> WinAnsi code points, as a JS string of 8-bit chars
+    var out = '';
+    s = String(s).replace(/→/g, ' to ').replace(/−/g, '-').replace(/≤/g, '<=').replace(/≥/g, '>=').replace(/[   ]/g, ' ');
+    for (var i = 0; i < s.length; i++) {
+      var c = s.charCodeAt(i);
+      if (c >= 32 && c < 127) out += s.charAt(i);
+      else if (c === 0xB2) out += '\u0001';      // superscript 2 and 3 are drawn as small raised digits (not every viewer has the glyphs)
+      else if (c === 0xB3) out += '\u0002';
+      else if (c >= 160 && c <= 255) out += String.fromCharCode(c);
+      else if (WIN1252[c]) out += String.fromCharCode(WIN1252[c]);
+      else if (c === 9 || c === 10) out += ' ';
+      else out += '?';
+    }
+    return out;
+  }
+  function pdfWidth(t, size, bold) {          // t from pdfText
+    var tab = bold ? HELVB : HELV, w = 0;
+    for (var i = 0; i < t.length; i++) {
+      var c = t.charCodeAt(i);
+      w += c >= 32 && c < 127 ? tab[c - 32] : c < 3 ? 556 * 0.62 : (LATIN_W[c] || 556);
+    }
+    return w * size / 1000;
+  }
+  function pdfColor(hex) {
+    var m = /^#?([0-9a-f]{6})$/i.exec(hex || '#000000') || ['', '000000'], n = parseInt(m[1], 16);
+    return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255].map(function (x) { return (Math.round(x * 1000) / 1000).toString(); }).join(' ');
+  }
+  function bin2u8(s) { var a = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) a[i] = s.charCodeAt(i) & 255; return a; }
+  function u82bin(u) { var s = '', k = 0x8000; for (var i = 0; i < u.length; i += k) s += String.fromCharCode.apply(null, u.subarray(i, i + k)); return s; }
+  var PW = 595.28, PH = 841.89;
+
+  function pdfWriter(title) {
+    var pages = [], cur = null, imgs = [];
+    function n2(v) { return (Math.round(v * 100) / 100).toString(); }
+    var d = {
+      addPage: function (landscape) { cur = { ops: [], imgs: {}, w: landscape ? PH : PW, h: landscape ? PW : PH }; pages.push(cur); return pages.length - 1; },
+      goto: function (i) { cur = pages[i]; },
+      pageCount: function () { return pages.length; },
+      pageW: function () { return cur.w; },
+      pageH: function () { return cur.h; },
+      textWidth: function (s, size, bold) { return pdfWidth(pdfText(s), size, bold); },
+      text: function (x, y, s, o) {
+        o = o || {};
+        var t = pdfText(s), size = o.size || 9, w = pdfWidth(t, size, o.bold);
+        if (o.align === 'right') x -= w; else if (o.align === 'center') x -= w / 2;
+        var font = '/' + (o.bold ? 'F2' : 'F1'), col = pdfColor(o.color || '#1c2430'), cx = x;
+        t.split(/([\u0001\u0002])/).forEach(function (seg) {
+          if (!seg) return;
+          var sup = seg === '\u0001' || seg === '\u0002', str = sup ? (seg === '\u0001' ? '2' : '3') : seg, sz = sup ? size * 0.62 : size, yy = sup ? y - size * 0.36 : y;
+          cur.ops.push('BT ' + font + ' ' + n2(sz) + ' Tf ' + col + ' rg ' + n2(cx) + ' ' + n2(cur.h - yy) + ' Td (' + str.replace(/([\\()])/g, '\\$1') + ') Tj ET');
+          cx += pdfWidth(seg, size, o.bold);
+        });
+        return w;
+      },
+      line: function (x1, y1, x2, y2, o) {
+        o = o || {};
+        cur.ops.push(n2(o.w || 0.5) + ' w ' + pdfColor(o.color || '#cfd6df') + ' RG ' + n2(x1) + ' ' + n2(cur.h - y1) + ' m ' + n2(x2) + ' ' + n2(cur.h - y2) + ' l S');
+      },
+      poly: function (pts, o) {
+        o = o || {};
+        if (pts.length < 2) return;
+        var t = n2(o.w || 0.5) + ' w ' + pdfColor(o.color || '#33506b') + ' RG ' + (o.dash ? '[' + o.dash.join(' ') + '] 0 d ' : '');
+        pts.forEach(function (q, i) { t += n2(q[0]) + ' ' + n2(cur.h - q[1]) + (i ? ' l ' : ' m '); });
+        cur.ops.push(t + (o.close ? 'h ' : '') + 'S' + (o.dash ? ' [] 0 d' : ''));
+      },
+      rect: function (x, y, w, h, o) {
+        o = o || {};
+        var s = '';
+        if (o.fill) s += pdfColor(o.fill) + ' rg ';
+        if (o.stroke) s += pdfColor(o.stroke) + ' RG ' + n2(o.lw || 0.5) + ' w ';
+        cur.ops.push(s + n2(x) + ' ' + n2(cur.h - y - h) + ' ' + n2(w) + ' ' + n2(h) + ' re ' + (o.fill && o.stroke ? 'B' : o.fill ? 'f' : 'S'));
+      },
+      addImage: function (jpeg, w, h) { imgs.push({ data: jpeg, w: w, h: h }); return imgs.length - 1; },
+      image: function (idx, x, y, w, h) {
+        cur.imgs['Im' + idx] = idx;
+        cur.ops.push('q ' + n2(w) + ' 0 0 ' + n2(h) + ' ' + n2(x) + ' ' + n2(cur.h - y - h) + ' cm /Im' + idx + ' Do Q');
+      },
+      build: function () {
+        var objs = [], offs = [], out = '';
+        function add(body) { objs.push(body); return objs.length; }
+        add('<< /Type /Catalog /Pages 2 0 R >>');
+        add('');
+        add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');
+        add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
+        var imgObj = imgs.map(function (im) {
+          var s = u82bin(im.data);
+          return add('<< /Type /XObject /Subtype /Image /Width ' + im.w + ' /Height ' + im.h + ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ' + s.length + ' >>\nstream\n' + s + '\nendstream');
+        });
+        var kids = [];
+        pages.forEach(function (p) {
+          var content = p.ops.join('\n'), cid = add('<< /Length ' + content.length + ' >>\nstream\n' + content + '\nendstream');
+          var xo = Object.keys(p.imgs).map(function (k) { return '/' + k + ' ' + imgObj[p.imgs[k]] + ' 0 R'; }).join(' ');
+          kids.push(add('<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' + n2(p.w) + ' ' + n2(p.h) + '] /Resources << /Font << /F1 3 0 R /F2 4 0 R >>' + (xo ? ' /XObject << ' + xo + ' >>' : '') + ' >> /Contents ' + cid + ' 0 R >>'));
+        });
+        objs[1] = '<< /Type /Pages /Kids [' + kids.map(function (k) { return k + ' 0 R'; }).join(' ') + '] /Count ' + kids.length + ' >>';
+        var info = add('<< /Title (' + pdfText(title || 'Report').replace(/[\u0001\u0002]/g, '').replace(/([\\()])/g, '\\$1') + ') /Producer (Ship Design Building Block Editor) >>');
+        out = '%PDF-1.4\n%\xE2\xE3\xCF\xD3\n';
+        objs.forEach(function (b, i) { offs.push(out.length); out += (i + 1) + ' 0 obj\n' + b + '\nendobj\n'; });
+        var xr = out.length;
+        out += 'xref\n0 ' + (objs.length + 1) + '\n0000000000 65535 f \n';
+        offs.forEach(function (o) { out += ('0000000000' + o).slice(-10) + ' 00000 n \n'; });
+        out += 'trailer\n<< /Size ' + (objs.length + 1) + ' /Root 1 0 R /Info ' + info + ' 0 R >>\nstartxref\n' + xr + '\n%%EOF\n';
+        return bin2u8(out);
+      }
+    };
+    return d;
+  }
+
+  /* the report. o: { when, images: {iso, side, top, front} each {jpeg, w, h}, logo: {jpeg, w, h}, floatRes, stability, assumptions: [text] } */
+  function buildReport(model, o) {
+    o = o || {};
+    var doc = pdfWriter((model.name || 'Design') + ' - design report'), M = 40, CW = PW - 2 * M, y = 0;
+    var INK = '#1c2430', DIM = '#5b6675', LINE = '#cfd6df', HEAD = '#eef1f5', BLUE = '#00509e';
+    var SEV = { bad: '#b3261e', warn: '#b26a00', note: '#5b6675', good: '#2e7d32', ok: '#2e7d32', excess: '#b26a00', fail: '#b3261e', none: '#5b6675', pass: '#2e7d32' };
+    function f(n, dd) { return Number(n).toLocaleString('en-GB', { minimumFractionDigits: dd == null ? 1 : dd, maximumFractionDigits: dd == null ? 1 : dd }); }
+    function f2(v) { return v == null || !isFinite(v) ? '-' : f(v, 2); }
+    function heel(h) { return Math.abs(h) < 0.005 ? '0°' : f(Math.abs(h), 2) + '° to ' + (h > 0 ? 'port' : 'starboard'); }
+    var imgIdx = {};
+    function img(k) { var im = o.images && o.images[k]; if (!im) return null; if (imgIdx[k] == null) imgIdx[k] = doc.addImage(im.jpeg, im.w, im.h); return im; }
+    var logo = o.logo ? { im: o.logo, idx: doc.addImage(o.logo.jpeg, o.logo.w, o.logo.h) } : null;
+
+    function newPage(land) { doc.addPage(land); y = M; CW = doc.pageW() - 2 * M; }
+    function ensure(h) { if (y + h > doc.pageH() - M - 14) newPage(doc.pageW() > doc.pageH()); }
+    function heading(t, note) {
+      ensure(80); y += 8; doc.text(M, y + 10, t, { size: 12, bold: true, color: BLUE }); y += 16; doc.line(M, y, M + CW, y, { color: BLUE, w: 0.8 }); y += 6;
+      if (note) { var nl = wrap(note, CW, 8, false); nl.forEach(function (ln) { doc.text(M, y + 8, ln, { size: 8, color: DIM }); y += 11; }); }
+      y += 4;
+    }
+    function sub(t) { ensure(50); y += 4; doc.text(M, y + 8, t, { size: 9, bold: true }); y += 14; }
+    function para(t, size, color) {
+      var sz = size || 9, wl = wrap(t, CW, sz, false);
+      wl.forEach(function (ln) { ensure(sz + 4); doc.text(M, y + sz, ln, { size: sz, color: color || INK }); y += sz + 3.5; });
+      y += 2;
+    }
+    function wrap(t, w, size, bold) {
+      var words = String(t).split(/\s+/), lines = [], cur = '';
+      words.forEach(function (wd) {
+        var tr = cur ? cur + ' ' + wd : wd;
+        if (doc.textWidth(tr, size, bold) <= w || !cur) cur = tr; else { lines.push(cur); cur = wd; }
+      });
+      if (cur) lines.push(cur);
+      return lines.length ? lines : [''];
+    }
+    /* cols: [{t, w (relative), a: 'r' for right}]; rows: [{cells, bold, fill, color, colors, indent, swatch, boldCols}] */
+    function table(cols, rows, opt) {
+      opt = opt || {};
+      var tw = cols.reduce(function (a, c) { return a + c.w; }, 0), W = cols.map(function (c) { return c.w / tw * CW; }), size = opt.size || 8, lead = size + 3.5;
+      function head() {
+        var hl = cols.map(function (c, i) { return wrap(c.t, W[i] - 6, size, true); }), nh = hl.reduce(function (a, c) { return Math.max(a, c.length); }, 1);
+        ensure(nh * lead + 3 + lead * 2);
+        doc.rect(M, y, CW, nh * lead + 3, { fill: HEAD });
+        var x = M;
+        cols.forEach(function (c, i) { hl[i].forEach(function (ln, li) { doc.text(c.a === 'r' ? x + W[i] - 3 : x + 3, y + lead * (li + 1) - 0.5, ln, { size: size, bold: true, color: DIM, align: c.a === 'r' ? 'right' : 'left' }); }); x += W[i]; });
+        y += nh * lead + 3;
+      }
+      if (opt.keep) {
+        var tot = 0;
+        rows.forEach(function (r) { tot += cols.reduce(function (a, c, i) { return Math.max(a, wrap(String(r.cells[i] == null ? '' : r.cells[i]), W[i] - 6, size, r.bold).length); }, 1) * lead + 2; });
+        if (y + tot + lead * 3 > doc.pageH() - M - 14 && tot < doc.pageH() * 0.7) newPage(doc.pageW() > doc.pageH());
+      }
+      head();
+      rows.forEach(function (r) {
+        var cells = cols.map(function (c, i) { return wrap(String(r.cells[i] == null ? '' : r.cells[i]), W[i] - 6 - (i === 0 ? (r.indent || 0) + (r.swatch ? 8 : 0) : 0), size, r.bold); });
+        var nl = cells.reduce(function (a, c) { return Math.max(a, c.length); }, 1), h = nl * lead + 2;
+        if (y + h > doc.pageH() - M - 14) { newPage(doc.pageW() > doc.pageH()); head(); }
+        if (r.fill) doc.rect(M, y, CW, h, { fill: r.fill });
+        var x = M;
+        cols.forEach(function (c, i) {
+          var col = (r.colors && r.colors[i]) || r.color || INK;
+          if (i === 0 && r.swatch) doc.rect(x + 3 + (r.indent || 0), y + 2.5, 5, 5, { fill: r.swatch });
+          cells[i].forEach(function (ln, li) {
+            var tx = c.a === 'r' ? x + W[i] - 3 : x + 3 + (i === 0 ? (r.indent || 0) + (r.swatch ? 8 : 0) : 0);
+            doc.text(tx, y + lead * (li + 1) - 1.2, ln, { size: size, bold: r.bold || (r.boldCols && r.boldCols[i]), color: col, align: c.a === 'r' ? 'right' : 'left' });
+          });
+          x += W[i];
+        });
+        y += h;
+        doc.line(M, y, M + CW, y, { color: '#e3e8ee', w: 0.4 });
+      });
+      y += 4;
+    }
+    function tiles(items) {
+      var per = Math.min(5, items.length), tw = CW / per;
+      for (var i = 0; i < items.length; i += per) {
+        ensure(34);
+        items.slice(i, i + per).forEach(function (it, j) {
+          var x = M + j * tw;
+          doc.rect(x, y, tw - 6, 30, { fill: HEAD });
+          doc.text(x + 6, y + 10, it[0], { size: 6.5, color: DIM });
+          doc.text(x + 6, y + 23, it[1], { size: 10, bold: true, color: it[2] || INK });
+        });
+        y += 36;
+      }
+    }
+    function kv(rows) {          // two-column list: [label, value, colour]
+      table([{ t: 'Item', w: 70 }, { t: 'Value', w: 30, a: 'r' }], rows.map(function (r) {
+        return r[3] === 'sub' ? { cells: [r[0], ''], bold: true, fill: '#f6f8fa' } : { cells: [r[0], r[1]], colors: [null, r[2] || null], bold: r[3] === 'tot', fill: r[3] === 'tot' ? HEAD : null };
+      }), { keep: true });
+    }
+
+    var s = summarize(model), e = s.envelope, ws = weightSummary(model), hc = hullCheck(model), fr = o.floatRes, st = o.stability, hd = modelHydro(model);
+    var gm = groupMap(model), rmap = {};
+    model.requirements.forEach(function (r) { rmap[r.id] = r.name; });
+
+    // ----- page 1: title, perspective view, key figures, assessment
+    newPage();
+    var tx = M;
+    if (logo) { doc.image(logo.idx, M, y, 30, 30); tx = M + 40; }
+    doc.text(tx, y + 8, 'SHIP DESIGN BUILDING BLOCK EDITOR', { size: 8, bold: true, color: DIM });
+    doc.text(tx, y + 27, model.name || 'Untitled design', { size: 20, bold: true });
+    doc.text(PW - M, y + 8, 'Design report', { size: 8, bold: true, color: DIM, align: 'right' });
+    doc.text(PW - M, y + 21, o.when || '', { size: 8, color: DIM, align: 'right' });
+    y += 44;
+    doc.line(M, y, M + CW, y, { color: BLUE, w: 1.2 }); y += 10;
+    var iso = img('iso');
+    if (iso) { var ih = CW * iso.h / iso.w; doc.image(imgIdx.iso, M, y, CW, ih); doc.rect(M, y, CW, ih, { stroke: LINE }); y += ih + 6; }
+    var items = [['Length (X)', e ? f(e.length, 2) + ' m' : '-'], ['Beam (Y)', e ? f(e.beam, 2) + ' m' : '-'], ['Height (Z)', e ? f(e.height, 2) + ' m' : '-'], ['Gross volume', f(s.total.vol, 0) + ' m³'], ['Gross area', f(s.total.area, 0) + ' m²'],
+      ['Gross tonnage (est.)', f(grossTonnage(model).GT, 0) + ' GT'], ['Block weight', f(ws.blocks.mass, 0) + ' t'], ['Total weight', f(ws.total.mass, 0) + ' t']];
+    if (ws.hasHull) items.push(['Displacement', f(ws.disp, 0) + ' t'], ['Margin', f(ws.margin, 0) + ' t (' + f(ws.marginPct, 1) + '%)', ws.margin < 0 ? SEV.bad : INK], ['Draught', model.draught != null ? f(model.draught, 2) + ' m' : '-']);
+    tiles(items);
+    var a = assessment(model, fr, st), tag = { bad: 'Problem', warn: 'Check', note: 'Note', good: 'OK' };
+    heading('Assessment');
+    var lines = a.issues.map(function (i) { return { sev: i.sev, text: i.text }; }).concat(a.good.map(function (g) { return { sev: 'good', text: g }; }));
+    if (!lines.length) { doc.text(M, y + 8, 'Nothing to report.', { size: 9, color: DIM }); y += 14; }
+    lines.forEach(function (l) {
+      var wl = wrap(l.text, CW - 62, 9, false);
+      ensure(wl.length * 12 + 4);
+      doc.text(M, y + 9, tag[l.sev].toUpperCase(), { size: 7, bold: true, color: SEV[l.sev] });
+      wl.forEach(function (ln, i) { doc.text(M + 56, y + 9 + i * 12, ln, { size: 9 }); });
+      y += wl.length * 12 + 3;
+    });
+
+    // ----- page 2: other views
+    var vs = ['side', 'top', 'front'].filter(function (k) { return img(k); });
+    if (vs.length) {
+      newPage();
+      doc.text(M, y + 10, 'Views', { size: 12, bold: true, color: BLUE }); y += 16; doc.line(M, y, M + CW, y, { color: BLUE, w: 0.8 }); y += 10;
+      var show = function (k, x, w, label) { var im = img(k), h = w * im.h / im.w; doc.image(imgIdx[k], x, y, w, h); doc.rect(x, y, w, h, { stroke: LINE }); doc.text(x + 5, y + 11, label, { size: 7.5, bold: true, color: DIM }); return h; };
+      if (img('side')) y += show('side', M, CW, 'Side') + 8;
+      var hw = (CW - 8) / 2, hh = 0;
+      if (img('top')) hh = Math.max(hh, show('top', M, hw, 'Top'));
+      if (img('front')) hh = Math.max(hh, show('front', M + hw + 8, hw, 'Front'));
+      y += hh + 8;
+    }
+
+    // ----- requirements
+    var ev = evaluateRequirements(model, s);
+    heading('Requirements', 'Status: Meets shall means the shall is met within the should. Margin is the distance to the shall (to the should when over it). A block counts in full for each requirement it serves.');
+    if (!ev.length) { doc.text(M, y + 8, 'No requirements defined.', { size: 9, color: DIM }); y += 14; }
+    else {
+      table([{ t: 'Requirement', w: 24 }, { t: 'Metric', w: 19 }, { t: 'Shall', w: 12, a: 'r' }, { t: 'Should', w: 12, a: 'r' }, { t: 'Achieved', w: 13, a: 'r' }, { t: 'Blocks', w: 7, a: 'r' }, { t: 'Status', w: 19 }, { t: 'Margin', w: 9, a: 'r' }],
+        ev.map(function (x) {
+          var r = x.req, un = METRICS[r.metric].unit, sn = r.sense === 'max' ? 'at most' : 'at least';
+          return { cells: [r.name, METRICS[r.metric].label + ', ' + sn, r.shall == null ? '-' : f(r.shall, 1) + ' ' + un, r.should == null ? '-' : f(r.should, 1) + ' ' + un, f(x.achieved, 1) + ' ' + un, x.n, statusText(x.status, r), x.margin == null ? '-' : fmtMargin(x.margin)], colors: [null, null, null, null, null, null, SEV[x.status]], boldCols: { 6: true } };
+        }));
+      var linked = ev.filter(function (x) { return x.blocks.length && (x.req.metric === 'volume' || x.req.metric === 'area' || x.req.metric === 'mass'); });
+      if (linked.length) {
+        sub('Blocks that serve each requirement');
+        table([{ t: 'Requirement', w: 30 }, { t: 'Blocks', w: 70 }], linked.map(function (x) { return { cells: [x.req.name, x.blocks.join(', ')] }; }));
+      }
+    }
+
+    // ----- systems
+    heading('Systems: area and volume');
+    table([{ t: 'System', w: 38 }, { t: 'Blocks', w: 9, a: 'r' }, { t: 'Area m²', w: 14, a: 'r' }, { t: 'Volume m³', w: 15, a: 'r' }, { t: 'Share', w: 12, a: 'r' }],
+      s.rows.map(function (r) {
+        var pct = s.total.vol > 0 ? 100 * r.total.vol / s.total.vol : 0;
+        return { cells: [r.group.name, r.total.n, f(r.total.area, 1), f(r.total.vol, 1), f(pct, 1) + '%'], indent: r.depth * 10, swatch: r.group.color, bold: r.depth === 0, fill: r.depth === 0 ? '#f6f8fa' : null, color: r.total.n === 0 ? '#8a94a3' : INK };
+      }).concat([{ cells: ['Gross total', s.total.n, f(s.total.area, 1), f(s.total.vol, 1), ''], bold: true, fill: HEAD }]));
+
+    // ----- gross tonnage
+    var gtv = grossTonnage(model);
+    heading('Gross tonnage (estimate)', 'GT = K1 × V with K1 = 0.2 + 0.02 log10(V), after the 1969 Tonnage Convention. V is the volume of the enclosed spaces: the blocks that are not marked as open. Overlapping blocks count twice. An estimate for design, not a tonnage certificate.');
+    kv([['Enclosed volume V (' + gtv.n + ' of ' + model.blocks.length + ' blocks)', f(gtv.V, 1) + ' m³'], ['K1', f(gtv.K1, 4)], ['Gross tonnage', f(gtv.GT, 0) + ' GT', null, 'tot']]);
+    var openB = model.blocks.filter(function (b) { return b.gt === false; });
+    if (openB.length) para('Open spaces, not counted: ' + openB.map(function (b) { return b.name; }).join(', ') + '.', 8.5, DIM);
+
+    // ----- hulls
+    if (hc) {
+      heading('Hulls (illustrative)', 'The hull shapes are illustrative, not real lines. Blocks below the main deck: ' + f(hc.blocksBelow, 1) + ' m³, of which ' + f(hc.outside, 1) + ' m³ lie outside the hulls (estimate).');
+      table([{ t: 'Hull', w: 20 }, { t: 'Type', w: 16 }, { t: 'Length m', w: 9, a: 'r' }, { t: 'Beam m', w: 8, a: 'r' }, { t: 'Depth m', w: 8, a: 'r' }, { t: 'Draught m', w: 9, a: 'r' }, { t: 'Y offset m', w: 9, a: 'r' }, { t: 'Volume m³', w: 11, a: 'r' }, { t: 'Displaced m³', w: 12, a: 'r' }],
+        hc.hulls.map(function (q) { var h = q.hull; return { cells: [h.name, HULL_TYPES[h.type].label, f(h.loa, 2), f(h.beam, 2), f(h.depth, 2), f(h.draught, 2), f(h.y, 2), f(q.volDeck, 1), f(q.volDraught, 1)] }; }), { keep: true });
+    }
+
+    // ----- weight and centres
+    heading('Weight and centres of gravity', 'Mass = density × volume × fill, or a typed mass. x from the aft end, y to port of the centreline, z above the baseline. Structure and outfitting are ' + f(ws.pct, 0) + '% of the displacement' + (ws.hasHull ? '.' : ' (needs a hull).') + ' Water density ' + f(model.rho || 1.025, 3) + ' t/m³.');
+    table([{ t: 'Item', w: 44 }, { t: 'Mass t', w: 14, a: 'r' }, { t: 'LCG m', w: 14, a: 'r' }, { t: 'TCG m', w: 14, a: 'r' }, { t: 'VCG m', w: 14, a: 'r' }],
+      [{ cells: ['Blocks (' + ws.blocks.n + ')', f(ws.blocks.mass, 1), f2(ws.blocks.lcg), f2(ws.blocks.tcg), f2(ws.blocks.vcg)] },
+       { cells: ['Structure and outfitting', f(ws.struct.mass, 1), f2(ws.struct.lcg), f2(ws.struct.tcg), f2(ws.struct.vcg)] },
+       { cells: ['Total weight', f(ws.total.mass, 1), f2(ws.total.lcg), f2(ws.total.tcg), f2(ws.total.vcg)], bold: true, fill: HEAD }].concat(ws.hasHull ? [
+       { cells: ['Displacement at the draught, with the centre of buoyancy', f(ws.disp, 1), f2(ws.lcb), f2(ws.tcb), f2(ws.kb)] },
+       { cells: ['Margin: displacement minus weight (' + f(ws.marginPct, 1) + '%)', f(ws.margin, 1), '', '', ''], colors: [null, ws.margin < 0 ? SEV.bad : null] },
+       { cells: ['LCG minus LCB (positive: weight forward of the buoyancy)', '', ws.lcgMinusLcb == null ? '-' : f(ws.lcgMinusLcb, 2), '', ''] }] : []));
+    sub('Weight by group');
+    table([{ t: 'System', w: 34 }, { t: 'Blocks', w: 8, a: 'r' }, { t: 'Density t/m³', w: 12, a: 'r' }, { t: 'Mass t', w: 12, a: 'r' }, { t: 'LCG m', w: 11, a: 'r' }, { t: 'TCG m', w: 11, a: 'r' }, { t: 'VCG m', w: 11, a: 'r' }],
+      s.rows.map(function (r, i) {
+        var wr = ws.rows[i];
+        return { cells: [r.group.name, r.total.n, f(wr.density.value, 2) + (wr.density.own ? '' : ' *'), f(wr.total.mass, 1), f2(wr.total.lcg), f2(wr.total.tcg), f2(wr.total.vcg)], indent: r.depth * 10, swatch: r.group.color, bold: r.depth === 0, fill: r.depth === 0 ? '#f6f8fa' : null, color: r.total.n === 0 ? '#8a94a3' : INK };
+      }));
+    para('* the density is inherited from a parent group or is the default. A block can override it.', 7.5, DIM);
+
+    // ----- floating condition
+    if (ws.hasHull) {
+      heading('Floating condition', fr && !fr.overloaded ? (model.float ? 'Float is on: the draught and trim follow the weight.' : 'Float is off: the draught is the one chosen. This is where the weight would float.') : '');
+      if (!fr) para('Needs blocks with mass.', 9, DIM);
+      else if (fr.overloaded) para('The weight is more than the hulls displace at full depth.', 9, SEV.bad);
+      else {
+        var maxD = (model.hulls || []).reduce(function (m, h) { return Math.max(m, h.depth); }, 0), fl = [['Draught', '', null, 'sub'], ['Total weight', f(fr.weight, 1) + ' t'], ['Level draught that carries it (no trim)', f(fr.T, 2) + ' m'], ['Chosen draught', f(model.draught, 2) + ' m', Math.abs(model.draught - fr.T) > 0.05 ? SEV.bad : null]];
+        fl.push(['Trim, longitudinal', '', null, 'sub']);
+        if (fr.trimOk) {
+          fl.push(['Trim (aft draught minus forward draught)', f(fr.trim, 2) + ' m', Math.abs(fr.angle) > 3 ? SEV.bad : null], ['Trim angle (positive by the stern)', f(fr.angle, 2) + '°'], ['Draught aft', f(fr.draftAft, 2) + ' m', fr.draftAft > maxD ? SEV.bad : null], ['Draught forward', f(fr.draftFwd, 2) + ' m', fr.draftFwd < 0 ? SEV.bad : null]);
+          fl.push(['Heel, transverse', '', null, 'sub']);
+          if (fr.heelOk) fl.push(['Heel', heel(fr.heel), Math.abs(fr.heel) > 5 ? SEV.bad : null], ['Draught at the port side', f(fr.draftPort, 2) + ' m'], ['Draught at the starboard side', f(fr.draftStbd, 2) + ' m'], ['TCG minus TCB', f(fr.tcg - fr.tcb, 3) + ' m']);
+          else fl.push(['Heel', 'no equilibrium found', SEV.bad]);
+        } else fl.push(['Trim', 'out of range', SEV.bad]);
+        kv(fl);
+      }
+    }
+
+    // ----- hull geometry: drawings, principal data and offsets
+    if (model.hulls && model.hulls.length) {
+      heading('Hull geometry', 'Illustrative parametric hulls, not real lines. x from the stern of the hull towards the bow, z above the baseline, half-breadths to either side of the hull centreline. Stations are 0 to 10 along the length. Hulls with the same shape are drawn once.');
+      var HC = '#33506b', HL = '#9db0c2', WL = '#1f6fd0', groups = {}, gorder = [];
+      model.hulls.forEach(function (h) {
+        var key = JSON.stringify([h.type, h.shape || null, Math.round(h.loa * 1e3), Math.round(h.beam * 1e3), Math.round(h.depth * 1e3), Math.round(h.draught * 1e3)]);
+        if (!groups[key]) { groups[key] = { h: h, hulls: [] }; gorder.push(key); }
+        groups[key].hulls.push(h);
+      });
+      gorder.forEach(function (key) {
+        var G = groups[key], h = G.h, P = hullParams(h), NS = 10, sx = CW / h.loa, pH = h.depth * sx, pB = h.beam * sx;
+        var tn = G.hulls.map(function (q) { return q.name; }).join(', '), title = tn + (tn === HULL_TYPES[h.type].label && G.hulls.length === 1 ? '' : ' (' + HULL_TYPES[h.type].label + (G.hulls.length > 1 ? ', ' + G.hulls.length + ' identical hulls' : '') + ')');
+        ensure(38 + pH + 20 + pB + 20 + 150);
+        sub(title);
+        // profile
+        var oy = y + 4, X = function (x) { return M + (x - h.x) * sx; }, i, k, t;
+        doc.text(M, oy + 6, 'Profile', { size: 7.5, bold: true, color: DIM });
+        oy += 10;
+        var outline = [[X(hullXRange(h, 0)[0]), oy + pH], [X(hullXRange(h, 0)[1]), oy + pH]];
+        for (k = 1; k <= 12; k++) { t = k / 12; outline.push([X(hullXRange(h, t)[1]), oy + pH - t * pH]); }
+        for (k = 12; k >= 0; k--) { t = k / 12; outline.push([X(hullXRange(h, t)[0]), oy + pH - t * pH]); }
+        doc.poly(outline, { color: HC, w: 1, close: true });
+        doc.line(M, oy + pH - h.draught * sx, M + CW, oy + pH - h.draught * sx, { color: WL, w: 0.6 });
+        doc.text(M + 3, oy + pH - h.draught * sx - 2, 'T = ' + f(h.draught, 2) + ' m', { size: 6.5, color: WL });
+        doc.text(M + CW, oy - 2, 'depth ' + f(h.depth, 2) + ' m', { size: 6.5, color: DIM, align: 'right' });
+        for (i = 0; i <= NS; i++) {
+          var sxp = M + CW * i / NS;
+          doc.line(sxp, oy + pH, sxp, oy + pH + 3, { color: HC, w: 0.5 });
+          doc.text(sxp, oy + pH + 10, String(i), { size: 6.5, color: DIM, align: 'center' });
+        }
+        y = oy + pH + 16;
+        // half-breadth plan, with the waterlines
+        doc.text(M, y + 6, 'Half-breadth plan, waterlines every 20% of the depth', { size: 7.5, bold: true, color: DIM });
+        y += 10;
+        var cy = y + pB / 2, zs = [0, 0.2, 0.4, 0.6, 0.8, 1];
+        doc.line(M, cy, M + CW, cy, { color: HL, w: 0.4 });
+        for (i = 0; i <= NS; i++) doc.line(M + CW * i / NS, y, M + CW * i / NS, y + pB, { color: '#e3e8ee', w: 0.4 });
+        var lines = zs.map(function (z) { return { t: z, dash: false, c: z === 1 ? HC : HL, w: z === 1 ? 1 : 0.5 }; }).concat([{ t: Math.min(1, h.draught / h.depth), c: WL, w: 0.8, dash: true }]);
+        lines.forEach(function (L) {
+          var r = hullXRange(h, L.t), up = [], dn = [], N = 60;
+          for (k = 0; k <= N; k++) {
+            var u = k / N, xx = X(r[0] + u * (r[1] - r[0])), yy = hullHalf(h, u, L.t) * sx;
+            up.push([xx, cy - yy]); dn.push([xx, cy + yy]);
+          }
+          doc.poly(up, { color: L.c, w: L.w, dash: L.dash ? [3, 2] : null }); doc.poly(dn, { color: L.c, w: L.w, dash: L.dash ? [3, 2] : null });
+          doc.line(up[0][0], up[0][1], dn[0][0], dn[0][1], { color: L.c, w: L.w });
+          doc.line(up[N][0], up[N][1], dn[N][0], dn[N][1], { color: L.c, w: L.w });
+        });
+        y += pB + 12;
+        // body plan and principal data
+        var sb = Math.min(230 / h.beam, 120 / h.depth), bw = h.beam * sb, bh = h.depth * sb, bx = M + bw / 2 + 6, bby = y + 26 + bh;
+        doc.text(M, y + 6, 'Body plan: aft stations to the left, forward stations to the right', { size: 7.5, bold: true, color: DIM });
+        doc.line(bx, y + 22, bx, bby, { color: HL, w: 0.4 }); doc.line(bx - bw / 2 - 4, bby, bx + bw / 2 + 4, bby, { color: HL, w: 0.4 });
+        for (i = 0; i <= NS; i++) {
+          var xs = h.x + h.loa * i / NS, side = i < 5 ? -1 : 1, pts = [];
+          for (k = 0; k <= 24; k++) {
+            t = k / 24;
+            var rr = hullXRange(h, t);
+            if (xs < rr[0] - 1e-9 || xs > rr[1] + 1e-9) continue;
+            pts.push([bx + side * hullHalf(h, (xs - rr[0]) / (rr[1] - rr[0]), t) * sb, bby - t * bh]);
+          }
+          doc.poly(pts, { color: i === 5 ? '#c0392b' : HC, w: 0.6 });
+          if (pts.length && (i === 0 || i === 5 || i === NS)) doc.text(pts[pts.length - 1][0] + side * 3, pts[pts.length - 1][1] - 2, String(i), { size: 6, color: DIM, align: side < 0 ? 'right' : 'left' });
+        }
+        doc.line(bx - bw / 2 - 4, bby - h.draught * sb, bx + bw / 2 + 4, bby - h.draught * sb, { color: WL, w: 0.6, dash: [3, 2] });
+        var dx = M + 290, dy = y + 26, rows2 = [['Length', f(h.loa, 2) + ' m'], ['Beam', f(h.beam, 2) + ' m'], ['Depth (main deck)', f(h.depth, 2) + ' m'], ['Draught', f(h.draught, 2) + ' m'],
+          ['Position x, y', G.hulls.map(function (q) { return f(q.x, 2) + ', ' + f(q.y || 0, 2); }).join('  |  ') + ' m'],
+          ['Flat bottom', f(100 * P.fb, 0) + '%'], ['Bilge hardness', f(P.m, 1)], ['Bow flare', f(100 * P.flare, 0) + '%'], ['Parallel body', f(100 * (P.ub - P.ua), 0) + '%'], ['Bow fullness', f(P.c, 1)],
+          ['Stem width', f(100 * P.pb, 0) + '%'], ['Stem rake', f(100 * P.rake, 1) + '%'], ['Transom width', f(100 * P.ps, 0) + '%'], ['Stern run', f(100 * P.ua, 0) + '%'], ['Stern rake', f(100 * P.sternRake, 1) + '%']];
+        rows2.forEach(function (r, ri) {
+          doc.text(dx, dy + ri * 10.5, r[0], { size: 7.5, color: DIM });
+          doc.text(M + CW, dy + ri * 10.5, r[1], { size: 7.5, bold: true, align: 'right' });
+        });
+        y = Math.max(bby + 12, dy + rows2.length * 10.5 + 4);
+        // table of offsets: half-breadths at the stations and waterlines
+        var OF = hullOffsets(h, NS, 5), oc = [{ t: 'Station', w: 8 }, { t: 'x m', w: 10, a: 'r' }].concat(OF.zs.map(function (z) { return { t: 'z ' + f(z, 2), w: 11, a: 'r' }; })), orows = [];
+        OF.rows.forEach(function (r) { orows.push({ cells: [String(r.station), f(r.x, 2)].concat(r.half.map(function (v) { return v == null ? '-' : f(v, 2); })) }); });
+        ensure(24 + 13 * 11.5 + 14);
+        sub('Table of offsets: half-breadths in metres at heights z above the baseline');
+        table(oc, orows, { size: 7, keep: true });
+      });
+    }
+
+    // ----- hull hydrostatics
+    if (hd) {
+      heading('Hull hydrostatics', 'Upright, at the draught. x from the aft end, KB above the baseline. Cb block, Cp prismatic, Cm midship and Cwp waterplane coefficient.');
+      var hr = hd.hulls.map(function (q) { var h = q.h; return { cells: [q.hull.name, f(h.LWL, 2), f(h.BWL, 2), f(h.T, 2), f(h.V, 1), f(h.disp, 1), f(h.Cb, 3), f(h.Cp, 3), f(h.Cm, 3), f(h.Cwp, 3), f(h.Awp, 1), f(h.LCB, 2), f(h.KB, 2), f(h.LCF, 2), f(h.TPC, 2)] }; });
+      var t = hd.total;
+      hr.push({ cells: ['All hulls' + (Math.abs(t.TCB) > 0.005 ? ' (TCB y ' + f(t.TCB, 2) + ' m)' : ''), '', '', '', f(t.V, 1), f(t.disp, 1), '', '', '', '', f(t.Awp, 1), f(t.LCB, 2), f(t.KB, 2), f(t.LCF, 2), f(t.TPC, 2)], bold: true, fill: HEAD });
+      table([{ t: 'Hull', w: 13 }, { t: 'LWL m', w: 6, a: 'r' }, { t: 'BWL m', w: 6, a: 'r' }, { t: 'T m', w: 5, a: 'r' }, { t: 'Vol. m³', w: 7, a: 'r' }, { t: 'Displ. t', w: 7, a: 'r' }, { t: 'Cb', w: 5, a: 'r' }, { t: 'Cp', w: 5, a: 'r' }, { t: 'Cm', w: 5, a: 'r' }, { t: 'Cwp', w: 5, a: 'r' }, { t: 'Awp m²', w: 7, a: 'r' }, { t: 'LCB m', w: 6, a: 'r' }, { t: 'KB m', w: 5, a: 'r' }, { t: 'LCF m', w: 6, a: 'r' }, { t: 'TPC t/cm', w: 6, a: 'r' }], hr, { size: 6.8 });
+    }
+
+    // ----- initial stability
+    if (ws.hasHull) {
+      heading('Initial stability', 'Upright, without trim, at the level draught that carries the weight. Small angles only.');
+      if (!st) para('Needs blocks with mass.', 9, DIM);
+      else if (st.overloaded) para('The weight is more than the hulls displace at full depth.', 9, SEV.bad);
+      else {
+        var sr = [['Transverse', '', null, 'sub'], ['Level draught', f(st.T, 2) + ' m'], ['KB (centre of buoyancy above the baseline)', f(st.KB, 2) + ' m'], ['BM (waterplane inertia / volume)', f(st.BMt, 2) + ' m'], ['KM (KB + BM)', f(st.KMt, 2) + ' m'], ['KG (centre of gravity of the weights)', f(st.KG, 2) + ' m'],
+          ['GM without free surface (KM - KG)', f(st.GMsolid, 2) + ' m'], ['Free surface correction (' + st.tanks.length + ' of ' + st.marked + ' marked ' + (st.marked === 1 ? 'tank' : 'tanks') + ' partly filled)', f(st.fsT, 3) + ' m'],
+          ['GM, corrected', f(st.GM, 2) + ' m', st.GM < 0.15 ? SEV.bad : null, 'tot'], ['Highest KG for GM = 0.15 m', f(st.KGmax, 2) + ' m', st.KG > st.KGmax ? SEV.bad : null],
+          ['Longitudinal', '', null, 'sub'], ['BM', f(st.BMl, 1) + ' m'], ['KM', f(st.KMl, 1) + ' m'], ['GM (with free surface)', f(st.GMl, 1) + ' m']];
+        if (st.tanks.length) { sr.push(['Free surface by tank (rise of G)', '', null, 'sub']); st.tanks.forEach(function (tk) { sr.push([tk.block.name, f(tk.riseT, 3) + ' m']); }); }
+        kv(sr);
+        sub('Checks');
+        table([{ t: 'Check', w: 40 }, { t: 'Value', w: 14, a: 'r' }, { t: 'Guide', w: 30 }, { t: 'Result', w: 16 }], st.checks.map(function (c) {
+          var val = c.value == null ? '-' : (c.name.indexOf('heel') >= 0 || c.name.indexOf('Static') === 0 ? f(Math.abs(c.value) < 0.005 ? 0 : c.value, 2) + '°' : f(c.value, 2) + ' m');
+          return { cells: [c.name, val, c.limit, c.status === 'pass' ? 'Met' : c.status === 'fail' ? 'Not met' : 'n/a'], colors: [null, null, null, c.status === 'fail' ? SEV.bad : c.status === 'pass' ? SEV.good : null] };
+        }));
+      }
+    }
+
+    // ----- assumptions
+    heading('Assumptions and limits');
+    (o.assumptions || []).forEach(function (t) {
+      var wl = wrap(t, CW - 12, 8.5, false);
+      ensure(wl.length * 11.5 + 3);
+      doc.text(M + 2, y + 8.5, '-', { size: 8.5, color: DIM });
+      wl.forEach(function (ln, i) { doc.text(M + 12, y + 8.5 + i * 11.5, ln, { size: 8.5 }); });
+      y += wl.length * 11.5 + 3;
+    });
+    para('For educational use only. The hulls are illustrative parametric shapes, not real lines, and the weights, hydrostatics, trim, heel and stability are simplified estimates. Not for design approval, class or flag-state documentation, or any safety-critical decision.', 8.5, DIM);
+
+    // ----- appendix: all blocks, on landscape pages
+    if (model.blocks.length) {
+      newPage(true);
+      heading('Appendix: blocks', 'Size L × B × H and centre x, y, z in metres, rotation in degrees. CG is the centroid of the shape. "Outside" is the share of the block that lies outside the hulls, below the main deck (estimate).');
+      var br = model.blocks.map(function (b) {
+        var q = blockMass(model, b), cg = blockCentroid(b), rot = b.rotation[0] || b.rotation[1] || b.rotation[2] ? b.rotation.map(function (v) { return f(v, 0); }).join(', ') : '-';
+        return { cells: [b.name + (b.deck ? ' (main deck)' : ''), gm[b.group] ? gm[b.group].name : '', blockReqs(b).map(function (x) { return rmap[x]; }).join(', ') || '-', SHAPES[b.shape].label, b.size.map(function (v) { return f(v, 2); }).join(' × '), b.position.map(function (v) { return f(v, 2); }).join(', '), rot, b.gt === false ? 'open' : 'yes',
+          f(blockVolume(b), 1), f(blockArea(b), 1) + (b.areaOverride != null ? ' *' : ''), f(q.density, 2), f(q.fill, 0), f(q.mass, 1) + (q.typed ? ' *' : ''), cg.map(function (v) { return f(v, 1); }).join(', '), hc && hc.byId[b.id] ? f(100 * hc.byId[b.id].shareBlock, 0) + '%' : '-'], swatch: gm[b.group] ? gm[b.group].color : null };
+      });
+      table([{ t: 'Block', w: 15 }, { t: 'Group', w: 10 }, { t: 'Requirements', w: 13 }, { t: 'Shape', w: 7 }, { t: 'Size m', w: 12, a: 'r' }, { t: 'Centre m', w: 12, a: 'r' }, { t: 'Rot.', w: 6, a: 'r' }, { t: 'GT', w: 3 }, { t: 'Vol. m³', w: 6, a: 'r' }, { t: 'Area m²', w: 6, a: 'r' }, { t: 'Dens.', w: 5, a: 'r' }, { t: 'Fill %', w: 4, a: 'r' }, { t: 'Mass t', w: 6, a: 'r' }, { t: 'CG m', w: 11, a: 'r' }, { t: 'Outside', w: 5, a: 'r' }], br, { size: 6.6 });
+      para('* the area or mass was typed by hand.', 7.5, DIM);
+    }
+
+    // ----- footer on every page
+    var n = doc.pageCount();
+    for (var p = 0; p < n; p++) {
+      doc.goto(p);
+      var pw = doc.pageW(), ph = doc.pageH();
+      doc.line(M, ph - M + 6, pw - M, ph - M + 6, { color: LINE, w: 0.4 });
+      doc.text(M, ph - M + 17, (model.name || 'Design') + '  -  ' + (o.when || ''), { size: 7, color: DIM });
+      doc.text(pw - M, ph - M + 17, 'Page ' + (p + 1) + ' of ' + n, { size: 7, color: DIM, align: 'right' });
+      doc.text(pw / 2, ph - M + 17, 'For educational use only', { size: 7, color: DIM, align: 'center' });
+    }
+    return doc.build();
+  }
+
+  // table of offsets: half-breadths (m) at ns+1 stations and nl+1 heights above the baseline; null outside the hull
+  function hullOffsets(h, ns, nl) {
+    var zs = [], rows = [], i, j;
+    for (j = 0; j <= nl; j++) zs.push(h.depth * j / nl);
+    for (i = 0; i <= ns; i++) {
+      var xs = h.loa * i / ns, vals = [];
+      for (j = 0; j <= nl; j++) {
+        var t = j / nl, r = hullXRange(h, t), xa = h.x + xs;
+        vals.push(xa < r[0] - 1e-9 || xa > r[1] + 1e-9 ? null : hullHalf(h, (xa - r[0]) / (r[1] - r[0]), t));
+      }
+      rows.push({ station: i, x: xs, half: vals });
+    }
+    return { zs: zs, rows: rows };
+  }
+
   function xlsxBuild(sheets) {
     var reg = xreg(), files = [], ct = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>';
     var wb = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><bookViews><workbookView activeTab="0"/></bookViews><sheets>';
@@ -1865,6 +2654,9 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     sm.push(H(['Geometry', 'Value', 'Unit']));
     line('Blocks', model.blocks.length); line('Overall length (X)', e0 ? nv(e0.length) : 0, 'm'); line('Overall beam (Y)', e0 ? nv(e0.beam) : 0, 'm'); line('Overall height (Z)', e0 ? nv(e0.height) : 0, 'm');
     line('Gross volume of blocks', nv(s.total.vol), 'm3'); line('Gross area of blocks', nv(s.total.area), 'm2');
+    var gt0 = grossTonnage(model), lastB = model.blocks.length + 1;
+    line('Enclosed volume for GT', model.blocks.length ? { v: r4(gt0.V), s: 'n2', f: 'SUMIF(Blocks!AD2:AD' + lastB + ',"yes",Blocks!P2:P' + lastB + ')' } : nv(gt0.V), 'm3');
+    line('Gross tonnage, GT (estimate)', model.blocks.length ? { v: r4(gt0.GT), s: 'bn2', f: '(0.2+0.02*LOG10(B' + (sm.length + 0) + '))*B' + (sm.length + 0) } : nv(gt0.GT), 'GT');
     sm.push([]); sm.push(H(['Weight and centres', 'Value', 'Unit']));
     line('Blocks', nv(ws.blocks.mass), 't'); line('Structure and outfitting (' + r4(ws.pct) + '% of displacement)', nv(ws.struct.mass), 't'); line('Total weight', nv(ws.total.mass, 'bn2'), 't');
     line('LCG x (from the aft end)', nv(ws.total.lcg), 'm'); line('TCG y (to port)', nv(ws.total.tcg), 'm'); line('VCG z (above the baseline)', nv(ws.total.vcg), 'm');
@@ -1887,9 +2679,9 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     }
     if (ev0.length) {
       sm.push([]); sm.push(H(['Requirements', 'Count', '']));
-      var stN = { should: 0, shall: 0, fail: 0, none: 0 }; ev0.forEach(function (x) { stN[x.status] = (stN[x.status] || 0) + 1; });
-      var stF = { should: 'C6EFCE', shall: 'FFEB9C', fail: 'F8CBAD', none: 'EDEDED' };
-      ['should', 'shall', 'fail', 'none'].forEach(function (k) { sm.push([{ v: STATUS_LABEL[k], s: 'n|' + stF[k] }, stN[k] || 0, '']); });
+      var stN = { ok: 0, excess: 0, fail: 0, none: 0 }; ev0.forEach(function (x) { stN[x.status] = (stN[x.status] || 0) + 1; });
+      var stF = { ok: 'C6EFCE', excess: 'FFEB9C', fail: 'F8CBAD', none: 'EDEDED' };
+      ['ok', 'excess', 'fail', 'none'].forEach(function (k) { sm.push([{ v: STATUS_LABEL[k], s: 'n|' + stF[k] }, stN[k] || 0, '']); });
     }
     sm.push([]); sm.push(H(['Main systems', 'Blocks', 'Area (m2)', 'Volume (m3)', 'Mass (t)', 'LCG x (m)', 'TCG y (m)', 'VCG z (m)']));
     s.rows.forEach(function (r, i) {
@@ -1949,18 +2741,18 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     out.push(['', 'Length (X, m)', '', '', '', e ? nv(e.length) : 0]); out.push(['', 'Beam (Y, m)', '', '', '', e ? nv(e.beam) : 0]); out.push(['', 'Height (Z, m)', '', '', '', e ? nv(e.height) : 0]);
     out.push([]);
     out.push(H(['', 'Requirement', 'Metric (unit)', 'Sense', 'Blocks', 'Shall', 'Should', 'Achieved', '', 'Status', 'Inside hulls, estimate', 'Status inside hulls']));
-    var stFill = { should: 'C6EFCE', shall: 'FFEB9C', fail: 'F8CBAD', none: 'EDEDED' };
+    var stFill = { ok: 'C6EFCE', excess: 'FFEB9C', fail: 'F8CBAD', none: 'EDEDED' };
     evaluateRequirements(model).forEach(function (ev) {
       var r = ev.req, st = 'n|' + stFill[ev.status];
-      out.push(['', r.name, METRICS[r.metric].label + ' (' + METRICS[r.metric].unit + ')', r.sense === 'max' ? 'at most' : 'at least', ev.n, nv(r.shall), nv(r.should), nv(ev.achieved), '', { v: STATUS_LABEL[ev.status], s: st },
-        nv(ev.inside), ev.statusInside ? { v: STATUS_LABEL[ev.statusInside], s: 'n|' + stFill[ev.statusInside] } : '']);
+      out.push(['', r.name, METRICS[r.metric].label + ' (' + METRICS[r.metric].unit + ')', r.sense === 'max' ? 'at most' : 'at least', ev.n, nv(r.shall), nv(r.should), nv(ev.achieved), '', { v: statusText(ev.status, r) + (ev.margin == null ? '' : ' ' + fmtMargin(ev.margin)), s: st },
+        nv(ev.inside), ev.statusInside ? { v: statusText(ev.statusInside, r), s: 'n|' + stFill[ev.statusInside] } : '']);
     });
     sheets.push({ name: 'Output', rows: out, widths: [3, 46, 24, 14, 8, 12, 13, 14, 9, 12, 12, 12, 12], freeze: OH });
 
     // 3 blocks, with formulas
     var rmap = {}; model.requirements.forEach(function (r) { rmap[r.id] = r.name; });
     var br = [H(['Id', 'Name', 'Group path', 'Group', 'Requirement', 'Shape', 'X (m)', 'Y (m)', 'Z (m)', 'Length (m)', 'Beam (m)', 'Height (m)', 'Rot X (deg)', 'Rot Y (deg)', 'Rot Z (deg)',
-      'Volume (m3)', 'Area (m2)', 'Volume below main deck (m3)', 'Volume outside hulls, estimate (m3)', 'Outside share (%)', 'Density (t/m3)', 'Fill (%)', 'Mass (t)', 'Mass typed', 'CG x (m)', 'CG y (m)', 'CG z (m)', 'Free surface', 'Main deck'])];
+      'Volume (m3)', 'Area (m2)', 'Volume below main deck (m3)', 'Volume outside hulls, estimate (m3)', 'Outside share (%)', 'Density (t/m3)', 'Fill (%)', 'Mass (t)', 'Mass typed', 'CG x (m)', 'CG y (m)', 'CG z (m)', 'Free surface', 'Main deck', 'Counts for GT'])];
     model.blocks.forEach(function (b, i) {
       var q = blockMass(model, b), cg = blockCentroid(b), n = i + 2, vol = blockVolume(b);
       var gc = gm[b.group] ? gm[b.group].color : '#9aa5b1', tb2 = 'n|' + tint(gc, 0.8);
@@ -1968,12 +2760,12 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
         nv(b.position[0]), nv(b.position[1]), nv(b.position[2]), nv(b.size[0]), nv(b.size[1]), nv(b.size[2]), nv(b.rotation[0], 'n1'), nv(b.rotation[1], 'n1'), nv(b.rotation[2], 'n1'),
         nv(vol), nv(blockArea(b)), hc ? nv(hc.byId[b.id].below) : '', hc ? nv(hc.byId[b.id].out) : '', hc ? nv(100 * hc.byId[b.id].shareBlock, 'n1') : '',
         nv(q.density, 'n3'), nv(q.fill, 'n1'),
-        q.typed ? nv(q.mass) : { v: r4(q.mass), s: 'n2', f: 'P' + n + '*U' + n + '*V' + n + '/100' }, q.typed ? 'yes' : 'no', nv(cg[0]), nv(cg[1]), nv(cg[2]), b.freeSurface ? 'yes' : 'no', b.deck ? 'yes' : 'no']);
+        q.typed ? nv(q.mass) : { v: r4(q.mass), s: 'n2', f: 'P' + n + '*U' + n + '*V' + n + '/100' }, q.typed ? 'yes' : 'no', nv(cg[0]), nv(cg[1]), nv(cg[2]), b.freeSurface ? 'yes' : 'no', b.deck ? 'yes' : 'no', b.gt === false ? 'no' : 'yes']);
     });
     var last = model.blocks.length + 1, tr = last + 1;
     if (model.blocks.length) {
       var sp = function (col) { return 'SUMPRODUCT(W2:W' + last + ',' + col + '2:' + col + last + ')/SUM(W2:W' + last + ')'; };
-      var tot = [{ v: 'Total', s: 'b' }]; for (var z = 1; z < 28; z++) tot.push('');
+      var tot = [{ v: 'Total', s: 'b' }]; for (var z = 1; z < 29; z++) tot.push('');
       tot[15] = { v: r4(s.total.vol), s: 'bn2', f: 'SUM(P2:P' + last + ')' };
       tot[16] = { v: r4(s.total.area), s: 'bn2', f: 'SUM(Q2:Q' + last + ')' };
       tot[22] = { v: r4(ws.blocks.mass), s: 'bn2', f: 'SUM(W2:W' + last + ')' };
@@ -2047,14 +2839,29 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
       sheets.push({ name: 'Hydrostatics', rows: hr, widths: [46, 12, 12, 12, 14, 16, 9, 9, 9, 9, 18, 12, 10, 12, 12], freeze: 1 });
     }
 
+    // offsets, one block per hull
+    if (model.hulls && model.hulls.length) {
+      var orw = [];
+      model.hulls.forEach(function (h, hi) {
+        var OF = hullOffsets(h, 20, 10);
+        if (hi) orw.push([]);
+        orw.push([{ v: 'Table of offsets: ' + (h.name || 'Hull'), s: 'b' }]);
+        orw.push(['Length (m)', nv(h.loa), 'Beam (m)', nv(h.beam), 'Depth (m)', nv(h.depth), 'Draught (m)', nv(h.draught)]);
+        orw.push(['Half-breadths in metres. x is measured from the aft end, z from the baseline. "-" is outside the hull.']);
+        orw.push(H(['Station', 'x (m)'].concat(OF.zs.map(function (z) { return 'z = ' + r4(z) + ' m'; }))));
+        OF.rows.forEach(function (r) { orw.push([{ v: r.station, s: 'n' }, nv(r.x)].concat(r.half.map(function (v) { return v == null ? '-' : nv(v); }))); });
+      });
+      sheets.push({ name: 'Offsets', rows: orw, widths: [10, 10, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11], freeze: 0 });
+    }
+
     // 6 requirements
-    var rq = [H(['Requirement', 'Metric', 'Unit', 'Sense', 'Shall', 'Should', 'Achieved', 'Linked blocks', 'Status', 'Inside hulls, estimate', 'Status inside hulls', 'Block names'])];
+    var rq = [H(['Requirement', 'Metric', 'Unit', 'Sense', 'Shall', 'Should', 'Achieved', 'Linked blocks', 'Status', 'Margin vs shall (%)', 'Margin vs should (%)', 'Inside hulls, estimate', 'Status inside hulls', 'Block names'])];
     evaluateRequirements(model).forEach(function (ev) {
       var r = ev.req;
-      rq.push([r.name, METRICS[r.metric].label, METRICS[r.metric].unit, r.sense === 'max' ? 'at most' : 'at least', nv(r.shall), nv(r.should), nv(ev.achieved), ev.n, STATUS_LABEL[ev.status],
-        nv(ev.inside), ev.statusInside ? STATUS_LABEL[ev.statusInside] : '', ev.blocks.join('; ')]);
+      rq.push([r.name, METRICS[r.metric].label, METRICS[r.metric].unit, r.sense === 'max' ? 'at most' : 'at least', nv(r.shall), nv(r.should), nv(ev.achieved), ev.n, statusText(ev.status, r), nv(mpc(ev.marginShall), 'n1'), nv(mpc(ev.marginShould), 'n1'),
+        nv(ev.inside), ev.statusInside ? statusText(ev.statusInside, r) : '', ev.blocks.join('; ')]);
     });
-    sheets.push({ name: 'Requirements', rows: rq, widths: [34, 18, 8, 10, 10, 10, 12, 13, 16, 20, 20, 50], freeze: 1 });
+    sheets.push({ name: 'Requirements', rows: rq, widths: [34, 18, 8, 10, 10, 10, 12, 13, 20, 12, 12, 20, 20, 50], freeze: 1 });
     return sheets;
   }
   function projectXlsx(model, when) { return xlsxBuild(workbookSheets(model, when)); }
@@ -2070,6 +2877,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     demihull: { label: 'Slender demihull',  ps: 0.70, ua: 0.10, a: 0.8, ub: 0.80, pb: 0.00, c: 1.8, rake: 0.06,  flare: 0.05, fb: 0.30, m: 2.2, sternRake: 0.010, dr: 0.60 },
     barge:    { label: 'Barge',             ps: 1.00, ua: 0.02, a: 1.0, ub: 0.94, pb: 0.60, c: 3.0, rake: 0.03,  flare: 0.00, fb: 0.90, m: 6.0, sternRake: 0.000, dr: 0.50 }
   };
+  var MAX_HULLS = 5;
   var HULL_ORDER = ['osv', 'research', 'cargo', 'demihull', 'barge'];
 
   /* Shape sliders. A hull may carry h.shape = { key: value }, overrides of its type's parameters. 'par' is the length of the
@@ -2445,12 +3253,12 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     function worse(a, b) { return rank[b] > rank[a] ? b : a; }
 
     // requirements
-    var n = { should: 0, shall: 0, fail: 0, none: 0 }, sevR = 'ok', met = 0, short = 0;
+    var n = { ok: 0, excess: 0, fail: 0, none: 0 }, sevR = 'ok', met = 0, over = 0;
     ev.forEach(function (x) {
       var r = x.req, un = METRICS[r.metric].unit, hi = r.sense === 'max', tgt = r.shall != null ? 'shall' : 'should', tv = r.shall != null ? r.shall : r.should;
       n[x.status]++;
-      if (x.status === 'fail') { sevR = 'bad'; add('bad', r.name + ': ' + f1(x.achieved) + ' ' + un + ', ' + (hi ? 'above' : 'below') + ' the ' + tgt + ' of ' + f1(tv) + ' ' + un, 'reqs', { req: r.id }); }
-      else if (x.status === 'shall' && r.should != null) { short++; met++; add('note', r.name + ': meets the shall but not the should of ' + f1(r.should) + ' ' + un + ' (now ' + f1(x.achieved) + ')', 'reqs', { req: r.id }); }
+      if (x.status === 'fail') { sevR = 'bad'; add('bad', r.name + ': ' + f1(x.achieved) + ' ' + un + ', ' + (hi ? 'above' : 'below') + ' the ' + tgt + ' of ' + f1(tv) + ' ' + un + (x.margin != null ? ' (' + fmtMargin(x.margin) + ')' : ''), 'reqs', { req: r.id }); }
+      else if (x.status === 'excess') { over++; met++; add('note', r.name + ': ' + f1(x.achieved) + ' ' + un + ' is ' + fmtMargin(Math.abs(x.marginShould)).slice(1) + ' ' + (hi ? 'below' : 'above') + ' the should of ' + f1(r.should) + ' ' + un + ', an excess that may cost more than needed', 'reqs', { req: r.id }); }
       else if (x.status !== 'none') {
         met++;
         if (x.statusInside === 'fail') { sevR = worse(sevR, 'warn'); add('warn', r.name + ': only ' + f1(x.inside) + ' ' + un + ' lies inside the hulls (estimate), which does not meet the target', 'reqs', { req: r.id }); }
@@ -2459,7 +3267,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     var withTarget = ev.length - n.none;
     if (!ev.length) chips.push({ key: 'reqs', label: 'Requirements', value: 'none defined', sev: 'none', tab: 'reqs' });
     else if (!withTarget) chips.push({ key: 'reqs', label: 'Requirements', value: 'no targets set', sev: 'none', tab: 'reqs' });
-    else { chips.push({ key: 'reqs', label: 'Requirements', value: met + ' of ' + withTarget + ' met' + (short ? ', ' + short + ' below should' : ''), sev: sevR, tab: 'reqs' }); if (sevR === 'ok') good.push('All ' + withTarget + ' requirements with a target meet their shall.'); }
+    else { chips.push({ key: 'reqs', label: 'Requirements', value: met + ' of ' + withTarget + ' met' + (over ? ', ' + over + ' in excess' : ''), sev: sevR, tab: 'reqs' }); if (sevR === 'ok') good.push('All ' + withTarget + ' requirements with a target meet their shall.'); }
 
     // weight and hull
     var f = fres && (fres.T || fres.overloaded) ? fres : (ws.hasHull ? floatState(model, { levelOnly: true }) : null), sevW = 'ok', valW = '';
@@ -2674,6 +3482,10 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
   function r2(v) { return Math.round(v * 100) / 100; }
 
   /* examples: tick the blocks whose top is the hull depth, so that Auto gives the depth the example was built with */
+  /* examples: spaces that are open (not enclosed) do not count for GT */
+  function withGT(f, re) {
+    return function () { var m = f(); m.blocks.forEach(function (b) { if (re.test(b.name)) b.gt = false; }); return m; };
+  }
   function withDeck(f) {
     return function () {
       var m = f(), h = m.hulls && m.hulls[0];
@@ -2718,6 +3530,59 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
       if (frac <= 0.025) { best = h; break; }
     }
     return best;
+  }
+
+  /* Hulls for a catamaran (k = 2), a trimaran (k = 3) or more (pontoons), one per group of blocks. The blocks below the deck are grouped by the gaps
+     in their side-to-side extents; each hull is fitted around its own group. Order of the result: k = 2 [port, starboard],
+     k = 3 [centre, port, starboard], k >= 4 port to starboard. When the blocks do not fall into k separate groups (a single-hull layout), the hulls are
+     placed by proportion of the overall beam and result.fitted is false. null when no block lies below the deck. */
+  function fitHullSet(model, k, types, shapes, deck, draught) {
+    var iv = [];
+    model.blocks.forEach(function (b) { var w = blockWorldBox(b); if (w.min[2] < deck - 1e-6) iv.push([w.min[1], w.max[1]]); });
+    if (!iv.length) return null;
+    iv.sort(function (a, b) { return a[0] - b[0]; });
+    var merged = [];
+    iv.forEach(function (i) { var l = merged[merged.length - 1]; if (l && i[0] <= l[1] + 0.3) l[1] = Math.max(l[1], i[1]); else merged.push([i[0], i[1]]); });
+    function fit(i, target) { return fitHull(model, types[i], deck, draught, target, shapes[i]); }
+    var out = [], ok = false;
+    if (merged.length >= k) {
+      var gaps = [], i;
+      for (i = 1; i < merged.length; i++) gaps.push({ i: i, w: merged[i][0] - merged[i - 1][1] });
+      gaps.sort(function (a, b) { return b.w - a.w; });
+      var cuts = gaps.slice(0, k - 1).map(function (g) { return g.i; }).sort(function (a, b) { return a - b; }), groups = [], st = 0;
+      cuts.concat([merged.length]).forEach(function (c) { groups.push([merged[st][0], merged[c - 1][1]]); st = c; });
+      var roles = k === 2 ? [groups[1], groups[0]] : k === 3 ? [groups[1], groups[2], groups[0]] : groups.slice().reverse();   // 4 or more: port to starboard
+      ok = true;
+      var ycs = roles.map(function (g) { return (g[0] + g[1]) / 2; });
+      roles.forEach(function (g, j) {
+        var yc = r2(ycs[j]), w0 = g[1] - g[0] + 0.4, h = null, t, cap = Infinity;
+        ycs.forEach(function (o, q) { if (q !== j) cap = Math.min(cap, Math.abs(o - ycs[j]) - 0.1); });   // neighbours may touch, not overlap
+        if (!ok) return;
+        for (t = 0; t < 14; t++) {            // a slender section is narrower than its deck: widen until the blocks are inside
+          h = fit(j, { y: yc, beam: r2(Math.max(w0, Math.min(w0 + 0.2 * t, cap))) });
+          if (!h) break;
+          var sub = model.blocks.filter(function (b) { var w = blockWorldBox(b); return w.min[2] < deck - 1e-6 && Math.abs(b.position[1] - yc) <= h.beam / 2 + 0.3; });
+          var hc = hullCheck({ hulls: [h], blocks: sub }, 9);
+          if (!(hc.blocksBelow > 0) || hc.outside / hc.blocksBelow <= 0.025) break;
+        }
+        if (!h) ok = false; else out.push(h);
+      });
+    }
+    if (!ok) {
+      out = [];
+      var all = fit(0, null);
+      if (!all) return null;
+      var B = all.beam, spec = k === 2 ? [[0.35 * B, 0.3 * B, 1, 0], [-0.35 * B, 0.3 * B, 1, 0]]
+        : k === 3 ? [[0, 0.26 * B, 1, 0], [0.4 * B, 0.12 * B, 0.6, 0.25], [-0.4 * B, 0.12 * B, 0.6, 0.25]]
+        : Array.apply(null, Array(k)).map(function (_, j) { var sp = 0.8 * B / (k - 1); return [0.4 * B - j * sp, 0.5 * sp, 1, 0]; });   // evenly spread, port to starboard
+      spec.forEach(function (sp, j) {
+        var h = fit(j, null);
+        h.x = r2(all.x + sp[3] * all.loa); h.loa = r2(all.loa * sp[2]); h.y = r2(sp[0]); h.beam = r2(sp[1]);
+        out.push(h);
+      });
+    }
+    out.fitted = ok;
+    return out;
   }
 
   function makeHullGeometry(h, nu, nt) {
@@ -2813,18 +3678,19 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
   }
 
   var api = {
-    FORMAT: FORMAT, VERSION: VERSION, SHAPES: SHAPES, SHAPE_ORDER: SHAPE_ORDER, METRICS: METRICS, STATUS_LABEL: STATUS_LABEL,
-    makeGeometry: makeGeometry, shapeContains: shapeContains, makeEdges: makeEdges,
+    FORMAT: FORMAT, VERSION: VERSION, SHAPES: SHAPES, SHAPE_ORDER: SHAPE_ORDER, METRICS: METRICS, STATUS_LABEL: STATUS_LABEL, statusText: statusText, fmtMargin: fmtMargin,
+    registerShape: registerShape, parseSTL: parseSTL, reduceSTL: reduceSTL, makeShapeData: makeShapeData, guessUnit: guessUnit, UNIT_SCALE: UNIT_SCALE, CUSTOM: CUSTOM, STL_MAX_BYTES: STL_MAX_BYTES, STL_TARGET: STL_TARGET,
+    grossTonnage: grossTonnage, makeGeometry: makeGeometry, shapeContains: shapeContains, makeEdges: makeEdges,
     blockMatrix: blockMatrix, blockVolume: blockVolume, blockPlanArea: blockPlanArea, blockArea: blockArea,
     blockWorldBox: blockWorldBox, envelope: envelope,
     defaultGroups: defaultGroups, groupMap: groupMap, groupOrder: groupOrder, groupPath: groupPath,
     isGroupVisible: isGroupVisible, descendantIds: descendantIds,
     summarize: summarize, weightSummary: weightSummary, blockMass: blockMass, blockCentroid: blockCentroid, groupDensity: groupDensity, hullCentroid: hullCentroid, SHAPE_CENTROID: SHAPE_CENTROID, DEFAULT_DENSITY: DEFAULT_DENSITY, DEFAULT_STRUCT_PCT: DEFAULT_STRUCT_PCT, evaluateRequirements: evaluateRequirements, blockReqs: blockReqs, hasReq: hasReq,
-    emptyProject: emptyProject, exampleProject: withDeck(exampleProject), containerShipExample: withDeck(containerShipExample), tankerExample: withDeck(tankerExample), bulkCarrierExample: withDeck(bulkCarrierExample), simpleExample: withDeck(simpleExample), gunnerusExample: withDeck(gunnerusExample), catamaranExample: withDeck(catamaranExample), trimaranExample: withDeck(trimaranExample), markedDeck: markedDeck,
+    emptyProject: emptyProject, exampleProject: withGT(withDeck(exampleProject), /^Open cargo deck$/), containerShipExample: withGT(withDeck(containerShipExample), /^Deck stack/), tankerExample: withDeck(tankerExample), bulkCarrierExample: withDeck(bulkCarrierExample), sailingYachtExample: withGT(withDeck(sailingYachtExample), /^(Mast and rigging|Lead ballast)$/), simpleExample: withDeck(simpleExample), gunnerusExample: withGT(withDeck(gunnerusExample), /^Aft working deck$/), catamaranExample: withGT(withDeck(catamaranExample), /^Aft working deck$/), trimaranExample: withGT(withDeck(trimaranExample), /^Aft working deck$/), markedDeck: markedDeck,
     sanitizeProject: sanitizeProject, serializeProject: serializeProject,
-    summaryCSV: summaryCSV, projectXlsx: projectXlsx, workbookSheets: workbookSheets, xlsxBuild: xlsxBuild, requirementsCSV: requirementsCSV, blocksCSV: blocksCSV,
+    summaryCSV: summaryCSV, projectXlsx: projectXlsx, buildReport: buildReport, pdfWriter: pdfWriter, workbookSheets: workbookSheets, xlsxBuild: xlsxBuild, requirementsCSV: requirementsCSV, blocksCSV: blocksCSV,
     HULL_TYPES: HULL_TYPES, HULL_ORDER: HULL_ORDER, hullHalf: hullHalf, hullParams: hullParams, cleanShape: cleanShape, SHAPE_SPEC: SHAPE_SPEC, STERN_PRESETS: STERN_PRESETS, hullXRange: hullXRange, hullContains: hullContains,
-    hullVolumeTo: hullVolumeTo, hullHydro: hullHydro, modelHydro: modelHydro, hullCheck: hullCheck, setQuickCheck: setQuickCheck, addHullTo: addHullTo, mirrorHull: mirrorHull, autoDeckLine: autoDeckLine, fitHull: fitHull,
+    hullVolumeTo: hullVolumeTo, hullOffsets: hullOffsets, hullHydro: hullHydro, modelHydro: modelHydro, hullCheck: hullCheck, setQuickCheck: setQuickCheck, addHullTo: addHullTo, mirrorHull: mirrorHull, fitHullSet: fitHullSet, MAX_HULLS: MAX_HULLS, autoDeckLine: autoDeckLine, fitHull: fitHull,
     makeHullGeometry: makeHullGeometry, makeWaterGeometry: makeWaterGeometry, floatState: floatState, stabilityState: stabilityState, assessment: assessment, autoFloat: autoFloat, waterExtent: waterExtent, syncDraught: syncDraught, hullNameFor: hullNameFor, makeHullLines: makeHullLines,
     uid: uid, num: num
   };
@@ -2832,6 +3698,11 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
   root.DBBCore = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+/* Example STL parts (deck crane, funnel, A-frame) made for this tool, free to use. Reduced meshes; the original STL files are in examples/. */
+var DBB_STL_PARTS = {"crane":{"id":"stl_ex_crane","label":"Deck crane","v":"7zp9DEEq7zp9DAAAAj64DUEqAj64DQAAAUFhEUEqAUFhEQAA2kNgF0Eq2kNgFwAAe0aRH0Eqe0aRHwAA00i/KUEq00i/KQAA1EqrNUEq1EqrNQAAcEwJQ0EqcEwJQwAAnk2EUUEqnk2EUQAAVk7DYEEqVk7DYAAAlE5jcEEqlE5jcAAAVk4EgEEqVk4EgAAAnk1Cj0Eqnk1CjwAAcEy+nUEqcEy+nQAA1Eocq0Eq1EocqwAA00gHt0Eq00gHtwAAe0Y2wUEqe0Y2wQAA2kNnyUEq2kNnyQAAAUFmz0EqAUFmzwAAAj4P00EqAj4P0wAA7zpK1EEq7zpK1AAA3DcP00Eq3DcP0wAA3TRmz0Eq3TRmzwAABDJnyUEqBDJnyQAAYy82wUEqYy82wQAACy0Ht0EqCy0HtwAACyscq0EqCyscqwAAbim+nUEqbim+nQAAQChCj0EqQChCjwAAiCcEgEEqiCcEgAAASidjcEEqSidjcAAAiCfDYEEqiCfDYAAAQCiEUUEqQCiEUQAAbikJQ0EqbikJQwAACyurNUEqCyurNQAACy2/KUEqCy2/KQAAYy+RH0EqYy+RHwAABDJgF0EqBDJgFwAA3TRhEUEq3TRhEQAA3De4DUEq3De4DQAA7zpjcEEq7zpjcAAAoVnH4JxDoVkAAJxDoVnH4EEqoVkAAEEqPRzH4EEqPRwAAEEqPRzH4JxDPRwAAJxD21r//yFR21qcjyFR21r//5xD21qcj5xDNkf//5xDNkecj5xDNkf//yFRNkecjyFReB0StZxDeB21K5xDeB0StUEqeB21K0EqAAAStUEqAAC1K0EqAAAStZxDAAC1K5xDK/K7kv//K/IMTv//3f27kln73f0MTln7QF67kg89QF4MTg89jlK7krVBjlIMTrVB//98jJr4//9LVJr4//98jFLk//9LVFLk8vR8jFLk8vRLVFLk8vR8jJr48vRLVJr4","i":"AAABAAIAAQADAAIAAgADAAQAAwAFAAQABAAFAAYABQAHAAYABgAHAAgABwAJAAgACAAJAAoACQALAAoACgALAAwACwANAAwADAANAA4ADQAPAA4ADgAPABAADwARABAAEAARABIAEQATABIAEgATABQAEwAVABQAFAAVABYAFQAXABYAFgAXABgAFwAZABgAGAAZABoAGQAbABoAGgAbABwAGwAdABwAHAAdAB4AHQAfAB4AHgAfACAAHwAhACAAIAAhACIAIQAjACIAIgAjACQAIwAlACQAJAAlACYAJQAnACYAJgAnACgAJwApACgAKAApACoAKQArACoAKgArACwAKwAtACwALAAtAC4ALQAvAC4ALgAvADAALwAxADAAMAAxADIAMQAzADIAMgAzADQAMwA1ADQANAA1ADYANQA3ADYANgA3ADgANwA5ADgAOAA5ADoAOQA7ADoAOgA7ADwAOwA9ADwAPAA9AD4APQA/AD4APgA/AEAAPwBBAEAAQABBAEIAQQBDAEIAQgBDAEQAQwBFAEQARABFAEYARQBHAEYARgBHAEgARwBJAEgASABJAEoASQBLAEoASgBLAEwASwBNAEwATABNAE4ATQBPAE4ATgBPAAAATwABAAAAAAACAFAAAgAEAFAABAAGAFAABgAIAFAACAAKAFAACgAMAFAADAAOAFAADgAQAFAAEAASAFAAEgAUAFAAFAAWAFAAFgAYAFAAGAAaAFAAGgAcAFAAHAAeAFAAHgAgAFAAIAAiAFAAIgAkAFAAJAAmAFAAJgAoAFAAKAAqAFAAKgAsAFAALAAuAFAALgAwAFAAMAAyAFAAMgA0AFAANAA2AFAANgA4AFAAOAA6AFAAOgA8AFAAPAA+AFAAPgBAAFAAQABCAFAAQgBEAFAARABGAFAARgBIAFAASABKAFAASgBMAFAATABOAFAATgAAAFAAAwABAFEABQADAFEABwAFAFEACQAHAFEACwAJAFEADQALAFEADwANAFEAEQAPAFEAEwARAFEAFQATAFEAFwAVAFEAGQAXAFEAGwAZAFEAHQAbAFEAHwAdAFEAIQAfAFEAIwAhAFEAJQAjAFEAJwAlAFEAKQAnAFEAKwApAFEALQArAFEALwAtAFEAMQAvAFEAMwAxAFEANQAzAFEANwA1AFEAOQA3AFEAOwA5AFEAPQA7AFEAPwA9AFEAQQA/AFEAQwBBAFEARQBDAFEARwBFAFEASQBHAFEASwBJAFEATQBLAFEATwBNAFEAAQBPAFEAUgBTAFQAUwBVAFQAVgBXAFgAVwBZAFgAVgBYAFQAWABSAFQAWQBXAFMAVwBVAFMAWABZAFIAWQBTAFIAVABVAFYAVQBXAFYAWgBbAFwAWwBdAFwAXgBfAGAAXwBhAGAAXgBgAFwAYABaAFwAYQBfAFsAXwBdAFsAYABhAFoAYQBbAFoAXABdAF4AXQBfAF4AYgBjAGQAYwBlAGQAZgBnAGgAZwBpAGgAZgBoAGQAaABiAGQAaQBnAGMAZwBlAGMAaABpAGIAaQBjAGIAZABlAGYAZQBnAGYAagBrAGwAawBtAGwAbgBvAHAAbwBxAHAAbgBwAGwAcABqAGwAcQBvAGsAbwBtAGsAcABxAGoAcQBrAGoAbABtAG4AbQBvAG4AcgBzAHQAcwB1AHQAdgB3AHgAdwB5AHgAdgB4AHQAeAByAHQAeQB3AHMAdwB1AHMAeAB5AHIAeQBzAHIAdAB1AHYAdQB3AHYA","vf":0.05712,"c":[-0.18495,-0.05034,-0.22331],"size":[20.85,4.1,30.2917],"closed":true,"tris0":220,"tris":220,"bytes0":11084},"funnel":{"id":"stl_ex_funnel","label":"Funnel","v":"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sU/NTsPkb1sDS8PkbVcOTMPkpWOcScPkg18ySsPkAGwkScPk0GdCScPkWnScScPkL3BCScPkkHwDS8PkfHgySsPkfYRRTcPkkoAOTMPk/4t+UMPkTojNTsPk9ZJ6VMPkjo9jUsPkQZk1WcPkMpbBVsPkxp6bXsPkHpzUW8PkbKOSZMPkNqGGYcPkIKcBa8PkZqW8Z8Pk0anNccPkmqhdbsPkc6vWeMPkxapMdcPk3KtpfMPk/6sAgP//3KuWg///c6sph///xaqziv//0akyjv//mqiikf//IKf+lP//ZqVDmP//bKNtm///NqF5nv//xp5kof//HpwrpP//QZnKpv//MpY+qf//9ZKFq///jo+crf///4uBr///Togysf//fYSusv//koDxs///kHz8tP//fHjNtf//WnRjtv//L3C9tv//AGzbtv//0Ge9tv//pWNjtv//g1/Ntf//b1v8tP//bVfxs///glOusv//sU8ysf//AEyBr///cUicrf//CkWFq///zUE+qf//vz7Kpv//4jsrpP//OTlkof//yTZ5nv//kzRtm///mTJDmP//3zD+lP//ZS+ikf//Li4yjv//Oy2ziv//jCwph///IyyWg///ACwAgP//IyxpfP//jCzWeP//Oy1Mdf//Li7Ncf//ZS9dbv//3zABa///mTK8Z///kzSSZP//yTaGYf//OTmbXv//4jvUW///vz41Wf//zUHBVv//CkV6VP//cUhjUv//AEx+UP//sU/NTv//glNRTf//bVcOTP//b1sDS///g18ySv//pWOcSf//0GdCSf//AGwkSf//L3BCSf//WnScSf//fHgySv//kHwDS///koAOTP//fYRRTf//TojNTv///4t+UP//jo9jUv//9ZJ6VP//MpbBVv//QZk1Wf//HpzUW///xp6bXv//NqGGYf//bKOSZP//ZqW8Z///IKcBa///mqhdbv//0anNcf//xapMdf//c6vWeP//3KtpfP//","i":"AAABAAIAAwAEAAAABQAGAAMABwAIAAUACQAKAAcACwAMAAkADQAOAAsADwAQAA0AEQASAA8AEwAUABEAFQAWABMAFwAYABUAGQAaABcAGwAcABkAHQAeABsAHwAgAB0AIQAiAB8AIwAkACEAJQAmACMAJwAoACUAKQAqACcAKwAsACkALQAuACsALwAwAC0AMQAyAC8AMwA0ADEANQA2ADMANwA4ADUAOQA6ADcAOwA8ADkAPQA+ADsAPwBAAD0AQQBCAD8AQwBEAEEARQBGAEMARwBIAEUASQBKAEcASwBMAEkATQBOAEsATwBQAE0AUQBSAE8AUwBUAFEAVQBWAFMAVwBYAFUAWQBaAFcAWwBcAFkAXQBeAFsAAgBfAF0AAwAAAAIABwAFAAMACwAJAAcADwANAAsAEwARAA8AFwAVABMAGwAZABcAHwAdABsAIwAhAB8AJwAlACMAKwApACcALwAtACsAMwAxAC8ANwA1ADMAOwA5ADcAPwA9ADsAQwBBAD8ARwBFAEMASwBJAEcATwBNAEsAUwBRAE8AVwBVAFMAWwBZAFcAAgBdAFsABwADAAIADwALAAcAFwATAA8AHwAbABcAJwAjAB8ALwArACcANwAzAC8APwA7ADcARwBDAD8ATwBLAEcAVwBTAE8AAgBbAFcADwAHAAIAHwAXAA8ALwAnAB8APwA3AC8ATwBHAD8AAgBXAE8AHwAPAAIAPwAvAB8AAgBPAD8APwAfAAIAYABhAGIAYgBjAGQAZABlAGYAZgBnAGgAaABpAGoAagBrAGwAbABtAG4AbgBvAHAAcABxAHIAcgBzAHQAdAB1AHYAdgB3AHgAeAB5AHoAegB7AHwAfAB9AH4AfgB/AIAAgACBAIIAggCDAIQAhACFAIYAhgCHAIgAiACJAIoAigCLAIwAjACNAI4AjgCPAJAAkACRAJIAkgCTAJQAlACVAJYAlgCXAJgAmACZAJoAmgCbAJwAnACdAJ4AngCfAKAAoAChAKIAogCjAKQApAClAKYApgCnAKgAqACpAKoAqgCrAKwArACtAK4ArgCvALAAsACxALIAsgCzALQAtAC1ALYAtgC3ALgAuAC5ALoAugC7ALwAvAC9AL4AvgC/AGAAYABiAGQAZABmAGgAaABqAGwAbABuAHAAcAByAHQAdAB2AHgAeAB6AHwAfAB+AIAAgACCAIQAhACGAIgAiACKAIwAjACOAJAAkACSAJQAlACWAJgAmACaAJwAnACeAKAAoACiAKQApACmAKgAqACqAKwArACuALAAsACyALQAtAC2ALgAuAC6ALwAvAC+AGAAYABkAGgAaABsAHAAcAB0AHgAeAB8AIAAgACEAIgAiACMAJAAkACUAJgAmACcAKAAoACkAKgAqACsALAAsAC0ALgAuAC8AGAAYABoAHAAcAB4AIAAgACIAJAAkACYAKAAoACoALAAsAC4AGAAYABwAIAAgACQAKAAoACwAGAAYACAAKAAAgABAGAAAQBhAGAAAQAAAGEAAABiAGEAAAAEAGIABABjAGIABAADAGMAAwBkAGMAAwAGAGQABgBlAGQABgAFAGUABQBmAGUABQAIAGYACABnAGYACAAHAGcABwBoAGcABwAKAGgACgBpAGgACgAJAGkACQBqAGkACQAMAGoADABrAGoADAALAGsACwBsAGsACwAOAGwADgBtAGwADgANAG0ADQBuAG0ADQAQAG4AEABvAG4AEAAPAG8ADwBwAG8ADwASAHAAEgBxAHAAEgARAHEAEQByAHEAEQAUAHIAFABzAHIAFAATAHMAEwB0AHMAEwAWAHQAFgB1AHQAFgAVAHUAFQB2AHUAFQAYAHYAGAB3AHYAGAAXAHcAFwB4AHcAFwAaAHgAGgB5AHgAGgAZAHkAGQB6AHkAGQAcAHoAHAB7AHoAHAAbAHsAGwB8AHsAGwAeAHwAHgB9AHwAHgAdAH0AHQB+AH0AHQAgAH4AIAB/AH4AIAAfAH8AHwCAAH8AHwAiAIAAIgCBAIAAIgAhAIEAIQCCAIEAIQAkAIIAJACDAIIAJAAjAIMAIwCEAIMAIwAmAIQAJgCFAIQAJgAlAIUAJQCGAIUAJQAoAIYAKACHAIYAKAAnAIcAJwCIAIcAJwAqAIgAKgCJAIgAKgApAIkAKQCKAIkAKQAsAIoALACLAIoALAArAIsAKwCMAIsAKwAuAIwALgCNAIwALgAtAI0ALQCOAI0ALQAwAI4AMACPAI4AMAAvAI8ALwCQAI8ALwAyAJAAMgCRAJAAMgAxAJEAMQCSAJEAMQA0AJIANACTAJIANAAzAJMAMwCUAJMAMwA2AJQANgCVAJQANgA1AJUANQCWAJUANQA4AJYAOACXAJYAOAA3AJcANwCYAJcANwA6AJgAOgCZAJgAOgA5AJkAOQCaAJkAOQA8AJoAPACbAJoAPAA7AJsAOwCcAJsAOwA+AJwAPgCdAJwAPgA9AJ0APQCeAJ0APQBAAJ4AQACfAJ4AQAA/AJ8APwCgAJ8APwBCAKAAQgChAKAAQgBBAKEAQQCiAKEAQQBEAKIARACjAKIARABDAKMAQwCkAKMAQwBGAKQARgClAKQARgBFAKUARQCmAKUARQBIAKYASACnAKYASABHAKcARwCoAKcARwBKAKgASgCpAKgASgBJAKkASQCqAKkASQBMAKoATACrAKoATABLAKsASwCsAKsASwBOAKwATgCtAKwATgBNAK0ATQCuAK0ATQBQAK4AUACvAK4AUABPAK8ATwCwAK8ATwBSALAAUgCxALAAUgBRALEAUQCyALEAUQBUALIAVACzALIAVABTALMAUwC0ALMAUwBWALQAVgC1ALQAVgBVALUAVQC2ALUAVQBYALYAWAC3ALYAWABXALcAVwC4ALcAVwBaALgAWgC5ALgAWgBZALkAWQC6ALkAWQBcALoAXAC7ALoAXABbALsAWwC8ALsAWwBeALwAXgC9ALwAXgBdAL0AXQC+AL0AXQBfAL4AXwC/AL4AXwACAL8AAgBgAL8AwADBAMIAwwDEAMAAxQDGAMMAxwDIAMUAyQDKAMcAywDMAMkAzQDOAMsAzwDQAM0A0QDSAM8A0wDUANEA1QDWANMA1wDYANUA2QDaANcA2wDcANkA3QDeANsA3wDgAN0A4QDiAN8A4wDkAOEA5QDmAOMA5wDoAOUA6QDqAOcA6wDsAOkA7QDuAOsA7wDwAO0A8QDyAO8A8wD0APEA9QD2APMA9wD4APUA+QD6APcA+wD8APkA/QD+APsA/wAAAf0AAQECAf8AAwEEAQEBBQEGAQMBBwEIAQUBCQEKAQcBCwEMAQkBDQEOAQsBDwEQAQ0BEQESAQ8BEwEUAREBFQEWARMBFwEYARUBGQEaARcBGwEcARkBHQEeARsBwgAfAR0BwwDAAMIAxwDFAMMAywDJAMcAzwDNAMsA0wDRAM8A1wDVANMA2wDZANcA3wDdANsA4wDhAN8A5wDlAOMA6wDpAOcA7wDtAOsA8wDxAO8A9wD1APMA+wD5APcA/wD9APsAAwEBAf8ABwEFAQMBCwEJAQcBDwENAQsBEwERAQ8BFwEVARMBGwEZARcBwgAdARsBxwDDAMIAzwDLAMcA1wDTAM8A3wDbANcA5wDjAN8A7wDrAOcA9wDzAO8A/wD7APcABwEDAf8ADwELAQcBFwETAQ8BwgAbARcBzwDHAMIA3wDXAM8A7wDnAN8A/wD3AO8ADwEHAf8AwgAXAQ8B3wDPAMIA/wDvAN8AwgAPAf8A/wDfAMIAIAEhASIBIgEjASQBJAElASYBJgEnASgBKAEpASoBKgErASwBLAEtAS4BLgEvATABMAExATIBMgEzATQBNAE1ATYBNgE3ATgBOAE5AToBOgE7ATwBPAE9AT4BPgE/AUABQAFBAUIBQgFDAUQBRAFFAUYBRgFHAUgBSAFJAUoBSgFLAUwBTAFNAU4BTgFPAVABUAFRAVIBUgFTAVQBVAFVAVYBVgFXAVgBWAFZAVoBWgFbAVwBXAFdAV4BXgFfAWABYAFhAWIBYgFjAWQBZAFlAWYBZgFnAWgBaAFpAWoBagFrAWwBbAFtAW4BbgFvAXABcAFxAXIBcgFzAXQBdAF1AXYBdgF3AXgBeAF5AXoBegF7AXwBfAF9AX4BfgF/ASABIAEiASQBJAEmASgBKAEqASwBLAEuATABMAEyATQBNAE2ATgBOAE6ATwBPAE+AUABQAFCAUQBRAFGAUgBSAFKAUwBTAFOAVABUAFSAVQBVAFWAVgBWAFaAVwBXAFeAWABYAFiAWQBZAFmAWgBaAFqAWwBbAFuAXABcAFyAXQBdAF2AXgBeAF6AXwBfAF+ASABIAEkASgBKAEsATABMAE0ATgBOAE8AUABQAFEAUgBSAFMAVABUAFUAVgBWAFcAWABYAFkAWgBaAFsAXABcAF0AXgBeAF8ASABIAEoATABMAE4AUABQAFIAVABUAFYAWABYAFoAXABcAF4ASABIAEwAUABQAFQAWABYAFwASABIAFAAWABwgDBACABwQAhASABwQDAACEBwAAiASEBwADEACIBxAAjASIBxADDACMBwwAkASMBwwDGACQBxgAlASQBxgDFACUBxQAmASUBxQDIACYByAAnASYByADHACcBxwAoAScBxwDKACgBygApASgBygDJACkByQAqASkByQDMACoBzAArASoBzADLACsBywAsASsBywDOACwBzgAtASwBzgDNAC0BzQAuAS0BzQDQAC4B0AAvAS4B0ADPAC8BzwAwAS8BzwDSADAB0gAxATAB0gDRADEB0QAyATEB0QDUADIB1AAzATIB1ADTADMB0wA0ATMB0wDWADQB1gA1ATQB1gDVADUB1QA2ATUB1QDYADYB2AA3ATYB2ADXADcB1wA4ATcB1wDaADgB2gA5ATgB2gDZADkB2QA6ATkB2QDcADoB3AA7AToB3ADbADsB2wA8ATsB2wDeADwB3gA9ATwB3gDdAD0B3QA+AT0B3QDgAD4B4AA/AT4B4ADfAD8B3wBAAT8B3wDiAEAB4gBBAUAB4gDhAEEB4QBCAUEB4QDkAEIB5ABDAUIB5ADjAEMB4wBEAUMB4wDmAEQB5gBFAUQB5gDlAEUB5QBGAUUB5QDoAEYB6ABHAUYB6ADnAEcB5wBIAUcB5wDqAEgB6gBJAUgB6gDpAEkB6QBKAUkB6QDsAEoB7ABLAUoB7ADrAEsB6wBMAUsB6wDuAEwB7gBNAUwB7gDtAE0B7QBOAU0B7QDwAE4B8ABPAU4B8ADvAE8B7wBQAU8B7wDyAFAB8gBRAVAB8gDxAFEB8QBSAVEB8QD0AFIB9ABTAVIB9ADzAFMB8wBUAVMB8wD2AFQB9gBVAVQB9gD1AFUB9QBWAVUB9QD4AFYB+ABXAVYB+AD3AFcB9wBYAVcB9wD6AFgB+gBZAVgB+gD5AFkB+QBaAVkB+QD8AFoB/ABbAVoB/AD7AFsB+wBcAVsB+wD+AFwB/gBdAVwB/gD9AF0B/QBeAV0B/QAAAV4BAAFfAV4BAAH/AF8B/wBgAV8B/wACAWABAgFhAWABAgEBAWEBAQFiAWEBAQEEAWIBBAFjAWIBBAEDAWMBAwFkAWMBAwEGAWQBBgFlAWQBBgEFAWUBBQFmAWUBBQEIAWYBCAFnAWYBCAEHAWcBBwFoAWcBBwEKAWgBCgFpAWgBCgEJAWkBCQFqAWkBCQEMAWoBDAFrAWoBDAELAWsBCwFsAWsBCwEOAWwBDgFtAWwBDgENAW0BDQFuAW0BDQEQAW4BEAFvAW4BEAEPAW8BDwFwAW8BDwESAXABEgFxAXABEgERAXEBEQFyAXEBEQEUAXIBFAFzAXIBFAETAXMBEwF0AXMBEwEWAXQBFgF1AXQBFgEVAXUBFQF2AXUBFQEYAXYBGAF3AXYBGAEXAXcBFwF4AXcBFwEaAXgBGgF5AXgBGgEZAXkBGQF6AXkBGQEcAXoBHAF7AXoBHAEbAXsBGwF8AXsBGwEeAXwBHgF9AXwBHgEdAX0BHQF+AX0BHQEfAX4BHwF/AX4BHwHCAH8BwgAgAX8BgAGBAYIBgwGEAYABhQGGAYMBhwGIAYUBiQGKAYcBiwGMAYkBjQGOAYsBjwGQAY0BkQGSAY8BkwGUAZEBlQGWAZMBlwGYAZUBmQGaAZcBmwGcAZkBnQGeAZsBnwGgAZ0BoQGiAZ8BowGkAaEBpQGmAaMBpwGoAaUBqQGqAacBqwGsAakBrQGuAasBrwGwAa0BsQGyAa8BswG0AbEBtQG2AbMBtwG4AbUBuQG6AbcBuwG8AbkBvQG+AbsBvwHAAb0BwQHCAb8BwwHEAcEBxQHGAcMBxwHIAcUByQHKAccBywHMAckBzQHOAcsBzwHQAc0B0QHSAc8B0wHUAdEB1QHWAdMB1wHYAdUB2QHaAdcB2wHcAdkB3QHeAdsBggHfAd0BgwGAAYIBhwGFAYMBiwGJAYcBjwGNAYsBkwGRAY8BlwGVAZMBmwGZAZcBnwGdAZsBowGhAZ8BpwGlAaMBqwGpAacBrwGtAasBswGxAa8BtwG1AbMBuwG5AbcBvwG9AbsBwwHBAb8BxwHFAcMBywHJAccBzwHNAcsB0wHRAc8B1wHVAdMB2wHZAdcBggHdAdsBhwGDAYIBjwGLAYcBlwGTAY8BnwGbAZcBpwGjAZ8BrwGrAacBtwGzAa8BvwG7AbcBxwHDAb8BzwHLAccB1wHTAc8BggHbAdcBjwGHAYIBnwGXAY8BrwGnAZ8BvwG3Aa8BzwHHAb8BggHXAc8BnwGPAYIBvwGvAZ8BggHPAb8BvwGfAYIB4AHhAeIB4gHjAeQB5AHlAeYB5gHnAegB6AHpAeoB6gHrAewB7AHtAe4B7gHvAfAB8AHxAfIB8gHzAfQB9AH1AfYB9gH3AfgB+AH5AfoB+gH7AfwB/AH9Af4B/gH/AQACAAIBAgICAgIDAgQCBAIFAgYCBgIHAggCCAIJAgoCCgILAgwCDAINAg4CDgIPAhACEAIRAhICEgITAhQCFAIVAhYCFgIXAhgCGAIZAhoCGgIbAhwCHAIdAh4CHgIfAiACIAIhAiICIgIjAiQCJAIlAiYCJgInAigCKAIpAioCKgIrAiwCLAItAi4CLgIvAjACMAIxAjICMgIzAjQCNAI1AjYCNgI3AjgCOAI5AjoCOgI7AjwCPAI9Aj4CPgI/AuAB4AHiAeQB5AHmAegB6AHqAewB7AHuAfAB8AHyAfQB9AH2AfgB+AH6AfwB/AH+AQACAAICAgQCBAIGAggCCAIKAgwCDAIOAhACEAISAhQCFAIWAhgCGAIaAhwCHAIeAiACIAIiAiQCJAImAigCKAIqAiwCLAIuAjACMAIyAjQCNAI2AjgCOAI6AjwCPAI+AuAB4AHkAegB6AHsAfAB8AH0AfgB+AH8AQACAAIEAggCCAIMAhACEAIUAhgCGAIcAiACIAIkAigCKAIsAjACMAI0AjgCOAI8AuAB4AHoAfAB8AH4AQACAAIIAhACEAIYAiACIAIoAjACMAI4AuAB4AHwAQACAAIQAiACIAIwAuAB4AEAAiACggGBAeABgQHhAeABgQGAAeEBgAHiAeEBgAGEAeIBhAHjAeIBhAGDAeMBgwHkAeMBgwGGAeQBhgHlAeQBhgGFAeUBhQHmAeUBhQGIAeYBiAHnAeYBiAGHAecBhwHoAecBhwGKAegBigHpAegBigGJAekBiQHqAekBiQGMAeoBjAHrAeoBjAGLAesBiwHsAesBiwGOAewBjgHtAewBjgGNAe0BjQHuAe0BjQGQAe4BkAHvAe4BkAGPAe8BjwHwAe8BjwGSAfABkgHxAfABkgGRAfEBkQHyAfEBkQGUAfIBlAHzAfIBlAGTAfMBkwH0AfMBkwGWAfQBlgH1AfQBlgGVAfUBlQH2AfUBlQGYAfYBmAH3AfYBmAGXAfcBlwH4AfcBlwGaAfgBmgH5AfgBmgGZAfkBmQH6AfkBmQGcAfoBnAH7AfoBnAGbAfsBmwH8AfsBmwGeAfwBngH9AfwBngGdAf0BnQH+Af0BnQGgAf4BoAH/Af4BoAGfAf8BnwEAAv8BnwGiAQACogEBAgACogGhAQECoQECAgECoQGkAQICpAEDAgICpAGjAQMCowEEAgMCowGmAQQCpgEFAgQCpgGlAQUCpQEGAgUCpQGoAQYCqAEHAgYCqAGnAQcCpwEIAgcCpwGqAQgCqgEJAggCqgGpAQkCqQEKAgkCqQGsAQoCrAELAgoCrAGrAQsCqwEMAgsCqwGuAQwCrgENAgwCrgGtAQ0CrQEOAg0CrQGwAQ4CsAEPAg4CsAGvAQ8CrwEQAg8CrwGyARACsgERAhACsgGxARECsQESAhECsQG0ARICtAETAhICtAGzARMCswEUAhMCswG2ARQCtgEVAhQCtgG1ARUCtQEWAhUCtQG4ARYCuAEXAhYCuAG3ARcCtwEYAhcCtwG6ARgCugEZAhgCugG5ARkCuQEaAhkCuQG8ARoCvAEbAhoCvAG7ARsCuwEcAhsCuwG+ARwCvgEdAhwCvgG9AR0CvQEeAh0CvQHAAR4CwAEfAh4CwAG/AR8CvwEgAh8CvwHCASACwgEhAiACwgHBASECwQEiAiECwQHEASICxAEjAiICxAHDASMCwwEkAiMCwwHGASQCxgElAiQCxgHFASUCxQEmAiUCxQHIASYCyAEnAiYCyAHHAScCxwEoAicCxwHKASgCygEpAigCygHJASkCyQEqAikCyQHMASoCzAErAioCzAHLASsCywEsAisCywHOASwCzgEtAiwCzgHNAS0CzQEuAi0CzQHQAS4C0AEvAi4C0AHPAS8CzwEwAi8CzwHSATAC0gExAjAC0gHRATEC0QEyAjEC0QHUATIC1AEzAjIC1AHTATMC0wE0AjMC0wHWATQC1gE1AjQC1gHVATUC1QE2AjUC1QHYATYC2AE3AjYC2AHXATcC1wE4AjcC1wHaATgC2gE5AjgC2gHZATkC2QE6AjkC2QHcAToC3AE7AjoC3AHbATsC2wE8AjsC2wHeATwC3gE9AjwC3gHdAT0C3QE+Aj0C3QHfAT4C3wE/Aj4C3wGCAT8CggHgAT8C","vf":0.67471,"c":[-0.0071,0,-0.06451],"size":[6.4,4.2,9.4],"closed":true,"tris0":1152,"tris":1140,"bytes0":57684},"aframe":{"id":"stl_ex_aframe","label":"A-frame","v":"qupGF/DBquoAAPDBqupGFwAAquoAAAAAVRVGFwAAVRUAAAAAVRVGF/DBVRUAAPDBqur///DBquq56PDBqur//wAAquq56AAAVRX//wAAVRW56AAAVRX///DBVRW56PDB/////zXZ//8AADXZ//////DB//8AAPDBAAD///DBAAAAAPDBAAD//zXZAAAAADXZVNW56IQPVNVGF4QPVNW56AAAVNVGFwAAqyq56AAAqypGFwAAqyq56IQPqypGF4QPqupGF///quoAAP//qupGF5PNquoAAJPNVRVGF5PNVRUAAJPNVRVGF///VRUAAP//qur/////quq56P//qur//5PNquq56JPNVRX//5PNVRW56JPNVRX/////VRW56P//","i":"AAABAAIAAQADAAIABAAFAAYABQAHAAYABAAGAAIABgAAAAIABwAFAAEABQADAAEABgAHAAAABwABAAAAAgADAAQAAwAFAAQACAAJAAoACQALAAoADAANAA4ADQAPAA4ADAAOAAoADgAIAAoADwANAAkADQALAAkADgAPAAgADwAJAAgACgALAAwACwANAAwAEAARABIAEQATABIAFAAVABYAFQAXABYAFAAWABIAFgAQABIAFwAVABEAFQATABEAFgAXABAAFwARABAAEgATABQAEwAVABQAGAAZABoAGQAbABoAHAAdAB4AHQAfAB4AHAAeABoAHgAYABoAHwAdABkAHQAbABkAHgAfABgAHwAZABgAGgAbABwAGwAdABwAIAAhACIAIQAjACIAJAAlACYAJQAnACYAJAAmACIAJgAgACIAJwAlACEAJQAjACEAJgAnACAAJwAhACAAIgAjACQAIwAlACQAKAApACoAKQArACoALAAtAC4ALQAvAC4ALAAuACoALgAoACoALwAtACkALQArACkALgAvACgALwApACgAKgArACwAKwAtACwA","vf":0.2686,"c":[0,0,0.03757],"size":[1.2,11,13.2],"closed":true,"tris0":72,"tris":72,"bytes0":3684}};
 
 </script>
 <script>
@@ -2850,8 +3721,29 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     { id: 'psv', label: 'PSV (20 blocks)', make: function () { return C.exampleProject(); } },
     { id: 'container', label: 'Container ship, feeder (19 blocks)', make: function () { return C.containerShipExample(); } },
     { id: 'tanker', label: 'Tanker, double hull (22 blocks)', make: function () { return C.tankerExample(); } },
-    { id: 'bulk', label: 'Bulk carrier, handysize (19 blocks)', make: function () { return C.bulkCarrierExample(); } }
+    { id: 'bulk', label: 'Bulk carrier, handysize (19 blocks)', make: function () { return C.bulkCarrierExample(); } },
+    { id: 'yacht', label: 'Sailing yacht, 15 m (13 blocks)', make: function () { return C.sailingYachtExample(); } },
+    { id: 'psvstl', label: 'PSV with STL parts (crane, funnel, A-frame)', make: function () { return psvWithParts(); } }
   ];
+
+  /* the PSV with three imported STL shapes (own geometry, in examples/): the funnel replaces the casing block, a crane and a stern A-frame are added */
+  function psvWithParts() {
+    var m = C.exampleProject(), ids = ['stl_ex_crane', 'stl_ex_funnel', 'stl_ex_aframe'], tpl = m.blocks.filter(function (b) { return b.id === 'b17'; })[0];
+    if (typeof DBB_STL_PARTS === 'undefined') return m;
+    ['crane', 'funnel', 'aframe'].forEach(function (k) { C.registerShape(DBB_STL_PARTS[k]); });
+    m.customShapes = ids.slice(); m.name = 'PSV with STL parts';
+    function mk(id, name, shape, pos, rot, mass) {
+      var b = JSON.parse(JSON.stringify(tpl));
+      b.id = id; b.name = name; b.shape = shape; b.deck = false; b.reqs = []; b.group = 'g_outfit';
+      b.gt = false; b.size = DBB_STL_PARTS[shape.replace('stl_ex_', '')].size.slice(); b.position = pos; b.rotation = rot; b.massOverride = mass;
+      return b;
+    }
+    var fun = m.blocks.filter(function (b) { return b.id === 'b9'; })[0];
+    fun.gt = false; fun.shape = 'stl_ex_funnel'; fun.name = 'Funnel (STL)'; fun.size = DBB_STL_PARTS.funnel.size.slice(); fun.position = [71, 0, 10.3 + 4.7];
+    m.blocks.push(mk('b21', 'Deck crane (STL)', 'stl_ex_crane', [41.375, 5.15, 23.045], [0, 0, 180], 60));
+    m.blocks.push(mk('b22', 'Stern A-frame (STL)', 'stl_ex_aframe', [1.5, 0, 14.5], [0, 0, 0], 40));
+    return m;
+  }
   var STORE_KEY = 'dbb-block-editor:project';
 
   /* ---------- small helpers ---------- */
@@ -3389,9 +4281,40 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     request();
   }
 
+  /* Scaling from a handle keeps the opposite face where it was: the centre moves by half of the size change, towards the grabbed
+     side. The side comes from where the pointer first touched the gizmo. The centre (uniform) handle still scales about the centre. */
+  var scaleAnchor = null;
+  tc.addEventListener('mouseDown', function () {
+    var m = tc.object, ax = tc.axis || '';
+    scaleAnchor = null;
+    if (!m || tc.getMode() !== 'scale' || !ax || ax.indexOf('XYZ') >= 0) return;
+    var q = m.quaternion.clone(), ps = tc.pointStart.clone(), dirs = [], sign = [0, 0, 0];
+    ['X', 'Y', 'Z'].forEach(function (a, i) {
+      dirs.push(new THREE.Vector3(i === 0 ? 1 : 0, i === 1 ? 1 : 0, i === 2 ? 1 : 0).applyQuaternion(q));
+      if (ax.indexOf(a) >= 0) sign[i] = ps.dot(dirs[i]) >= 0 ? 1 : -1;
+    });
+    scaleAnchor = { p0: m.position.clone(), s0: m.scale.clone(), dirs: dirs, sign: sign, t0: dirs.map(function (d) { return ps.dot(d); }) };
+  });
+  function anchorScale(m) {
+    var a = scaleAnchor;
+    if (!a || S.mode !== 'scale') return;
+    var cur = [a.s0.x, a.s0.y, a.s0.z], size = cur.slice(), pos = a.p0.clone(), i;
+    for (i = 0; i < 3; i++) {
+      if (!a.sign[i]) continue;
+      // the grabbed face follows the pointer along the axis; the opposite face stays put
+      var moved = (tc.pointEnd.dot(a.dirs[i]) - a.t0[i]) * a.sign[i], v = cur[i] + moved;
+      if (S.snap) v = Math.round(v / S.snap) * S.snap;
+      size[i] = Math.max(0.05, v);
+      pos.addScaledVector(a.dirs[i], a.sign[i] * (size[i] - cur[i]) / 2);
+    }
+    m.scale.set(size[0], size[1], size[2]);
+    m.position.copy(pos);
+  }
+
   tc.addEventListener('objectChange', function () {
     var m = tc.object;
     if (!m) return;
+    anchorScale(m);
     if (m === hullProxy) { hullDragged(); return; }
     var b = blockById(m.userData.id);
     if (!b) return;
@@ -3550,7 +4473,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
   function addBlock(shape, at) {
     S.blocksOff = false;
     fixActive();
-    var d = DEFAULT_SIZE[shape] || [8, 6, 4];
+    var d = DEFAULT_SIZE[shape] || (C.CUSTOM[shape] ? C.CUSTOM[shape].size : [8, 6, 4]);
     var x = at ? at.x : orbit.target.x, y = at ? at.y : orbit.target.y, zb = at ? at.z : 0;
     var s = S.snap;
     var px = s ? Math.round((x - d[0] / 2) / s) * s + d[0] / 2 : x;
@@ -3582,13 +4505,30 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     if (!hs.length) {
       h = C.addHullTo(S.model, C.fitHull(S.model, 'osv', C.autoDeckLine(S.model)));
       if (!h) { toast('Add some blocks first. The hull is fitted around the blocks below the main deck.', true); return; }
-    } else {
-      h = C.mirrorHull(S.model, hs[hs.length - 1]);
+      hs.push(h);
+      S.sel = null; S.selHull = h.id;
+      reconcile(); renderAll(); pushHistory();
+      toast(C.markedDeck(S.model) !== null ? 'Hull fitted. The depth (' + fmt(h.depth, 2) + ' m) is the top of the block that defines the main deck.' : 'Hull fitted. The depth (main deck) is a guess (' + fmt(h.depth, 2) + ' m): tick Defines main deck on a block, or edit the depth in the panel.');
+      return;
     }
-    hs.push(h);
+    if (hs.length >= C.MAX_HULLS) { toast('Up to ' + C.MAX_HULLS + ' hulls.', true); return; }
+    // catamaran (2 hulls) or trimaran (3): every hull is refitted to its own group of blocks
+    var k = hs.length + 1, deck = C.autoDeckLine(S.model);
+    if (hs.length === 1) { hs[0].name = C.hullNameFor(hs[0].name, 'demihull'); hs[0].type = 'demihull'; delete hs[0].shape; }
+    var order = k === 3 ? [null].concat(hs) : hs.concat([null]);       // trimaran: the new hull is the centre hull
+    if (k >= 4) order = hs.slice().sort(function (a, b) { return (b.y || 0) - (a.y || 0); }).concat([null]);   // port to starboard
+    var res = C.fitHullSet(S.model, k, order.map(function (x) { return x ? x.type : 'demihull'; }), order.map(function (x) { return x ? x.shape : undefined; }), deck, S.model.draught);
+    if (!res) { toast('No block lies below the main deck.', true); return; }
+    order.forEach(function (x, idx) {
+      var f = res[idx];
+      if (!x) { h = C.addHullTo(S.model, f); order[idx] = h; return; }
+      x.x = f.x; x.y = f.y; x.loa = f.loa; x.beam = f.beam; x.depth = f.depth;
+    });
+    S.model.hulls = order;
+    C.syncDraught(S.model);
     S.sel = null; S.selHull = h.id;
     reconcile(); renderAll(); pushHistory();
-    toast(hs.length === 1 ? (C.markedDeck(S.model) !== null ? 'Hull fitted. The depth (' + fmt(h.depth, 2) + ' m) is the top of the block that defines the main deck.' : 'Hull fitted. The depth (main deck) is a guess (' + fmt(h.depth, 2) + ' m): tick Defines main deck on a block, or edit the depth in the panel.') : 'Mirrored copy added, ready for a catamaran. Pick a slender hull type and adjust the beam and offset.');
+    toast(res.fitted ? 'Hull added. Each hull is fitted to its own group of blocks.' : 'The blocks are not in separate groups, so the hulls are placed by a guess. Set the offset and beam in the panel, or move the blocks apart and press Refit.');
   }
 
   function deleteHull(id) {
@@ -3869,9 +4809,9 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     if (sig !== sigProps) {
       sigProps = sig;
       $('[data-f="group"]', form).innerHTML = groupOptionsHtml();
-      var lk = S.model.requirements.filter(function (r) { return r.metric === 'volume' || r.metric === 'area'; });
-      $('[data-f="reqs"]', form).innerHTML = lk.length ? lk.map(function (r) { return '<label class="rc"><input type="checkbox" data-f="reqchk" value="' + esc(r.id) + '"><span>' + esc(r.name) + '</span></label>'; }).join('') : '<em class="rc-none">None defined yet. Add them in the Requirements tab.</em>';
-      $('[data-f="shape"]', form).innerHTML = C.SHAPE_ORDER.map(function (k) { return '<option value="' + k + '">' + C.SHAPES[k].label + '</option>'; }).join('');
+      var lk = S.model.requirements.filter(function (r) { return r.metric === 'volume' || r.metric === 'area' || r.metric === 'mass'; });
+      $('[data-f="reqs"]', form).innerHTML = lk.length ? lk.map(function (r) { return '<label class="rc"><input type="checkbox" data-f="reqchk" value="' + esc(r.id) + '"><span>' + esc(r.name) + '</span></label>'; }).join('') : '<em class="rc-none">No volume, area or weight requirements yet. Add them in the Requirements tab.</em>';
+      $('[data-f="shape"]', form).innerHTML = C.SHAPE_ORDER.concat((S.model.customShapes || []).filter(function (k) { return C.SHAPES[k]; })).map(function (k) { return '<option value="' + k + '">' + C.SHAPES[k].label + '</option>'; }).join('');
     }
     setVal($('[data-f="name"]', form), b.name);
     $('[data-f="shape"]', form).value = b.shape;
@@ -3893,6 +4833,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     $('[data-f="masson"]', form).checked = q.typed;
     $('[data-f="freesurf"]', form).checked = !!b.freeSurface;
     $('[data-f="deck"]', form).checked = !!b.deck;
+    $('[data-f="gt"]', form).checked = b.gt !== false;
     $('#fsNote').hidden = !(b.freeSurface && !(q.fill > 0 && q.fill < 100));
     $('#massRow').hidden = !q.typed;
     if (q.typed) setVal($('[data-f="mass"]', form), fin(b.massOverride));
@@ -3974,7 +4915,8 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
       '<div><small>Beam (Y)</small><b>' + (e ? fmt(e.beam, 2) : '–') + ' m</b></div>' +
       '<div><small>Height (Z)</small><b>' + (e ? fmt(e.height, 2) : '–') + ' m</b></div>' +
       '<div><small>Gross volume</small><b>' + fmt(s.total.vol, 1) + ' m³</b></div>' +
-      '<div><small>Gross area</small><b>' + fmt(s.total.area, 1) + ' m²</b></div>';
+      '<div><small>Gross area</small><b>' + fmt(s.total.area, 1) + ' m²</b></div>' +
+      '<div title="Estimate by the 1969 Tonnage Convention from the enclosed spaces: the blocks not marked as open"><small>Gross tonnage (GT)</small><b>' + fmt(C.grossTonnage(S.model).GT, 0) + ' GT</b></div>';
     var rows = ['<thead><tr><th>System</th><th class="num">Blocks</th><th class="num">Area m²</th><th class="num">Volume m³</th><th class="share">Share of volume</th></tr></thead><tbody>'];
     s.rows.forEach(function (r) {
       var pct = s.total.vol > 0 ? 100 * r.total.vol / s.total.vol : 0, g = r.group;
@@ -4160,11 +5102,14 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
   }
 
   var sigReq = '';
-  function statusChip(status, req) {
-    var glyph = { should: '●', shall: '◐', fail: '✕', none: '–' }[status];
-    var label = C.STATUS_LABEL[status];
-    if (status === 'fail') label = req.sense === 'max' ? 'Over limit' : 'Below shall';
-    return '<span class="chip ' + status + '"><span aria-hidden="true">' + glyph + '</span>' + label + '</span>';
+  function statusChip(e) {
+    var glyph = { ok: '\u25CF', excess: '\u25B2', fail: '\u2715', none: '\u2013' }[e.status], r = e.req;
+    var label = C.statusText(e.status, r) + (e.status !== 'none' && e.margin != null ? ' ' + C.fmtMargin(e.margin) : '');
+    var tip = [];
+    if (r.shall != null && e.marginShall != null) tip.push('vs shall ' + C.fmtMargin(e.marginShall));
+    if (r.should != null && e.marginShould != null) tip.push('vs should ' + C.fmtMargin(e.marginShould));
+    var note = e.status === 'excess' ? ' Beyond the should: more than asked for, which may cost more than needed.' : '';
+    return '<span class="chip ' + e.status + '" title="' + esc((tip.length ? 'Margin ' + tip.join(', ') + ' (plus is better than the target).' : '') + note) + '"><span aria-hidden="true">' + glyph + '</span>' + esc(label) + '</span>';
   }
   function renderReqs() {
     var ev = C.evaluateRequirements(S.model);
@@ -4205,11 +5150,11 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
         cin.className = 'num' + (e.statusInside !== e.status && e.statusInside === 'fail' ? ' bad' : '');
         cin.title = e.statusInside === e.status ? '' : 'Inside the hulls this becomes: ' + C.STATUS_LABEL[e.statusInside];
       }
-      $('[data-c="st"]', row).innerHTML = statusChip(e.status, e.req);
-      var nb = $('[data-c="n"]', row), sumArea = e.req.metric === 'volume' || e.req.metric === 'area';
+      $('[data-c="st"]', row).innerHTML = statusChip(e);
+      var nb = $('[data-c="n"]', row), sumArea = e.req.metric === 'volume' || e.req.metric === 'area' || e.req.metric === 'mass';
       nb.disabled = !sumArea;
       nb.textContent = sumArea ? e.n + (e.shared ? ' \u00B7 ' + e.shared + ' shared' : '') : '\u2013';
-      nb.title = sumArea ? 'Choose the blocks that serve this requirement' + (e.shared ? '. ' + e.shared + ' of them also serve another requirement and count in full for each.' : '') : 'Length, beam and height use the whole design';
+      nb.title = sumArea ? 'Choose the blocks that serve this requirement' + (e.shared ? '. ' + e.shared + ' of them also serve another requirement and count in full for each.' : '') : 'Length, beam, height and total weight use the whole design';
     });
   }
 
@@ -4226,6 +5171,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     ];
     ['L', 'B', 'H'].forEach(function (l, i) { cols.push({ set: 'geo', key: 'size' + i, label: l, num: true, get: function (b) { return b.size[i]; }, cell: function (b) { return '<td class="num">' + fmt(b.size[i], 2) + '</td>'; } }); });
     ['X', 'Y', 'Z'].forEach(function (l, i) { cols.push({ set: 'geo', key: 'pos' + i, label: l, num: true, get: function (b) { return b.position[i]; }, cell: function (b) { return '<td class="num">' + fmt(b.position[i], 2) + '</td>'; } }); });
+    cols.push({ set: 'geo', key: 'gt', label: 'GT space', get: function (b) { return b.gt === false ? 0 : 1; }, cell: function (b) { return '<td>' + (b.gt === false ? 'open' : 'yes') + '</td>'; } });
     cols.push({ set: 'geo', key: 'vol', label: 'Volume m\u00B3', num: true, get: C.blockVolume, cell: function (b) { return '<td class="num">' + fmt(C.blockVolume(b), 2) + '</td>'; } });
     cols.push({ set: 'geo', key: 'area', label: 'Area m\u00B2', num: true, get: C.blockArea, cell: function (b) { return '<td class="num">' + fmt(C.blockArea(b), 2) + (b.areaOverride != null ? '*' : '') + '</td>'; } });
     cols.push({ set: 'mass', key: 'dens', label: 'Density t/m\u00B3', num: true, title: 'Type a value to override the group density; grey is the group value', get: function (b) { return C.blockMass(S.model, b).density; },
@@ -4277,6 +5223,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     fixActive();
     rebuildHulls();
     renderLibrarySelects();
+    renderLib();
     renderTree();
     renderProps();
     renderHud();
@@ -4323,9 +5270,11 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     { group: 'Design', items: [
       ['Block', 'A space or item with a shape, size and position. Its volume and plan area count towards the design.'],
       ['Group', 'A branch of the system breakdown (Levander’s OSV taxonomy to begin with). Totals roll up the tree.'],
-      ['Requirement', 'A target on volume, area, length, beam or height, for the blocks tagged with it. Shall: the limit that must be met. Should: the desirable target.'],
+      ['Requirement', 'A target on volume, area or weight of the blocks tagged with it, or on the overall length, beam, height or total weight. Shall: the limit that must be met (red when it is not). Should: the desirable target. Between the two the status is green; beyond the should it is orange, an excess that may cost more than needed. The percentage is the margin: plus is better than the target.'],
       ['Gross volume, gross area', 'Sums over all blocks. Overlaps and the hull are not deducted. A block’s volume uses its shape, so a cylinder is π/4 of its box.'],
-      ['Plan area', 'The footprint seen from above. You can type an area instead, which is marked with *.']
+      ['Gross tonnage (GT)', 'A measure of the enclosed volume of a ship, from the 1969 Tonnage Convention: GT = K1 × V, with K1 = 0.2 + 0.02 log10(V) and V the volume of the enclosed spaces in m³. Here it is an estimate from the blocks that count as enclosed. Untick Counts for GT on open spaces such as an open deck, a crane or a mast. Overlapping blocks count twice. It is not a tonnage certificate.'],
+      ['Imported shape (STL)', 'A mesh from an STL file, used as one block. It is reduced on import. Volume, centre of gravity and plan area come from the mesh, and the block scales with its size.'],
+      ['Plan area', 'The footprint seen from above. You can type an area instead, which is marked with *. For a tilted imported shape it is the outline of its corners, a little too large.']
     ] },
     { group: 'Hull and draught', items: [
       ['Baseline', 'The reference level z = 0, at the underside of the hull. All heights are measured up from it.'],
@@ -4383,15 +5332,15 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
 
   function helpStart() {
     return '<ol>' +
-      '<li><b>Start from your systems.</b> Each system that needs volume or deck area becomes a Design Building Block. Use <i>New</i>, or open one from the <i>Examples</i> menu (simple, catamaran, trimaran, research vessel, PSV, container ship, tanker, bulk carrier) to see a finished design.</li>' +
+      '<li><b>Start from your systems.</b> Each system that needs volume or deck area becomes a Design Building Block. Use <i>New</i>, or open one from the <i>Examples</i> menu (simple, catamaran, trimaran, research vessel, PSV, container ship, tanker, bulk carrier, sailing yacht, PSV with STL parts) to see a finished design.</li>' +
       '<li><b>Set up groups.</b> The hierarchy on the left starts with Levander’s OSV breakdown. Rename, recolour, add (<i>+ Group</i>, or + on a row) or delete groups to match your own division.</li>' +
-      '<li><b>Write requirements.</b> In the <i>Requirements</i> tab choose a metric (volume, area, length, beam, height), at least or at most, and the <i>shall</i> and <i>should</i> values. Pick the group and requirement for new blocks in the two menus under the shape library. To link a block to several requirements, tick them in the block panel, or press the block count in the Requirements tab to pick the blocks (<i>Add all</i> ticks a whole group). A block counts in full for each requirement it serves.</li>' +
-      '<li><b>Add and shape blocks.</b> Click a shape, or drag it onto the workplane. Select a block and use <i>Move</i>, <i>Rotate</i> or <i>Scale</i>. <b>To resize, choose Scale and drag the small coloured cubes</b>, or type exact values in the right panel, which appears when something is selected. Snap aligns block faces to the step you choose.</li>' +
-      '<li><b>Add a hull (optional).</b> Press <i>+ Hull</i>. It is fitted around the blocks below the main deck, whose height is the hull <i>depth</i>. Tick <i>Defines main deck</i> on a block to set the deck at its top; otherwise the depth is a guess. Click the hull row to edit it: move and scale it with the gizmo, set the <i>draught</i>, or open <i>Shape</i> for the sliders. A second <i>+ Hull</i> adds a mirrored copy for a catamaran. The hulls are illustrative shapes, not real lines.</li>' +
+      '<li><b>Write requirements.</b> In the <i>Requirements</i> tab choose a metric (volume, area, weight, length, beam, height, total weight, gross tonnage), at least or at most, and the <i>shall</i> and <i>should</i> values. Pick the group and requirement for new blocks in the two menus under the shape library. To link a block to several requirements, tick them in the block panel, or press the block count in the Requirements tab to pick the blocks (<i>Add all</i> ticks a whole group). A block counts in full for each requirement it serves.</li>' +
+      '<li><b>Add and shape blocks.</b> Click a shape, or drag it onto the workplane. Select a block and use <i>Move</i>, <i>Rotate</i> or <i>Scale</i>. <b>To resize, choose Scale and drag the small coloured cubes.</b> The opposite face stays fixed, so one drag stretches the block from the face you did not grab. You can also type exact values in the right panel, which appears when something is selected. Snap aligns block faces to the step you choose. <b>Import STL</b> (or drop an STL file on the workplane) adds your own shape to the library: one file is one block. Units are guessed and can be changed. Large files (up to 500 MB) are reduced on import, and volume and centre of gravity come from the real mesh.</li>' +
+      '<li><b>Add a hull (optional).</b> Press <i>+ Hull</i>. It is fitted around the blocks below the main deck, whose height is the hull <i>depth</i>. Tick <i>Defines main deck</i> on a block to set the deck at its top; otherwise the depth is a guess. Click the hull row to edit it: move and scale it with the gizmo, set the <i>draught</i>, or open <i>Shape</i> for the sliders. A second <i>+ Hull</i> makes a catamaran and a third a trimaran, up to five hulls: each hull is fitted to its own group of blocks, so keep the blocks of each hull apart. The hulls are illustrative shapes, not real lines.</li>' +
       '<li><b>Add weight.</b> In the <i>Hydrostatics</i> tab set a density per group, and override it on a block if needed, with a fill % for tanks or a typed mass. Tick <i>Free surface</i> on a part-filled liquid tank. The structure share is set in the same tab.</li>' +
       '<li><b>Float it.</b> Press <i>Float</i> in the toolbar and the draught, trim and heel follow the weight as you move blocks. The <i>Hydrostatics</i> tab shows the floating condition, the weight balance, and the initial stability: KB, BM, KM and GM, with a few basic checks.</li>' +
-      '<li><b>Read the Summary.</b> It opens with an assessment: chips for requirements, weight and hull, floating and stability, then the problems, notes and what passes. Click an item to go to the tab or block. Below it come the geometry and the hulls. <i>Requirements</i> shows whether shall and should are met, and <i>Blocks</i> lists every block; choose its column sets and click a title to sort.</li>' +
-      '<li><b>Iterate and save.</b> <i>Save</i> writes a JSON file you can reopen later. <i>CSV</i> saves the table you are viewing and <i>XLSX</i> the whole project as an Excel workbook (Summary, Output, Blocks, Weight, Hydrostatics, Requirements). Nothing is kept in the browser, so save before you leave.</li>' +
+      '<li><b>Read the Summary.</b> It opens with an assessment: chips for requirements, weight and hull, floating and stability, then the problems, notes and what passes. Click an item to go to the tab or block. Below it come the geometry and the hulls. <i>Requirements</i> shows each target with its margin: red if the shall is not met, green between shall and should, orange beyond the should (an excess), and <i>Blocks</i> lists every block; choose its column sets and click a title to sort.</li>' +
+      '<li><b>Iterate and save.</b> <i>Save</i> writes a JSON file you can reopen later, with imported shapes inside. <i>XLSX</i> saves the whole project as an Excel workbook, and <i>PDF</i> writes a report: views, assessment, requirements, weights, hydrostatics, stability and a list of all blocks. Nothing is kept in the browser, so save before you leave.</li>' +
       '</ol>' +
       '<p class="note">Axes: X forward from the aft end, Y to port, Z up from the baseline, in metres. For educational use only: hulls are illustrative and weights, hydrostatics and stability are indicative.</p>';
   }
@@ -4416,7 +5365,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
   }
 
   function helpAbout() {
-    return '<p class="aboutp">The Ship Design Building Block Editor is an app for early-stage ship design, inspired by the Design Building Block (DBB) approach. Spaces and systems are modelled as blocks in 3D; the app sums volume, area, weight and centres of gravity by system, checks them against shall and should requirements, floats the design on an illustrative hull, and gives its hydrostatics and initial stability (GM).</p>' +
+    return '<p class="aboutp">The Ship Design Building Block Editor is an app for early-stage ship design, inspired by the Design Building Block (DBB) approach. Spaces and systems are modelled as blocks in 3D; the app sums volume, area, weight and centres of gravity by system, checks them against shall and should requirements, floats the design on an illustrative hull, gives its hydrostatics and initial stability (GM), estimates the gross tonnage and writes a PDF report. You can bring in your own shapes as STL files.</p>' +
       '<h3>Educational use only</h3><p class="aboutp">This tool is made for teaching and for early concept exploration. The hulls are illustrative parametric shapes, not real lines, and the weights, hydrostatics, trim, heel and stability are simplified estimates. Stability covers small angles only, with no righting-arm curve, wind, waves or damage. The results must not be used for design approval, class or flag-state documentation, or any safety-critical decision. The software is provided as it is, without warranty.</p>' +
       '<img class="ntnuword" src="data:image/png;base64,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" alt="NTNU" width="181" height="36">' +
       '<h3>Credits</h3><p class="aboutp">Developed by Henrique Gaspar, NTNU, October 2026. It builds on a block layout prototype from 2015.</p>' +
@@ -4508,7 +5457,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
   }
 
   function manualSave(filename, text, what) {
-    if (typeof text !== 'string') { toast('Could not save ' + filename + ' here. Try the CSV export instead.', true); return; }
+    if (typeof text !== 'string') { toast('Could not save ' + filename + ' here. Try the JSON save instead.', true); return; }
     var ov = document.createElement('div');
     ov.className = 'overlay';
     ov.innerHTML = '<div class="dialog" role="dialog" aria-modal="true" aria-label="' + esc(what) + '"><h2>' + esc(what) + '</h2>' +
@@ -4531,7 +5480,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
 
   function browserDownload(filename, text) {
     try {
-      var type = /\.csv$/.test(filename) ? 'text/csv;charset=utf-8' : /\.xlsx$/.test(filename) ? 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' : 'application/json';
+      var type = /\.pdf$/.test(filename) ? 'application/pdf' : /\.csv$/.test(filename) ? 'text/csv;charset=utf-8' : /\.xlsx$/.test(filename) ? 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' : 'application/json';
       var url = URL.createObjectURL(new Blob([text], { type: type }));
       var a = document.createElement('a');
       a.href = url; a.download = filename;
@@ -4541,7 +5490,13 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     } catch (e) { return false; }
   }
 
+  function stampName(fn) {
+    var d = new Date(), p = function (n) { return (n < 10 ? '0' : '') + n; };
+    return fn.replace(/(\.[^.]+)$/, '_' + d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + '_' + p(d.getHours()) + p(d.getMinutes()) + '$1');
+  }
+
   function deliver(filename, text, what) {
+    filename = stampName(filename);
     if (!(window.claude && window.claude.use)) {   // standalone page (e.g. GitHub Pages): normal browser download
       if (browserDownload(filename, text)) toast(what + ' downloaded as ' + filename + '.');
       else manualSave(filename, text, what);
@@ -4567,12 +5522,110 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     catch (err) { toast('Could not build the workbook: ' + (err && err.message ? err.message : err), true); }
   }
 
-  function exportCsv() {
-    var name = slug(S.model.name), d = S.delim, csv, file;
-    if (S.tab === 'reqs') { csv = C.requirementsCSV(S.model, d); file = name + '-requirements.csv'; }
-    else if (S.tab === 'blocks') { csv = C.blocksCSV(S.model, d); file = name + '-blocks.csv'; }
-    else { csv = C.summaryCSV(S.model, d); file = name + '-summary.csv'; }
-    deliver(file, '﻿' + csv, 'Table');
+  /* PDF report: four views of the 3D scene drawn offscreen in the light theme (no grid, no gizmo), then the report laid out in core */
+  function jpegOf(cv, q) {
+    var url = cv.toDataURL('image/jpeg', q || 0.9), bin = atob(url.slice(url.indexOf(',') + 1)), u = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
+    return { jpeg: u, w: cv.width, h: cv.height };
+  }
+  /* the box around blocks and hulls */
+  function sceneBox() {
+    var env = C.envelope(S.model);
+    if (!env) return null;
+    var lo = env.min.slice(), hi = env.max.slice();
+    S.model.hulls.forEach(function (hh) {
+      if (hh.visible === false) return;
+      lo[0] = Math.min(lo[0], hh.x); hi[0] = Math.max(hi[0], hh.x + hh.loa);
+      lo[1] = Math.min(lo[1], hh.y - hh.beam / 2); hi[1] = Math.max(hi[1], hh.y + hh.beam / 2);
+      lo[2] = Math.min(lo[2], 0);
+    });
+    var pts = [];
+    for (var i = 0; i < 8; i++) pts.push(new THREE.Vector3(i & 1 ? hi[0] : lo[0], i & 2 ? hi[1] : lo[1], i & 4 ? hi[2] : lo[2]));
+    return { lo: lo, hi: hi, pts: pts, c: new THREE.Vector3((lo[0] + hi[0]) / 2, (lo[1] + hi[1]) / 2, (lo[2] + hi[2]) / 2) };
+  }
+  /* bring the perspective camera as close as the whole model still fits the frame */
+  function tightenView() {
+    var bx = sceneBox();
+    if (!bx) return;
+    var dir = camera.position.clone().sub(orbit.target), d = dir.length(), it;
+    dir.normalize();
+    for (it = 0; it < 6; it++) {
+      camera.position.copy(orbit.target).addScaledVector(dir, d);
+      camera.lookAt(orbit.target); camera.updateMatrixWorld(); camera.updateProjectionMatrix();
+      var m = 0;
+      bx.pts.forEach(function (q) { var v = q.clone().project(camera); m = Math.max(m, Math.abs(v.x), Math.abs(v.y)); });
+      if (m <= 0) break;
+      d = Math.max(3, d * m / 0.9);
+    }
+    camera.near = Math.max(0.1, d / 200); camera.far = Math.max(4000, d * 30);
+    camera.updateProjectionMatrix();
+  }
+  /* side, top and front views are drawn without perspective, as in a drawing */
+  function orthoCamera(name, aspect) {
+    var bx = sceneBox(), oc = new THREE.OrthographicCamera(-1, 1, 1, -1, 1, 4000);
+    if (!bx) return null;
+    var dir = name === 'top' ? new THREE.Vector3(0, 0, 1) : name === 'side' ? new THREE.Vector3(0, -1, 0) : new THREE.Vector3(1, 0, 0);
+    if (name === 'top') oc.up.set(0, 1, 0); else oc.up.set(0, 0, 1);
+    oc.position.copy(bx.c).addScaledVector(dir, 1500);
+    oc.lookAt(bx.c); oc.updateMatrixWorld();
+    var inv = oc.matrixWorld.clone().invert(), x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+    bx.pts.forEach(function (q) { var v = q.clone().applyMatrix4(inv); x0 = Math.min(x0, v.x); x1 = Math.max(x1, v.x); y0 = Math.min(y0, v.y); y1 = Math.max(y1, v.y); });
+    var cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, h = Math.max((y1 - y0) / 2, (x1 - x0) / 2 / aspect, 1) * 1.08, w = h * aspect;
+    oc.left = cx - w; oc.right = cx + w; oc.top = cy + h; oc.bottom = cy - h; oc.near = 1; oc.far = 4000;
+    oc.updateProjectionMatrix();
+    return oc;
+  }
+  function captureViews() {
+    var root = document.documentElement, prevTheme = root.getAttribute('data-theme'), out = {};
+    var cam = { p: camera.position.clone(), t: orbit.target.clone(), near: camera.near, far: camera.far };
+    var vis = { tc: tc.visible, sel: selBox.visible, grid: gridGroup.visible }, pr = renderer.getPixelRatio();
+    try {
+      root.setAttribute('data-theme', 'light');
+      applyTheme();
+      tc.visible = false; selBox.visible = false; gridGroup.visible = false;
+      renderer.setPixelRatio(1);
+      renderer.setSize(1400, 800, false);
+      camera.aspect = 1400 / 800; camera.updateProjectionMatrix();
+      ['iso', 'side', 'top', 'front'].forEach(function (v) {
+        var cm = camera;
+        if (v === 'iso') { setView('iso'); tightenView(); } else cm = orthoCamera(v, 1400 / 800) || camera;
+        renderer.render(scene, cm);
+        out[v] = jpegOf(renderer.domElement, 0.9);
+      });
+    } finally {
+      if (prevTheme === null) root.removeAttribute('data-theme'); else root.setAttribute('data-theme', prevTheme);
+      applyTheme();
+      tc.visible = vis.tc; selBox.visible = vis.sel; gridGroup.visible = vis.grid;
+      renderer.setPixelRatio(pr);
+      camera.position.copy(cam.p); orbit.target.copy(cam.t); camera.near = cam.near; camera.far = cam.far;
+      resize();
+      orbit.update();
+      request();
+    }
+    return out;
+  }
+  function logoJpeg() {
+    try {
+      var im = $('.ntnu');
+      if (!im || !im.naturalWidth) return null;
+      var cv = document.createElement('canvas'), g;
+      cv.width = 96; cv.height = 96;
+      g = cv.getContext('2d');
+      g.fillStyle = '#ffffff'; g.fillRect(0, 0, 96, 96);
+      g.drawImage(im, 0, 0, 96, 96);
+      return jpegOf(cv, 0.92);
+    } catch (e) { return null; }
+  }
+  function exportPdf() {
+    toast('Making the PDF ...');
+    setTimeout(function () {
+      var bytes;
+      try {
+        var views = captureViews();
+        bytes = C.buildReport(S.model, { when: new Date().toISOString().slice(0, 10), images: views, logo: logoJpeg(), floatRes: S.floatRes, stability: S.model.hulls.length ? stabilityOf(S.model) : null, assumptions: $$('.limits li').map(function (li) { return li.textContent.trim(); }) });
+      } catch (err) { toast('Could not make the PDF: ' + (err && err.message ? err.message : err), true); return; }
+      deliver(slug(S.model.name) + '.pdf', bytes, 'PDF report');
+    }, 60);
   }
 
   function openText(text, label) {
@@ -4589,17 +5642,154 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     fr.readAsText(file);
   }
 
-  /* ---------- wiring ---------- */
-  function wire() {
-    // library tiles
-    $('#lib').innerHTML = C.SHAPE_ORDER.map(function (k) {
+
+  /* ---------- shape library, STL import ---------- */
+  var STL_ICON = '<path d="M16 3 28 9v11l-6 6-8 3-9-5V9Z M4 24l10 2 8-0 M16 3l-2 12 14 5 M14 15 4 9 M14 15l0 11"/>';
+  function renderLib() {
+    var h = C.SHAPE_ORDER.map(function (k) {
       return '<button class="tile" draggable="true" data-shape="' + k + '" title="' + C.SHAPES[k].label + ' (click to add, or drag onto the workplane)">' +
         '<svg viewBox="0 0 32 32" fill="currentColor" fill-opacity=".1" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true">' + SHAPE_ICONS[k] + '</svg><span>' + C.SHAPES[k].label + '</span></button>';
     }).join('');
+    (S.model && S.model.customShapes || []).forEach(function (k) {
+      if (!C.SHAPES[k]) return;
+      var d = C.CUSTOM[k], tip = esc(C.SHAPES[k].label) + (d && d.tris0 ? ' (imported STL, ' + d.tris0.toLocaleString('en-US') + ' triangles in the file). Click to add, or drag onto the workplane.' : '');
+      h += '<div class="tilew"><button class="tile" draggable="true" data-shape="' + k + '" title="' + tip + '">' +
+        '<svg viewBox="0 0 32 32" fill="currentColor" fill-opacity=".1" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true">' + STL_ICON + '</svg><span>' + esc(C.SHAPES[k].label) + '</span></button>' +
+        '<button class="rm" data-rmshape="' + k + '" title="Remove from the library" aria-label="Remove ' + esc(C.SHAPES[k].label) + ' from the library">&times;</button></div>';
+    });
+    h += '<button class="tile imp" data-importstl="1" title="Import an STL file as a shape (or drop the file on the workplane)">' +
+      '<svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 5v14 M10 13l6 6 6-6 M6 24v3h20v-3"/></svg><span>Import STL</span></button>';
+    $('#lib').innerHTML = h;
+  }
+  function removeCustomShape(id) {
+    if (S.model.blocks.some(function (b) { return b.shape === id; })) { toast('That shape is used by a block. Delete the block first.', true); return; }
+    S.model.customShapes = (S.model.customShapes || []).filter(function (x) { return x !== id; });
+    renderLib();
+    renderProps();
+    pushHistory();
+  }
+
+  function fmtBytes(n) { return n >= 1048576 ? (n / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(n / 1024)) + ' kB'; }
+  function openStl(file) {
+    if (!file) return;
+    if (file.size > C.STL_MAX_BYTES) { toast('That file is ' + fmtBytes(file.size) + '. STL files above 500 MB cannot be imported; reduce it in your CAD program first.', true); return; }
+    if ((S.model.customShapes || []).length >= 12) { toast('Up to 12 imported shapes per project. Remove one first.', true); return; }
+    toast('Reading ' + file.name + ' ...');
+    var fr = new FileReader();
+    fr.onload = function () {
+      var src;
+      try { src = C.parseSTL(fr.result); } catch (err) { toast('Could not read ' + file.name + ': ' + (err && err.message ? err.message : err), true); return; }
+      stlDialog(file, src);
+    };
+    fr.onerror = function () { toast('Could not read that file.', true); };
+    fr.readAsArrayBuffer(file);
+  }
+
+  function offsetsDialog(h) {
+    var ov = document.createElement('div');
+    ov.className = 'overlay';
+    ov.innerHTML = '<div class="dialog offs" role="dialog" aria-modal="true" aria-label="Table of offsets"><h2>Table of offsets</h2>' +
+      '<div class="offctl"><label>Stations <select data-o="ns"><option>10</option><option selected>20</option><option>40</option></select></label>' +
+      '<label>Heights <select data-o="nl"><option>5</option><option selected>10</option><option>20</option></select></label></div>' +
+      '<p class="stlnote">Half-breadths in metres. x from the aft end, z from the baseline.</p>' +
+      '<div class="offwrap"></div>' +
+      '<div class="actions"><button class="btn" data-x="copy">Copy</button><button class="btn primary" data-x="close">Close</button></div></div>';
+    document.body.appendChild(ov);
+    var ns = $('[data-o="ns"]', ov), nl = $('[data-o="nl"]', ov), tsv = '';
+    function f2(v) { return v == null ? '-' : v.toFixed(2); }
+    function draw() {
+      var O = C.hullOffsets(h, +ns.value, +nl.value);
+      var t = '<table class="offt"><thead><tr><th>St.</th><th>x</th>' + O.zs.map(function (z) { return '<th>z ' + f2(z) + '</th>'; }).join('') + '</tr></thead><tbody>';
+      O.rows.forEach(function (r) { t += '<tr><td>' + r.station + '</td><td>' + f2(r.x) + '</td>' + r.half.map(function (v) { return '<td>' + f2(v) + '</td>'; }).join('') + '</tr>'; });
+      $('.offwrap', ov).innerHTML = t + '</tbody></table>';
+      tsv = ['Station\tx'].concat(O.zs.map(function (z) { return 'z ' + f2(z); })).join('\t') + '\n' +
+        O.rows.map(function (r) { return [r.station, f2(r.x)].concat(r.half.map(f2)).join('\t'); }).join('\n');
+    }
+    ns.addEventListener('change', draw); nl.addEventListener('change', draw);
+    function close() { ov.remove(); document.removeEventListener('keydown', esc); }
+    function esc(e) { if (e.key === 'Escape') close(); }
+    document.addEventListener('keydown', esc);
+    ov.addEventListener('click', function (e) {
+      if (e.target === ov || e.target.getAttribute('data-x') === 'close') close();
+      else if (e.target.getAttribute('data-x') === 'copy') {
+        var ok = function () { toast('Table copied.'); };
+        try { navigator.clipboard.writeText(tsv).then(ok, function () { toast('Copy not possible here. Use the Excel file.'); }); }
+        catch (err) { toast('Copy not possible here. Use the Excel file.'); }
+      }
+    });
+    draw();
+  }
+
+  function stlDialog(file, src) {
+    var ov = document.createElement('div');
+    ov.className = 'overlay';
+    var base = file.name.replace(/\.stl$/i, '').replace(/[_-]+/g, ' ').trim().slice(0, 30) || 'Imported shape';
+    ov.innerHTML = '<div class="dialog stl" role="dialog" aria-modal="true" aria-label="Import STL"><h2>Import STL</h2>' +
+      '<p class="stlfile"></p>' +
+      '<div class="stlgrid">' +
+      '<label>Name <input type="text" data-s="name" maxlength="30"></label>' +
+      '<label>Units in the file <select data-s="unit"><option value="mm">millimetres</option><option value="cm">centimetres</option><option value="m">metres</option><option value="in">inches</option></select></label>' +
+      '<label>Up axis <select data-s="up"><option value="z">Z</option><option value="y">Y</option></select></label>' +
+      '</div>' +
+      '<p class="stlinfo"></p><p class="stlsize"></p><p class="stlnote"></p>' +
+      '<div class="actions"><button class="btn" data-x="cancel">Cancel</button><button class="btn primary" data-x="add" disabled>Add to library</button></div></div>';
+    document.body.appendChild(ov);
+    var red = null, unitGuess = null;
+    var nameIn = $('[data-s="name"]', ov), unitSel = $('[data-s="unit"]', ov), upSel = $('[data-s="up"]', ov), addBtn = $('[data-x="add"]', ov);
+    nameIn.value = base;
+    $('.stlfile', ov).textContent = file.name + ' · ' + fmtBytes(file.size) + ' · ' + src.n.toLocaleString('en-US') + ' triangles' + (src.ascii ? ' (text format)' : '');
+    function show() {
+      if (!red) return;
+      var sc = C.UNIT_SCALE[unitSel.value], sz = red.dims.map(function (d) { return d * sc; });
+      var kb = Math.round((red.v.length + red.i.length) * 2 * 4 / 3);
+      $('.stlinfo', ov).textContent = 'Reduced to ' + red.tris.toLocaleString('en-US') + ' triangles, about ' + fmtBytes(kb) + ' in the project file.';
+      $('.stlsize', ov).innerHTML = 'Block size: <b>' + sz.map(function (d) { return d >= 100 ? d.toFixed(0) : d >= 10 ? d.toFixed(1) : d.toFixed(2); }).join(' × ') + ' m</b> (length × beam × height). You can scale the block afterwards.';
+      $('.stlnote', ov).textContent = (unitGuess && unitSel.value === unitGuess ? 'Units guessed from the size. ' : '') + (red.closed ? 'The mesh is closed, so volume and centre of gravity are exact.' : 'The mesh is not closed, so the volume is approximate. Check it, or set the mass by hand.');
+      addBtn.disabled = false;
+    }
+    function work() {
+      addBtn.disabled = true;
+      $('.stlinfo', ov).textContent = 'Working ...';
+      setTimeout(function () {
+        try { red = C.reduceSTL(src, { up: upSel.value }); }
+        catch (err) { red = null; $('.stlinfo', ov).textContent = ''; $('.stlnote', ov).textContent = 'This file cannot be imported: ' + (err && err.message ? err.message : err); return; }
+        if (!unitGuess) { unitGuess = C.guessUnit(red.dims); unitSel.value = unitGuess; }
+        show();
+      }, 30);
+    }
+    unitSel.addEventListener('change', show);
+    upSel.addEventListener('change', work);
+    ov.addEventListener('click', function (e) {
+      var x = e.target.getAttribute && e.target.getAttribute('data-x');
+      if (x === 'cancel' || e.target === ov) { ov.remove(); return; }
+      if (x === 'add' && red) {
+        var label = nameIn.value.trim().slice(0, 30) || base;
+        var id = 'stl_' + (label.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 20) || 'shape') + '_' + Math.random().toString(36).slice(2, 6);
+        var data = C.makeShapeData(red, label, C.UNIT_SCALE[unitSel.value], id, file.size);
+        if (!C.registerShape(data)) { toast('This shape could not be added.', true); return; }
+        S.model.customShapes = (S.model.customShapes || []).concat([id]);
+        ov.remove();
+        renderLib();
+        addBlock(id);
+        toast(label + ' added. It is also in the shape library.');
+      }
+    });
+    work();
+    nameIn.focus(); nameIn.select();
+  }
+
+  /* ---------- wiring ---------- */
+  function wire() {
+    // library tiles
+    renderLib();
     $('#lib').addEventListener('click', function (e) {
+      var rm = e.target.closest('[data-rmshape]');
+      if (rm) { removeCustomShape(rm.getAttribute('data-rmshape')); return; }
+      if (e.target.closest('[data-importstl]')) { $('#stlIn').click(); return; }
       var t = e.target.closest('[data-shape]');
       if (t) addBlock(t.getAttribute('data-shape'));
     });
+    $('#stlIn').addEventListener('change', function (e) { openStl(e.target.files[0]); e.target.value = ''; });
     $('#lib').addEventListener('dragstart', function (e) {
       var t = e.target.closest('[data-shape]');
       if (!t) return;
@@ -4614,7 +5804,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     vp.addEventListener('drop', function (e) {
       e.preventDefault();
       var f = e.dataTransfer.files && e.dataTransfer.files[0];
-      if (f) { openFile(f); return; }
+      if (f) { if (/\.stl$/i.test(f.name)) openStl(f); else openFile(f); return; }
       var k = e.dataTransfer.getData('application/x-dbb-shape');
       if (k && C.SHAPES[k]) addBlock(k, dropPoint(e));
     });
@@ -4716,7 +5906,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     });
     $$('.tab').forEach(function (b) { b.addEventListener('click', function () { setTab(b.getAttribute('data-tab')); if (!S.drawerOpen) toggleDrawer(); }); });
     $('#btnDrawer').addEventListener('click', toggleDrawer);
-    $('#btnCsv').addEventListener('click', exportCsv);
+    $('#btnPdf').addEventListener('click', exportPdf);
     $('#btnXlsx').addEventListener('click', exportXlsx);
     $('#btnAddReq').addEventListener('click', addRequirement);
     var reqTbl = $('#reqTbl');
@@ -4766,7 +5956,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
         if (moved) window.addEventListener('click', function (e) { e.stopPropagation(); e.preventDefault(); }, { capture: true, once: true });
       }
       function down(e) {
-        if (!S.drawerOpen || e.button > 0 || e.target.closest('select,input,label,#btnCsv,#btnXlsx,#btnDrawer')) return;
+        if (!S.drawerOpen || e.button > 0 || e.target.closest('select,input,label,#btnPdf,#btnXlsx,#btnDrawer')) return;
         startY = e.clientY; startH = dr.getBoundingClientRect().height; moved = false;
         document.body.style.userSelect = 'none';
         window.addEventListener('pointermove', move); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', up);
@@ -4867,6 +6057,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
       btn.addEventListener('click', function () { setShape(C.STERN_PRESETS[btn.getAttribute('data-stern')]); });
     });
     $('#shapeReset').addEventListener('click', function () { setShape(null); });
+    $('#hfOff').addEventListener('click', function () { var h = selHullObj(); if (h) offsetsDialog(h); });
     $('#hfFit').addEventListener('click', function () { var h = selHullObj(); if (h) refitHull(h, false); });
     $('#hfAuto').addEventListener('click', function () { var h = selHullObj(); if (h) refitHull(h, true); });
     $('#hfDel').addEventListener('click', function () { if (S.selHull) deleteHull(S.selHull); });
@@ -4895,6 +6086,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
       else if (f === 'fill') b.fill = Math.min(100, Math.max(0, C.num(t.value, 100)));
       else if (f === 'freesurf') b.freeSurface = t.checked;
       else if (f === 'deck') { S.model.blocks.forEach(function (x) { x.deck = false; }); b.deck = t.checked; }
+      else if (f === 'gt') b.gt = t.checked;
       else if (f === 'masson') b.massOverride = t.checked ? Math.round(C.blockMass(S.model, b).mass * 1000) / 1000 : null;
       else if (f === 'mass') b.massOverride = Math.max(0, C.num(t.value, b.massOverride || 0));
       reconcile(); renderAll(); pushHistory();

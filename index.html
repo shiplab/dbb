@@ -409,6 +409,8 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
 .pb { display: flex; align-items: baseline; gap: 6px; padding: 2px 4px 2px 18px; font-size: 13px; }
 .pb em { color: var(--fg-dim); font-size: 11.5px; }
 
+.deckmk { font: 600 10px var(--font-cond); letter-spacing: 0.06em; text-transform: uppercase; color: #b9780a; border: 1px solid currentColor; border-radius: 3px; padding: 0 3px; margin-right: 6px; flex: none; }
+
 </style>
 </head>
 <body>
@@ -639,6 +641,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
         <label class="f"><span>Shape</span><select data-f="shape"></select></label>
         <label class="f"><span>Group</span><select data-f="group"></select></label>
         <div class="f"><span>Requirements</span><div class="reqchk" data-f="reqs"></div></div>
+        <label class="check" title="The top of this block is the main deck. The hull depth follows it when you press + Hull or Auto"><input type="checkbox" data-f="deck"> Defines main deck (its top)</label>
         <div class="grp"><b>Size (m)</b>
           <div class="f3">
             <label class="f"><span>L</span><input type="number" step="0.1" min="0.05" data-f="size" data-i="0"></label>
@@ -1121,7 +1124,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
       id: id, name: name, shape: shape, group: group, reqs: req ? [req] : [],
       position: [(x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2],
       size: [x1 - x0, y1 - y0, z1 - z0],
-      rotation: [0, 0, 0], areaOverride: null, hidden: false, density: null, fill: 100, massOverride: null, freeSurface: false
+      rotation: [0, 0, 0], areaOverride: null, hidden: false, density: null, fill: 100, massOverride: null, freeSurface: false, deck: false
     };
   }
 
@@ -1537,7 +1540,8 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
         density: typeof b.density === 'number' && isFinite(b.density) ? Math.max(0, b.density) : null,
         fill: typeof b.fill === 'number' && isFinite(b.fill) ? Math.min(100, Math.max(0, b.fill)) : 100,
         massOverride: typeof b.massOverride === 'number' && isFinite(b.massOverride) ? Math.max(0, b.massOverride) : null,
-        freeSurface: b.freeSurface === true
+        freeSurface: b.freeSurface === true,
+        deck: b.deck === true
       });
     });
     if (dropped) warnings.push(dropped + ' unreadable block entries were skipped.');
@@ -1561,6 +1565,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     model.float = raw.float === true;
     model.structPct = typeof raw.structurePercent === 'number' && isFinite(raw.structurePercent) ? Math.min(100, Math.max(0, raw.structurePercent)) : DEFAULT_STRUCT_PCT;
     syncDraught(model);
+    keepOneDeck(model);
     return { model: model, warnings: warnings };
   }
 
@@ -1615,7 +1620,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
           id: b.id, name: b.name, shape: b.shape, group: b.group, reqs: blockReqs(b).slice(),
           position: b.position.map(r4), size: b.size.map(r4), rotation: b.rotation.map(r4),
           areaOverride: b.areaOverride == null ? null : r4(b.areaOverride), hidden: !!b.hidden,
-          density: typeof b.density === 'number' ? r4(b.density) : null, fill: typeof b.fill === 'number' ? r4(b.fill) : 100, massOverride: typeof b.massOverride === 'number' ? r4(b.massOverride) : null, freeSurface: !!b.freeSurface,
+          density: typeof b.density === 'number' ? r4(b.density) : null, fill: typeof b.fill === 'number' ? r4(b.fill) : 100, massOverride: typeof b.massOverride === 'number' ? r4(b.massOverride) : null, freeSurface: !!b.freeSurface, deck: !!b.deck,
           computed: (function () { var q = blockMass(model, b), c = blockCentroid(b); return { volume: r4(blockVolume(b)), area: r4(blockArea(b)), density: r4(q.density), mass: r4(q.mass), cg: c.map(r4) }; })()
         };
       })
@@ -1955,7 +1960,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     // 3 blocks, with formulas
     var rmap = {}; model.requirements.forEach(function (r) { rmap[r.id] = r.name; });
     var br = [H(['Id', 'Name', 'Group path', 'Group', 'Requirement', 'Shape', 'X (m)', 'Y (m)', 'Z (m)', 'Length (m)', 'Beam (m)', 'Height (m)', 'Rot X (deg)', 'Rot Y (deg)', 'Rot Z (deg)',
-      'Volume (m3)', 'Area (m2)', 'Volume below main deck (m3)', 'Volume outside hulls, estimate (m3)', 'Outside share (%)', 'Density (t/m3)', 'Fill (%)', 'Mass (t)', 'Mass typed', 'CG x (m)', 'CG y (m)', 'CG z (m)', 'Free surface'])];
+      'Volume (m3)', 'Area (m2)', 'Volume below main deck (m3)', 'Volume outside hulls, estimate (m3)', 'Outside share (%)', 'Density (t/m3)', 'Fill (%)', 'Mass (t)', 'Mass typed', 'CG x (m)', 'CG y (m)', 'CG z (m)', 'Free surface', 'Main deck'])];
     model.blocks.forEach(function (b, i) {
       var q = blockMass(model, b), cg = blockCentroid(b), n = i + 2, vol = blockVolume(b);
       var gc = gm[b.group] ? gm[b.group].color : '#9aa5b1', tb2 = 'n|' + tint(gc, 0.8);
@@ -1963,7 +1968,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
         nv(b.position[0]), nv(b.position[1]), nv(b.position[2]), nv(b.size[0]), nv(b.size[1]), nv(b.size[2]), nv(b.rotation[0], 'n1'), nv(b.rotation[1], 'n1'), nv(b.rotation[2], 'n1'),
         nv(vol), nv(blockArea(b)), hc ? nv(hc.byId[b.id].below) : '', hc ? nv(hc.byId[b.id].out) : '', hc ? nv(100 * hc.byId[b.id].shareBlock, 'n1') : '',
         nv(q.density, 'n3'), nv(q.fill, 'n1'),
-        q.typed ? nv(q.mass) : { v: r4(q.mass), s: 'n2', f: 'P' + n + '*U' + n + '*V' + n + '/100' }, q.typed ? 'yes' : 'no', nv(cg[0]), nv(cg[1]), nv(cg[2]), b.freeSurface ? 'yes' : 'no']);
+        q.typed ? nv(q.mass) : { v: r4(q.mass), s: 'n2', f: 'P' + n + '*U' + n + '*V' + n + '/100' }, q.typed ? 'yes' : 'no', nv(cg[0]), nv(cg[1]), nv(cg[2]), b.freeSurface ? 'yes' : 'no', b.deck ? 'yes' : 'no']);
     });
     var last = model.blocks.length + 1, tr = last + 1;
     if (model.blocks.length) {
@@ -2632,7 +2637,21 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
   }
 
   /* deck line guess: top of the highest level whose plan footprint is at least half of the largest */
+  /* the main deck set by the designer: the highest top among the blocks marked "defines main deck"; null when none is marked */
+  /* only one block defines the deck: keep the one with the highest top */
+  function keepOneDeck(model) {
+    var best = null;
+    model.blocks.forEach(function (b) { if (b.deck && (!best || blockWorldBox(b).max[2] > blockWorldBox(best).max[2])) best = b; });
+    model.blocks.forEach(function (b) { b.deck = b === best; });
+  }
+  function markedDeck(model) {
+    var z = null;
+    model.blocks.forEach(function (b) { if (b.deck) { var t = blockWorldBox(b).max[2]; if (z === null || t > z) z = t; } });
+    return z === null ? null : r2(z);
+  }
   function autoDeckLine(model) {
+    var set = markedDeck(model);
+    if (set !== null) return set;
     var bx = model.blocks.map(function (b) { var w = blockWorldBox(b); return { lo: w.min[2], hi: w.max[2], a: blockPlanArea(b) }; });
     if (!bx.length) return 0;
     var lv = [];
@@ -2653,6 +2672,20 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
   }
 
   function r2(v) { return Math.round(v * 100) / 100; }
+
+  /* examples: tick the blocks whose top is the hull depth, so that Auto gives the depth the example was built with */
+  function withDeck(f) {
+    return function () {
+      var m = f(), h = m.hulls && m.hulls[0];
+      var best = null;
+      if (h) m.blocks.forEach(function (b) {
+        var w = blockWorldBox(b);
+        if (Math.abs(w.max[2] - h.depth) < 0.05 && w.min[2] < h.depth - 0.05 && (!best || blockVolume(b) > blockVolume(best))) best = b;
+      });
+      if (best) best.deck = true;
+      return m;
+    };
+  }
 
   /* Hull around the blocks below the deck line; null when there are none to fit.
      Without `target`, all blocks are used and the hull is centred on them. With target {y, beam} (a model with several
@@ -2787,7 +2820,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     defaultGroups: defaultGroups, groupMap: groupMap, groupOrder: groupOrder, groupPath: groupPath,
     isGroupVisible: isGroupVisible, descendantIds: descendantIds,
     summarize: summarize, weightSummary: weightSummary, blockMass: blockMass, blockCentroid: blockCentroid, groupDensity: groupDensity, hullCentroid: hullCentroid, SHAPE_CENTROID: SHAPE_CENTROID, DEFAULT_DENSITY: DEFAULT_DENSITY, DEFAULT_STRUCT_PCT: DEFAULT_STRUCT_PCT, evaluateRequirements: evaluateRequirements, blockReqs: blockReqs, hasReq: hasReq,
-    emptyProject: emptyProject, exampleProject: exampleProject, containerShipExample: containerShipExample, tankerExample: tankerExample, bulkCarrierExample: bulkCarrierExample, simpleExample: simpleExample, gunnerusExample: gunnerusExample, catamaranExample: catamaranExample, trimaranExample: trimaranExample,
+    emptyProject: emptyProject, exampleProject: withDeck(exampleProject), containerShipExample: withDeck(containerShipExample), tankerExample: withDeck(tankerExample), bulkCarrierExample: withDeck(bulkCarrierExample), simpleExample: withDeck(simpleExample), gunnerusExample: withDeck(gunnerusExample), catamaranExample: withDeck(catamaranExample), trimaranExample: withDeck(trimaranExample), markedDeck: markedDeck,
     sanitizeProject: sanitizeProject, serializeProject: serializeProject,
     summaryCSV: summaryCSV, projectXlsx: projectXlsx, workbookSheets: workbookSheets, xlsxBuild: xlsxBuild, requirementsCSV: requirementsCSV, blocksCSV: blocksCSV,
     HULL_TYPES: HULL_TYPES, HULL_ORDER: HULL_ORDER, hullHalf: hullHalf, hullParams: hullParams, cleanShape: cleanShape, SHAPE_SPEC: SHAPE_SPEC, STERN_PRESETS: STERN_PRESETS, hullXRange: hullXRange, hullContains: hullContains,
@@ -2973,6 +3006,21 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
   waterMesh.visible = false;
   scene.add(waterMesh);
   function hexOf(c) { var t = new THREE.Color(c); return '#' + t.getHexString(); }
+  /* a thin line at the main deck, drawn only when a block is marked as defining it */
+  var deckMat = new THREE.LineBasicMaterial({ color: 0xe8a317, transparent: true, opacity: 0.9, depthTest: false });
+  var deckLoop = new THREE.LineLoop(new THREE.BufferGeometry(), deckMat);
+  deckLoop.raycast = function () {};
+  deckLoop.renderOrder = 4;
+  deckLoop.visible = false;
+  scene.add(deckLoop);
+  function updateDeckLine() {
+    var m = S.model, z = C.markedDeck(m), e = z === null ? null : C.envelope(m);
+    deckLoop.visible = !!e && !S.blocksOff;
+    if (!e) return;
+    var g = 0.04 * Math.max(e.length, e.beam), x0 = e.min[0] - g, x1 = e.max[0] + g, y0 = e.min[1] - g, y1 = e.max[1] + g;
+    deckLoop.geometry.dispose();
+    deckLoop.geometry = new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute([x0, y0, z, x1, y0, z, x1, y1, z, x0, y1, z], 3));
+  }
   function waterCol() { return S.waterColor || theme.water || '#1f9bd1'; }
   /* the floating condition at the weight, kept until the model changes; while something is dragged the last one stays */
   var flMemo = { key: '', val: null };
@@ -3049,6 +3097,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
   }
 
   function updateWater() {
+    updateDeckLine();
     var m = S.model, w = m.hulls.length && m.waterline !== false ? C.waterExtent(m) : null;
     waterMesh.visible = !!w;
     waterMat.color.set(waterCol());
@@ -3539,7 +3588,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     hs.push(h);
     S.sel = null; S.selHull = h.id;
     reconcile(); renderAll(); pushHistory();
-    toast(hs.length === 1 ? 'Hull fitted. The depth (main deck) is a guess (' + fmt(h.depth, 2) + ' m): edit it in the panel if needed.' : 'Mirrored copy added, ready for a catamaran. Pick a slender hull type and adjust the beam and offset.');
+    toast(hs.length === 1 ? (C.markedDeck(S.model) !== null ? 'Hull fitted. The depth (' + fmt(h.depth, 2) + ' m) is the top of the block that defines the main deck.' : 'Hull fitted. The depth (main deck) is a guess (' + fmt(h.depth, 2) + ' m): tick Defines main deck on a block, or edit the depth in the panel.') : 'Mirrored copy added, ready for a catamaran. Pick a slender hull type and adjust the beam and offset.');
   }
 
   function deleteHull(id) {
@@ -3692,6 +3741,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
         html.push('<div class="brow' + (b.id === S.sel ? ' sel' : '') + (off ? ' off' : '') + '" data-bid="' + esc(b.id) + '" style="--depth:' + (r.depth + 1) + '">' +
           '<span class="sw" style="background:' + esc(g.color) + '"></span>' +
           '<button class="bname" data-act="selb" title="' + esc(b.name) + '">' + esc(b.name) + '</button>' +
+          (b.deck ? '<span class="deckmk" title="Defines the main deck (its top)">deck</span>' : '') +
           '<span class="bvol" title="Volume m³">' + fmt(C.blockVolume(b), 0) + '</span>' +
           '<button class="ic" data-act="bvis" aria-label="' + (b.hidden ? 'Show' : 'Hide') + ' block" title="' + (b.hidden ? 'Show' : 'Hide') + ' block">' + (b.hidden ? ICON_EYE_OFF : ICON_EYE) + '</button>' +
           '</div>');
@@ -3842,6 +3892,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     setVal($('[data-f="fill"]', form), fin(q.fill)); $('[data-f="fill"]', form).disabled = q.typed;
     $('[data-f="masson"]', form).checked = q.typed;
     $('[data-f="freesurf"]', form).checked = !!b.freeSurface;
+    $('[data-f="deck"]', form).checked = !!b.deck;
     $('#fsNote').hidden = !(b.freeSurface && !(q.fill > 0 && q.fill < 100));
     $('#massRow').hidden = !q.typed;
     if (q.typed) setVal($('[data-f="mass"]', form), fin(b.massOverride));
@@ -4278,7 +4329,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     ] },
     { group: 'Hull and draught', items: [
       ['Baseline', 'The reference level z = 0, at the underside of the hull. All heights are measured up from it.'],
-      ['Depth', 'Height of the main deck above the baseline. Blocks above it are not checked against the hull.'],
+      ['Depth', 'Height of the main deck above the baseline. Tick Defines main deck on a block to set it at the top of that block. Blocks above it are not checked against the hull.'],
       ['Draught (T)', 'Height of the waterline above the baseline. One draught for the whole vessel, at most the deepest hull.'],
       ['Freeboard', 'Depth minus draught.'],
       ['Displaced volume (∇)', 'Hull volume below the waterline.'],
@@ -4336,7 +4387,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
       '<li><b>Set up groups.</b> The hierarchy on the left starts with Levander’s OSV breakdown. Rename, recolour, add (<i>+ Group</i>, or + on a row) or delete groups to match your own division.</li>' +
       '<li><b>Write requirements.</b> In the <i>Requirements</i> tab choose a metric (volume, area, length, beam, height), at least or at most, and the <i>shall</i> and <i>should</i> values. Pick the group and requirement for new blocks in the two menus under the shape library. To link a block to several requirements, tick them in the block panel, or press the block count in the Requirements tab to pick the blocks (<i>Add all</i> ticks a whole group). A block counts in full for each requirement it serves.</li>' +
       '<li><b>Add and shape blocks.</b> Click a shape, or drag it onto the workplane. Select a block and use <i>Move</i>, <i>Rotate</i> or <i>Scale</i>. <b>To resize, choose Scale and drag the small coloured cubes</b>, or type exact values in the right panel, which appears when something is selected. Snap aligns block faces to the step you choose.</li>' +
-      '<li><b>Add a hull (optional).</b> Press <i>+ Hull</i>. It is fitted around the blocks below the main deck, whose height is the hull <i>depth</i>. Click the hull row to edit it: move and scale it with the gizmo, set the <i>draught</i>, or open <i>Shape</i> for the sliders. A second <i>+ Hull</i> adds a mirrored copy for a catamaran. The hulls are illustrative shapes, not real lines.</li>' +
+      '<li><b>Add a hull (optional).</b> Press <i>+ Hull</i>. It is fitted around the blocks below the main deck, whose height is the hull <i>depth</i>. Tick <i>Defines main deck</i> on a block to set the deck at its top; otherwise the depth is a guess. Click the hull row to edit it: move and scale it with the gizmo, set the <i>draught</i>, or open <i>Shape</i> for the sliders. A second <i>+ Hull</i> adds a mirrored copy for a catamaran. The hulls are illustrative shapes, not real lines.</li>' +
       '<li><b>Add weight.</b> In the <i>Hydrostatics</i> tab set a density per group, and override it on a block if needed, with a fill % for tanks or a typed mass. Tick <i>Free surface</i> on a part-filled liquid tank. The structure share is set in the same tab.</li>' +
       '<li><b>Float it.</b> Press <i>Float</i> in the toolbar and the draught, trim and heel follow the weight as you move blocks. The <i>Hydrostatics</i> tab shows the floating condition, the weight balance, and the initial stability: KB, BM, KM and GM, with a few basic checks.</li>' +
       '<li><b>Read the Summary.</b> It opens with an assessment: chips for requirements, weight and hull, floating and stability, then the problems, notes and what passes. Click an item to go to the tab or block. Below it come the geometry and the hulls. <i>Requirements</i> shows whether shall and should are met, and <i>Blocks</i> lists every block; choose its column sets and click a title to sort.</li>' +
@@ -4843,6 +4894,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
       else if (f === 'density') b.density = t.value.trim() === '' ? null : Math.max(0, C.num(t.value, 0));
       else if (f === 'fill') b.fill = Math.min(100, Math.max(0, C.num(t.value, 100)));
       else if (f === 'freesurf') b.freeSurface = t.checked;
+      else if (f === 'deck') { S.model.blocks.forEach(function (x) { x.deck = false; }); b.deck = t.checked; }
       else if (f === 'masson') b.massOverride = t.checked ? Math.round(C.blockMass(S.model, b).mass * 1000) / 1000 : null;
       else if (f === 'mass') b.massOverride = Math.max(0, C.num(t.value, b.massOverride || 0));
       reconcile(); renderAll(); pushHistory();

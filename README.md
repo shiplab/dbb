@@ -1,10 +1,10 @@
-# DBB Block Editor
+# Ship Design Building Block Editor
 
 **A small 3D editor for teaching the Design Building Block (DBB) approach to ship design.**
 
 **Open the app: https://shiplab.github.io/dbb/**
 
-![DBB Block Editor with the feeder container ship example](screenshot.png)
+![Ship Design Building Block Editor with the feeder container ship example](screenshot.png)
 
 > **For educational use only.** The hulls are illustrative parametric shapes, not real lines. Weights, hydrostatics, trim, heel and stability are simplified estimates, and stability covers small angles only. The results must not be used for design approval, class or flag-state documentation, or any safety-critical decision. The software is provided as it is, without warranty.
 
@@ -79,9 +79,9 @@ Gaspar, H.M., Fonseca, Í.A. and Andrews, D. *Wither now the Design Building Blo
 }
 ```
 
-**The tool.** If you use the DBB Block Editor itself, for example in teaching material, a report or a thesis, cite the software:
+**The tool.** If you use the Ship Design Building Block Editor itself, for example in teaching material, a report or a thesis, cite the software:
 
-Gaspar, H.M. (2026). *DBB Block Editor* [Computer software]. NTNU. https://shiplab.github.io/dbb/
+Gaspar, H.M. (2026). *Ship Design Building Block Editor* [Computer software]. NTNU. https://shiplab.github.io/dbb/
 
 ```bibtex
 @software{gaspar2026dbbeditor,

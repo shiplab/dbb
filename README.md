@@ -31,10 +31,15 @@ It is an editor and calculator for the early stage. In a course it fits after Sy
 - **Summary with an assessment.** The Summary tab opens with chips for requirements, weight and hull, floating and stability, then a list of problems, notes and what passes, each linking to where to look. Below it are the geometry and the hulls.
 - **Tables** that update as you edit. *Requirements* shows "Meets should", "Meets shall" or "Not met". *Blocks* lists every block, with switchable column sets (Geometry, Mass, Hull), sortable columns, and editable density and fill. *Hydrostatics* holds the floating condition, the weight balance, the weight by group (densities can be edited here), the initial stability and the hull hydrostatics. The tables panel can be resized by dragging.
 - **Gross tonnage (GT).** An estimate by the 1969 Tonnage Convention, GT = K1 × V, from the blocks that count as enclosed spaces (untick **Counts for GT** on open spaces). It can be used as a requirement. It is not a tonnage certificate.
-- **PDF report.** The **PDF** button writes a report: a perspective view and side, top and front drawings, the assessment, requirements, systems, hulls, weights, floating condition, hydrostatics, stability, assumptions and an appendix listing every block.
+- **PDF report.** The **PDF** button writes a report: a perspective view and side, top and front drawings, the assessment, requirements, systems, hulls, weights, floating condition, hydrostatics, stability, assumptions and an appendix listing every block. The GA drawing sheets are added at its end.
 - **Save and open** projects as JSON. **XLSX** exports the whole project as an Excel workbook (Summary, Project, Output, Blocks, Weight, Hydrostatics, Requirements) with the group colours, and formulas for the block masses, totals and gross tonnage. Nothing is stored in the browser, so save before you leave.
+- **GA drawing** makes a general arrangement on A3 sheets, as DXF (for CAD programs) or as a white PDF. It uses only what the model contains: the profile with the hull and the blocks, a section at amidships, tables of the main particulars, groups and requirements, one plan for each deck level found in the blocks, and, when there is a hull, a lines plan (sheer, half-breadth and body plans). Doors, stairs and equipment are not drawn. The DXF is at full size in millimetres, with one layer per group and the sheets side by side; plot it at the scale in the title block. The files are named `GA_<name>`. In the Claude artifact the DXF is saved inside a zip file, because that page cannot save .dxf. Every PDF page and the DXF carry a stamp with the date, time and UTC offset, the tool name, its version and its address (`APP_VERSION` and `APP_URL` in `core.js`).
 - **Examples** from the menu, each with only the groups it uses: Simple (5 blocks), Catamaran (9 blocks, 2 hulls), Trimaran (10 blocks, 3 hulls), R/V Gunnerus (15 blocks, simplified), PSV (20 blocks), Container ship, feeder (19 blocks, the default), Tanker, double hull (22 blocks), Bulk carrier, handysize (19 blocks), Cruise ship, small (17 blocks), Sailing yacht, 15 m (13 blocks), PSV Detailed (208 blocks with many shaped tanks, no hull), and PSV with STL parts (a crane, a funnel and an A-frame imported from STL files).
 - **How to** in the app: a quick start, all keyboard shortcuts, a glossary of the terms used, and an About tab with the disclaimer. Table headings also explain themselves on hover.
+
+The GA drawing, with sheet 1 of the cruise ship example and a deck-plan sheet of PSV Detailed:
+
+![GA drawing: sheet 1 of the cruise ship example (profile, section and tables) and a deck-plan sheet of PSV Detailed](screenshot-ga.png)
 
 ## How to use it
 
@@ -47,7 +52,7 @@ It is an editor and calculator for the early stage. In a course it fits after Sy
 7. **Add a hull (optional).** Press **+ Hull** (a second makes a catamaran, a third a trimaran), tick **Defines main deck** on the block whose top is the deck, then click the hull row to edit it. While a hull is selected the blocks are dimmed. Set the draught, open **Shape** for the sliders, and press **Fit to blocks** after moving blocks. The eye next to **Hierarchy** hides all blocks, to look at the hulls alone.
 8. **Add weight.** In the **Hydrostatics** tab set a density per group, and override it on a block in the right panel or the Blocks tab, with a fill percentage for tanks or a typed mass. Tick **Free surface** on a part-filled liquid tank. The structure share is set in the same tab.
 9. **Float it.** Press **Float** in the toolbar and move blocks: the draught, trim and heel follow, and GM is shown in the readout.
-10. **Read the Summary**, follow its links to the details, iterate until the requirements are met, and **Save** the project as JSON, or export it to Excel or to a PDF report.
+10. **Read the Summary**, follow its links to the details, iterate until the requirements are met, and **Save** the project as JSON, or export it to Excel, to a PDF report, or to a GA drawing (DXF or PDF).
 
 Coordinates: X forward from the aft end, Y to port, Z up from the baseline, in metres.
 

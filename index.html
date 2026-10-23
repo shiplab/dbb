@@ -526,6 +526,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
           </div>
           <div class="spacer"></div>
           <button class="btn sm" id="btnPdf" title="Make a PDF report: the views, the assessment and the tables">PDF</button>
+          <button class="btn sm" id="btnGa" title="Make a general arrangement drawing on A3 sheets, as DXF or PDF">GA drawing</button>
           <button class="btn sm" id="btnXlsx" title="Export the whole project as an Excel workbook, with formulas for the masses and totals">XLSX</button>
           <button class="btn sm" id="btnDrawer" aria-label="Collapse tables" aria-expanded="true" title="Collapse or expand the tables">&#9662;</button>
         </div>
@@ -2244,12 +2245,19 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
   function bin2u8(s) { var a = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) a[i] = s.charCodeAt(i) & 255; return a; }
   function u82bin(u) { var s = '', k = 0x8000; for (var i = 0; i < u.length; i += k) s += String.fromCharCode.apply(null, u.subarray(i, i + k)); return s; }
   var PW = 595.28, PH = 841.89;
+  var APP_VERSION = '1.1.0', APP_URL = 'https://shiplab.github.io/dbb/';
+  /* the stamp on exports: date and time (computer clock, with its UTC offset), the tool, its version and its address */
+  function stampText(d) {
+    d = d || new Date();
+    var p = function (n) { return (n < 10 ? '0' : '') + n; }, off = -d.getTimezoneOffset(), a = Math.abs(off);
+    return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes()) + ' (UTC' + (off < 0 ? '-' : '+') + p(Math.floor(a / 60)) + ':' + p(a % 60) + ') \u00b7 Made with the Ship Design Building Block Editor v' + APP_VERSION + '.  ' + APP_URL;
+  }
 
   function pdfWriter(title) {
     var pages = [], cur = null, imgs = [];
     function n2(v) { return (Math.round(v * 100) / 100).toString(); }
     var d = {
-      addPage: function (landscape) { cur = { ops: [], imgs: {}, w: landscape ? PH : PW, h: landscape ? PW : PH }; pages.push(cur); return pages.length - 1; },
+      addPage: function (landscape, cw, ch) { cur = { ops: [], imgs: {}, w: cw || (landscape ? PH : PW), h: ch || (landscape ? PW : PH) }; pages.push(cur); return pages.length - 1; },
       goto: function (i) { cur = pages[i]; },
       pageCount: function () { return pages.length; },
       pageW: function () { return cur.w; },
@@ -2277,7 +2285,8 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
         if (pts.length < 2) return;
         var t = n2(o.w || 0.5) + ' w ' + pdfColor(o.color || '#33506b') + ' RG ' + (o.dash ? '[' + o.dash.join(' ') + '] 0 d ' : '');
         pts.forEach(function (q, i) { t += n2(q[0]) + ' ' + n2(cur.h - q[1]) + (i ? ' l ' : ' m '); });
-        cur.ops.push(t + (o.close ? 'h ' : '') + 'S' + (o.dash ? ' [] 0 d' : ''));
+        if (o.fill) t += pdfColor(o.fill) + ' rg ';
+        cur.ops.push(t + (o.close || o.fill ? 'h ' : '') + (o.fill ? 'B' : 'S') + (o.dash ? ' [] 0 d' : ''));
       },
       rect: function (x, y, w, h, o) {
         o = o || {};
@@ -2707,10 +2716,14 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
       doc.goto(p);
       var pw = doc.pageW(), ph = doc.pageH();
       doc.line(M, ph - M + 6, pw - M, ph - M + 6, { color: LINE, w: 0.4 });
-      doc.text(M, ph - M + 17, (model.name || 'Design') + '  -  ' + (o.when || ''), { size: 7, color: DIM });
+      doc.text(M, ph - M + 17, model.name || 'Design', { size: 7, color: DIM });
       doc.text(pw - M, ph - M + 17, 'Page ' + (p + 1) + ' of ' + n, { size: 7, color: DIM, align: 'right' });
       doc.text(pw / 2, ph - M + 17, 'For educational use only', { size: 7, color: DIM, align: 'center' });
+      var st = o.stamp || stampText(new Date()), k = st.indexOf(APP_URL);
+      doc.text(M, ph - M + 26, (k > 0 ? st.slice(0, k) : st).trim(), { size: 5.5, color: '#8a94a3' });
+      if (k > 0) doc.text(pw * 0.72, ph - M + 26, APP_URL, { size: 5.5, color: '#8a94a3' });
     }
+    if (o.appendPages) o.appendPages(doc);          // e.g. the GA drawing sheets, after the report pages
     return doc.build();
   }
 
@@ -4125,7 +4138,7 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
     summarize: summarize, weightSummary: weightSummary, blockMass: blockMass, blockCentroid: blockCentroid, groupDensity: groupDensity, hullCentroid: hullCentroid, SHAPE_CENTROID: SHAPE_CENTROID, DEFAULT_DENSITY: DEFAULT_DENSITY, DEFAULT_STRUCT_PCT: DEFAULT_STRUCT_PCT, evaluateRequirements: evaluateRequirements, blockReqs: blockReqs, hasReq: hasReq,
     emptyProject: emptyProject, exampleProject: withGT(withDeck(exampleProject), /^Open cargo deck$/), containerShipExample: withGT(withDeck(containerShipExample), /^Deck stack/), tankerExample: withDeck(tankerExample), cruiseShipExample: withGT(withDeck(cruiseShipExample), /^(Pool and sun deck|Funnel)$/), bulkCarrierExample: withDeck(bulkCarrierExample), sailingYachtExample: withGT(withDeck(sailingYachtExample), /^(Mast and rigging|Lead ballast)$/), simpleExample: withDeck(simpleExample), gunnerusExample: withGT(withDeck(gunnerusExample), /^Aft working deck$/), catamaranExample: withGT(withDeck(catamaranExample), /^Aft working deck$/), trimaranExample: withGT(withDeck(trimaranExample), /^Aft working deck$/), markedDeck: markedDeck,
     blankProject: blankProject, sanitizeProject: sanitizeProject, serializeProject: serializeProject,
-    summaryCSV: summaryCSV, projectXlsx: projectXlsx, buildReport: buildReport, pdfWriter: pdfWriter, workbookSheets: workbookSheets, xlsxBuild: xlsxBuild, requirementsCSV: requirementsCSV, blocksCSV: blocksCSV,
+    summaryCSV: summaryCSV, projectXlsx: projectXlsx, zipStore: zipStore, stampText: stampText, APP_VERSION: APP_VERSION, buildReport: buildReport, pdfWriter: pdfWriter, workbookSheets: workbookSheets, xlsxBuild: xlsxBuild, requirementsCSV: requirementsCSV, blocksCSV: blocksCSV,
     HULL_TYPES: HULL_TYPES, HULL_ORDER: HULL_ORDER, hullHalf: hullHalf, hullParams: hullParams, cleanShape: cleanShape, SHAPE_SPEC: SHAPE_SPEC, STERN_PRESETS: STERN_PRESETS, hullXRange: hullXRange, hullContains: hullContains,
     hullVolumeTo: hullVolumeTo, hullOffsets: hullOffsets, HULL_LIBRARY: HULL_LIBRARY, HULL_LIB_ORDER: HULL_LIB_ORDER, libraryHull: libraryHull, parseOffsetsText: parseOffsetsText, offsetsToHull: offsetsToHull, offsetsFullDepth: offsetsFullDepth, cleanOffsets: cleanOffsets, hullHydro: hullHydro, modelHydro: modelHydro, hullCheck: hullCheck, setQuickCheck: setQuickCheck, addHullTo: addHullTo, mirrorHull: mirrorHull, fitHullSet: fitHullSet, MAX_HULLS: MAX_HULLS, MAX_CUSTOM_SHAPES: MAX_CUSTOM_SHAPES, pruneCustomShapes: pruneCustomShapes, autoDeckLine: autoDeckLine, fitHull: fitHull,
     makeHullGeometry: makeHullGeometry, makeWaterGeometry: makeWaterGeometry, floatState: floatState, stabilityState: stabilityState, gzCurve: gzCurve, assessment: assessment, autoFloat: autoFloat, waterExtent: waterExtent, syncDraught: syncDraught, hullNameFor: hullNameFor, makeHullLines: makeHullLines,
@@ -4140,6 +4153,579 @@ tr.subhead td { font: 600 10.5px var(--font-sans, system-ui); letter-spacing: .0
 <script>
 /* Example STL parts (deck crane, funnel, A-frame) made for this tool, free to use. Reduced meshes; the original STL files are in examples/. */
 var DBB_STL_PARTS = {"crane":{"id":"stl_ex_crane","label":"Deck crane","v":"7zp9DEEq7zp9DAAAAj64DUEqAj64DQAAAUFhEUEqAUFhEQAA2kNgF0Eq2kNgFwAAe0aRH0Eqe0aRHwAA00i/KUEq00i/KQAA1EqrNUEq1EqrNQAAcEwJQ0EqcEwJQwAAnk2EUUEqnk2EUQAAVk7DYEEqVk7DYAAAlE5jcEEqlE5jcAAAVk4EgEEqVk4EgAAAnk1Cj0Eqnk1CjwAAcEy+nUEqcEy+nQAA1Eocq0Eq1EocqwAA00gHt0Eq00gHtwAAe0Y2wUEqe0Y2wQAA2kNnyUEq2kNnyQAAAUFmz0EqAUFmzwAAAj4P00EqAj4P0wAA7zpK1EEq7zpK1AAA3DcP00Eq3DcP0wAA3TRmz0Eq3TRmzwAABDJnyUEqBDJnyQAAYy82wUEqYy82wQAACy0Ht0EqCy0HtwAACyscq0EqCyscqwAAbim+nUEqbim+nQAAQChCj0EqQChCjwAAiCcEgEEqiCcEgAAASidjcEEqSidjcAAAiCfDYEEqiCfDYAAAQCiEUUEqQCiEUQAAbikJQ0EqbikJQwAACyurNUEqCyurNQAACy2/KUEqCy2/KQAAYy+RH0EqYy+RHwAABDJgF0EqBDJgFwAA3TRhEUEq3TRhEQAA3De4DUEq3De4DQAA7zpjcEEq7zpjcAAAoVnH4JxDoVkAAJxDoVnH4EEqoVkAAEEqPRzH4EEqPRwAAEEqPRzH4JxDPRwAAJxD21r//yFR21qcjyFR21r//5xD21qcj5xDNkf//5xDNkecj5xDNkf//yFRNkecjyFReB0StZxDeB21K5xDeB0StUEqeB21K0EqAAAStUEqAAC1K0EqAAAStZxDAAC1K5xDK/K7kv//K/IMTv//3f27kln73f0MTln7QF67kg89QF4MTg89jlK7krVBjlIMTrVB//98jJr4//9LVJr4//98jFLk//9LVFLk8vR8jFLk8vRLVFLk8vR8jJr48vRLVJr4","i":"AAABAAIAAQADAAIAAgADAAQAAwAFAAQABAAFAAYABQAHAAYABgAHAAgABwAJAAgACAAJAAoACQALAAoACgALAAwACwANAAwADAANAA4ADQAPAA4ADgAPABAADwARABAAEAARABIAEQATABIAEgATABQAEwAVABQAFAAVABYAFQAXABYAFgAXABgAFwAZABgAGAAZABoAGQAbABoAGgAbABwAGwAdABwAHAAdAB4AHQAfAB4AHgAfACAAHwAhACAAIAAhACIAIQAjACIAIgAjACQAIwAlACQAJAAlACYAJQAnACYAJgAnACgAJwApACgAKAApACoAKQArACoAKgArACwAKwAtACwALAAtAC4ALQAvAC4ALgAvADAALwAxADAAMAAxADIAMQAzADIAMgAzADQAMwA1ADQANAA1ADYANQA3ADYANgA3ADgANwA5ADgAOAA5ADoAOQA7ADoAOgA7ADwAOwA9ADwAPAA9AD4APQA/AD4APgA/AEAAPwBBAEAAQABBAEIAQQBDAEIAQgBDAEQAQwBFAEQARABFAEYARQBHAEYARgBHAEgARwBJAEgASABJAEoASQBLAEoASgBLAEwASwBNAEwATABNAE4ATQBPAE4ATgBPAAAATwABAAAAAAACAFAAAgAEAFAABAAGAFAABgAIAFAACAAKAFAACgAMAFAADAAOAFAADgAQAFAAEAASAFAAEgAUAFAAFAAWAFAAFgAYAFAAGAAaAFAAGgAcAFAAHAAeAFAAHgAgAFAAIAAiAFAAIgAkAFAAJAAmAFAAJgAoAFAAKAAqAFAAKgAsAFAALAAuAFAALgAwAFAAMAAyAFAAMgA0AFAANAA2AFAANgA4AFAAOAA6AFAAOgA8AFAAPAA+AFAAPgBAAFAAQABCAFAAQgBEAFAARABGAFAARgBIAFAASABKAFAASgBMAFAATABOAFAATgAAAFAAAwABAFEABQADAFEABwAFAFEACQAHAFEACwAJAFEADQALAFEADwANAFEAEQAPAFEAEwARAFEAFQATAFEAFwAVAFEAGQAXAFEAGwAZAFEAHQAbAFEAHwAdAFEAIQAfAFEAIwAhAFEAJQAjAFEAJwAlAFEAKQAnAFEAKwApAFEALQArAFEALwAtAFEAMQAvAFEAMwAxAFEANQAzAFEANwA1AFEAOQA3AFEAOwA5AFEAPQA7AFEAPwA9AFEAQQA/AFEAQwBBAFEARQBDAFEARwBFAFEASQBHAFEASwBJAFEATQBLAFEATwBNAFEAAQBPAFEAUgBTAFQAUwBVAFQAVgBXAFgAVwBZAFgAVgBYAFQAWABSAFQAWQBXAFMAVwBVAFMAWABZAFIAWQBTAFIAVABVAFYAVQBXAFYAWgBbAFwAWwBdAFwAXgBfAGAAXwBhAGAAXgBgAFwAYABaAFwAYQBfAFsAXwBdAFsAYABhAFoAYQBbAFoAXABdAF4AXQBfAF4AYgBjAGQAYwBlAGQAZgBnAGgAZwBpAGgAZgBoAGQAaABiAGQAaQBnAGMAZwBlAGMAaABpAGIAaQBjAGIAZABlAGYAZQBnAGYAagBrAGwAawBtAGwAbgBvAHAAbwBxAHAAbgBwAGwAcABqAGwAcQBvAGsAbwBtAGsAcABxAGoAcQBrAGoAbABtAG4AbQBvAG4AcgBzAHQAcwB1AHQAdgB3AHgAdwB5AHgAdgB4AHQAeAByAHQAeQB3AHMAdwB1AHMAeAB5AHIAeQBzAHIAdAB1AHYAdQB3AHYA","vf":0.05712,"c":[-0.18495,-0.05034,-0.22331],"size":[20.85,4.1,30.2917],"closed":true,"tris0":220,"tris":220,"bytes0":11084},"funnel":{"id":"stl_ex_funnel","label":"Funnel","v":"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sU/NTsPkb1sDS8PkbVcOTMPkpWOcScPkg18ySsPkAGwkScPk0GdCScPkWnScScPkL3BCScPkkHwDS8PkfHgySsPkfYRRTcPkkoAOTMPk/4t+UMPkTojNTsPk9ZJ6VMPkjo9jUsPkQZk1WcPkMpbBVsPkxp6bXsPkHpzUW8PkbKOSZMPkNqGGYcPkIKcBa8PkZqW8Z8Pk0anNccPkmqhdbsPkc6vWeMPkxapMdcPk3KtpfMPk/6sAgP//3KuWg///c6sph///xaqziv//0akyjv//mqiikf//IKf+lP//ZqVDmP//bKNtm///NqF5nv//xp5kof//HpwrpP//QZnKpv//MpY+qf//9ZKFq///jo+crf///4uBr///Togysf//fYSusv//koDxs///kHz8tP//fHjNtf//WnRjtv//L3C9tv//AGzbtv//0Ge9tv//pWNjtv//g1/Ntf//b1v8tP//bVfxs///glOusv//sU8ysf//AEyBr///cUicrf//CkWFq///zUE+qf//vz7Kpv//4jsrpP//OTlkof//yTZ5nv//kzRtm///mTJDmP//3zD+lP//ZS+ikf//Li4yjv//Oy2ziv//jCwph///IyyWg///ACwAgP//IyxpfP//jCzWeP//Oy1Mdf//Li7Ncf//ZS9dbv//3zABa///mTK8Z///kzSSZP//yTaGYf//OTmbXv//4jvUW///vz41Wf//zUHBVv//CkV6VP//cUhjUv//AEx+UP//sU/NTv//glNRTf//bVcOTP//b1sDS///g18ySv//pWOcSf//0GdCSf//AGwkSf//L3BCSf//WnScSf//fHgySv//kHwDS///koAOTP//fYRRTf//TojNTv///4t+UP//jo9jUv//9ZJ6VP//MpbBVv//QZk1Wf//HpzUW///xp6bXv//NqGGYf//bKOSZP//ZqW8Z///IKcBa///mqhdbv//0anNcf//xapMdf//c6vWeP//3KtpfP//","i":"AAABAAIAAwAEAAAABQAGAAMABwAIAAUACQAKAAcACwAMAAkADQAOAAsADwAQAA0AEQASAA8AEwAUABEAFQAWABMAFwAYABUAGQAaABcAGwAcABkAHQAeABsAHwAgAB0AIQAiAB8AIwAkACEAJQAmACMAJwAoACUAKQAqACcAKwAsACkALQAuACsALwAwAC0AMQAyAC8AMwA0ADEANQA2ADMANwA4ADUAOQA6ADcAOwA8ADkAPQA+ADsAPwBAAD0AQQBCAD8AQwBEAEEARQBGAEMARwBIAEUASQBKAEcASwBMAEkATQBOAEsATwBQAE0AUQBSAE8AUwBUAFEAVQBWAFMAVwBYAFUAWQBaAFcAWwBcAFkAXQBeAFsAAgBfAF0AAwAAAAIABwAFAAMACwAJAAcADwANAAsAEwARAA8AFwAVABMAGwAZABcAHwAdABsAIwAhAB8AJwAlACMAKwApACcALwAtACsAMwAxAC8ANwA1ADMAOwA5ADcAPwA9ADsAQwBBAD8ARwBFAEMASwBJAEcATwBNAEsAUwBRAE8AVwBVAFMAWwBZAFcAAgBdAFsABwADAAIADwALAAcAFwATAA8AHwAbABcAJwAjAB8ALwArACcANwAzAC8APwA7ADcARwBDAD8ATwBLAEcAVwBTAE8AAgBbAFcADwAHAAIAHwAXAA8ALwAnAB8APwA3AC8ATwBHAD8AAgBXAE8AHwAPAAIAPwAvAB8AAgBPAD8APwAfAAIAYABhAGIAYgBjAGQAZABlAGYAZgBnAGgAaABpAGoAagBrAGwAbABtAG4AbgBvAHAAcABxAHIAcgBzAHQAdAB1AHYAdgB3AHgAeAB5AHoAegB7AHwAfAB9AH4AfgB/AIAAgACBAIIAggCDAIQAhACFAIYAhgCHAIgAiACJAIoAigCLAIwAjACNAI4AjgCPAJAAkACRAJIAkgCTAJQAlACVAJYAlgCXAJgAmACZAJoAmgCbAJwAnACdAJ4AngCfAKAAoAChAKIAogCjAKQApAClAKYApgCnAKgAqACpAKoAqgCrAKwArACtAK4ArgCvALAAsACxALIAsgCzALQAtAC1ALYAtgC3ALgAuAC5ALoAugC7ALwAvAC9AL4AvgC/AGAAYABiAGQAZABmAGgAaABqAGwAbABuAHAAcAByAHQAdAB2AHgAeAB6AHwAfAB+AIAAgACCAIQAhACGAIgAiACKAIwAjACOAJAAkACSAJQAlACWAJgAmACaAJwAnACeAKAAoACiAKQApACmAKgAqACqAKwArACuALAAsACyALQAtAC2ALgAuAC6ALwAvAC+AGAAYABkAGgAaABsAHAAcAB0AHgAeAB8AIAAgACEAIgAiACMAJAAkACUAJgAmACcAKAAoACkAKgAqACsALAAsAC0ALgAuAC8AGAAYABoAHAAcAB4AIAAgACIAJAAkACYAKAAoACoALAAsAC4AGAAYABwAIAAgACQAKAAoACwAGAAYACAAKAAAgABAGAAAQBhAGAAAQAAAGEAAABiAGEAAAAEAGIABABjAGIABAADAGMAAwBkAGMAAwAGAGQABgBlAGQABgAFAGUABQBmAGUABQAIAGYACABnAGYACAAHAGcABwBoAGcABwAKAGgACgBpAGgACgAJAGkACQBqAGkACQAMAGoADABrAGoADAALAGsACwBsAGsACwAOAGwADgBtAGwADgANAG0ADQBuAG0ADQAQAG4AEABvAG4AEAAPAG8ADwBwAG8ADwASAHAAEgBxAHAAEgARAHEAEQByAHEAEQAUAHIAFABzAHIAFAATAHMAEwB0AHMAEwAWAHQAFgB1AHQAFgAVAHUAFQB2AHUAFQAYAHYAGAB3AHYAGAAXAHcAFwB4AHcAFwAaAHgAGgB5AHgAGgAZAHkAGQB6AHkAGQAcAHoAHAB7AHoAHAAbAHsAGwB8AHsAGwAeAHwAHgB9AHwAHgAdAH0AHQB+AH0AHQAgAH4AIAB/AH4AIAAfAH8AHwCAAH8AHwAiAIAAIgCBAIAAIgAhAIEAIQCCAIEAIQAkAIIAJACDAIIAJAAjAIMAIwCEAIMAIwAmAIQAJgCFAIQAJgAlAIUAJQCGAIUAJQAoAIYAKACHAIYAKAAnAIcAJwCIAIcAJwAqAIgAKgCJAIgAKgApAIkAKQCKAIkAKQAsAIoALACLAIoALAArAIsAKwCMAIsAKwAuAIwALgCNAIwALgAtAI0ALQCOAI0ALQAwAI4AMACPAI4AMAAvAI8ALwCQAI8ALwAyAJAAMgCRAJAAMgAxAJEAMQCSAJEAMQA0AJIANACTAJIANAAzAJMAMwCUAJMAMwA2AJQANgCVAJQANgA1AJUANQCWAJUANQA4AJYAOACXAJYAOAA3AJcANwCYAJcANwA6AJgAOgCZAJgAOgA5AJkAOQCaAJkAOQA8AJoAPACbAJoAPAA7AJsAOwCcAJsAOwA+AJwAPgCdAJwAPgA9AJ0APQCeAJ0APQBAAJ4AQACfAJ4AQAA/AJ8APwCgAJ8APwBCAKAAQgChAKAAQgBBAKEAQQCiAKEAQQBEAKIARACjAKIARABDAKMAQwCkAKMAQwBGAKQARgClAKQARgBFAKUARQCmAKUARQBIAKYASACnAKYASABHAKcARwCoAKcARwBKAKgASgCpAKgASgBJAKkASQCqAKkASQBMAKoATACrAKoATABLAKsASwCsAKsASwBOAKwATgCtAKwATgBNAK0ATQCuAK0ATQBQAK4AUACvAK4AUABPAK8ATwCwAK8ATwBSALAAUgCxALAAUgBRALEAUQCyALEAUQBUALIAVACzALIAVABTALMAUwC0ALMAUwBWALQAVgC1ALQAVgBVALUAVQC2ALUAVQBYALYAWAC3ALYAWABXALcAVwC4ALcAVwBaALgAWgC5ALgAWgBZALkAWQC6ALkAWQBcALoAXAC7ALoAXABbALsAWwC8ALsAWwBeALwAXgC9ALwAXgBdAL0AXQC+AL0AXQBfAL4AXwC/AL4AXwACAL8AAgBgAL8AwADBAMIAwwDEAMAAxQDGAMMAxwDIAMUAyQDKAMcAywDMAMkAzQDOAMsAzwDQAM0A0QDSAM8A0wDUANEA1QDWANMA1wDYANUA2QDaANcA2wDcANkA3QDeANsA3wDgAN0A4QDiAN8A4wDkAOEA5QDmAOMA5wDoAOUA6QDqAOcA6wDsAOkA7QDuAOsA7wDwAO0A8QDyAO8A8wD0APEA9QD2APMA9wD4APUA+QD6APcA+wD8APkA/QD+APsA/wAAAf0AAQECAf8AAwEEAQEBBQEGAQMBBwEIAQUBCQEKAQcBCwEMAQkBDQEOAQsBDwEQAQ0BEQESAQ8BEwEUAREBFQEWARMBFwEYARUBGQEaARcBGwEcARkBHQEeARsBwgAfAR0BwwDAAMIAxwDFAMMAywDJAMcAzwDNAMsA0wDRAM8A1wDVANMA2wDZANcA3wDdANsA4wDhAN8A5wDlAOMA6wDpAOcA7wDtAOsA8wDxAO8A9wD1APMA+wD5APcA/wD9APsAAwEBAf8ABwEFAQMBCwEJAQcBDwENAQsBEwERAQ8BFwEVARMBGwEZARcBwgAdARsBxwDDAMIAzwDLAMcA1wDTAM8A3wDbANcA5wDjAN8A7wDrAOcA9wDzAO8A/wD7APcABwEDAf8ADwELAQcBFwETAQ8BwgAbARcBzwDHAMIA3wDXAM8A7wDnAN8A/wD3AO8ADwEHAf8AwgAXAQ8B3wDPAMIA/wDvAN8AwgAPAf8A/wDfAMIAIAEhASIBIgEjASQBJAElASYBJgEnASgBKAEpASoBKgErASwBLAEtAS4BLgEvATABMAExATIBMgEzATQBNAE1ATYBNgE3ATgBOAE5AToBOgE7ATwBPAE9AT4BPgE/AUABQAFBAUIBQgFDAUQBRAFFAUYBRgFHAUgBSAFJAUoBSgFLAUwBTAFNAU4BTgFPAVABUAFRAVIBUgFTAVQBVAFVAVYBVgFXAVgBWAFZAVoBWgFbAVwBXAFdAV4BXgFfAWABYAFhAWIBYgFjAWQBZAFlAWYBZgFnAWgBaAFpAWoBagFrAWwBbAFtAW4BbgFvAXABcAFxAXIBcgFzAXQBdAF1AXYBdgF3AXgBeAF5AXoBegF7AXwBfAF9AX4BfgF/ASABIAEiASQBJAEmASgBKAEqASwBLAEuATABMAEyATQBNAE2ATgBOAE6ATwBPAE+AUABQAFCAUQBRAFGAUgBSAFKAUwBTAFOAVABUAFSAVQBVAFWAVgBWAFaAVwBXAFeAWABYAFiAWQBZAFmAWgBaAFqAWwBbAFuAXABcAFyAXQBdAF2AXgBeAF6AXwBfAF+ASABIAEkASgBKAEsATABMAE0ATgBOAE8AUABQAFEAUgBSAFMAVABUAFUAVgBWAFcAWABYAFkAWgBaAFsAXABcAF0AXgBeAF8ASABIAEoATABMAE4AUABQAFIAVABUAFYAWABYAFoAXABcAF4ASABIAEwAUABQAFQAWABYAFwASABIAFAAWABwgDBACABwQAhASABwQDAACEBwAAiASEBwADEACIBxAAjASIBxADDACMBwwAkASMBwwDGACQBxgAlASQBxgDFACUBxQAmASUBxQDIACYByAAnASYByADHACcBxwAoAScBxwDKACgBygApASgBygDJACkByQAqASkByQDMACoBzAArASoBzADLACsBywAsASsBywDOACwBzgAtASwBzgDNAC0BzQAuAS0BzQDQAC4B0AAvAS4B0ADPAC8BzwAwAS8BzwDSADAB0gAxATAB0gDRADEB0QAyATEB0QDUADIB1AAzATIB1ADTADMB0wA0ATMB0wDWADQB1gA1ATQB1gDVADUB1QA2ATUB1QDYADYB2AA3ATYB2ADXADcB1wA4ATcB1wDaADgB2gA5ATgB2gDZADkB2QA6ATkB2QDcADoB3AA7AToB3ADbADsB2wA8ATsB2wDeADwB3gA9ATwB3gDdAD0B3QA+AT0B3QDgAD4B4AA/AT4B4ADfAD8B3wBAAT8B3wDiAEAB4gBBAUAB4gDhAEEB4QBCAUEB4QDkAEIB5ABDAUIB5ADjAEMB4wBEAUMB4wDmAEQB5gBFAUQB5gDlAEUB5QBGAUUB5QDoAEYB6ABHAUYB6ADnAEcB5wBIAUcB5wDqAEgB6gBJAUgB6gDpAEkB6QBKAUkB6QDsAEoB7ABLAUoB7ADrAEsB6wBMAUsB6wDuAEwB7gBNAUwB7gDtAE0B7QBOAU0B7QDwAE4B8ABPAU4B8ADvAE8B7wBQAU8B7wDyAFAB8gBRAVAB8gDxAFEB8QBSAVEB8QD0AFIB9ABTAVIB9ADzAFMB8wBUAVMB8wD2AFQB9gBVAVQB9gD1AFUB9QBWAVUB9QD4AFYB+ABXAVYB+AD3AFcB9wBYAVcB9wD6AFgB+gBZAVgB+gD5AFkB+QBaAVkB+QD8AFoB/ABbAVoB/AD7AFsB+wBcAVsB+wD+AFwB/gBdAVwB/gD9AF0B/QBeAV0B/QAAAV4BAAFfAV4BAAH/AF8B/wBgAV8B/wACAWABAgFhAWABAgEBAWEBAQFiAWEBAQEEAWIBBAFjAWIBBAEDAWMBAwFkAWMBAwEGAWQBBgFlAWQBBgEFAWUBBQFmAWUBBQEIAWYBCAFnAWYBCAEHAWcBBwFoAWcBBwEKAWgBCgFpAWgBCgEJAWkBCQFqAWkBCQEMAWoBDAFrAWoBDAELAWsBCwFsAWsBCwEOAWwBDgFtAWwBDgENAW0BDQFuAW0BDQEQAW4BEAFvAW4BEAEPAW8BDwFwAW8BDwESAXABEgFxAXABEgERAXEBEQFyAXEBEQEUAXIBFAFzAXIBFAETAXMBEwF0AXMBEwEWAXQBFgF1AXQBFgEVAXUBFQF2AXUBFQEYAXYBGAF3AXYBGAEXAXcBFwF4AXcBFwEaAXgBGgF5AXgBGgEZAXkBGQF6AXkBGQEcAXoBHAF7AXoBHAEbAXsBGwF8AXsBGwEeAXwBHgF9AXwBHgEdAX0BHQF+AX0BHQEfAX4BHwF/AX4BHwHCAH8BwgAgAX8BgAGBAYIBgwGEAYABhQGGAYMBhwGIAYUBiQGKAYcBiwGMAYkBjQGOAYsBjwGQAY0BkQGSAY8BkwGUAZEBlQGWAZMBlwGYAZUBmQGaAZcBmwGcAZkBnQGeAZsBnwGgAZ0BoQGiAZ8BowGkAaEBpQGmAaMBpwGoAaUBqQGqAacBqwGsAakBrQGuAasBrwGwAa0BsQGyAa8BswG0AbEBtQG2AbMBtwG4AbUBuQG6AbcBuwG8AbkBvQG+AbsBvwHAAb0BwQHCAb8BwwHEAcEBxQHGAcMBxwHIAcUByQHKAccBywHMAckBzQHOAcsBzwHQAc0B0QHSAc8B0wHUAdEB1QHWAdMB1wHYAdUB2QHaAdcB2wHcAdkB3QHeAdsBggHfAd0BgwGAAYIBhwGFAYMBiwGJAYcBjwGNAYsBkwGRAY8BlwGVAZMBmwGZAZcBnwGdAZsBowGhAZ8BpwGlAaMBqwGpAacBrwGtAasBswGxAa8BtwG1AbMBuwG5AbcBvwG9AbsBwwHBAb8BxwHFAcMBywHJAccBzwHNAcsB0wHRAc8B1wHVAdMB2wHZAdcBggHdAdsBhwGDAYIBjwGLAYcBlwGTAY8BnwGbAZcBpwGjAZ8BrwGrAacBtwGzAa8BvwG7AbcBxwHDAb8BzwHLAccB1wHTAc8BggHbAdcBjwGHAYIBnwGXAY8BrwGnAZ8BvwG3Aa8BzwHHAb8BggHXAc8BnwGPAYIBvwGvAZ8BggHPAb8BvwGfAYIB4AHhAeIB4gHjAeQB5AHlAeYB5gHnAegB6AHpAeoB6gHrAewB7AHtAe4B7gHvAfAB8AHxAfIB8gHzAfQB9AH1AfYB9gH3AfgB+AH5AfoB+gH7AfwB/AH9Af4B/gH/AQACAAIBAgICAgIDAgQCBAIFAgYCBgIHAggCCAIJAgoCCgILAgwCDAINAg4CDgIPAhACEAIRAhICEgITAhQCFAIVAhYCFgIXAhgCGAIZAhoCGgIbAhwCHAIdAh4CHgIfAiACIAIhAiICIgIjAiQCJAIlAiYCJgInAigCKAIpAioCKgIrAiwCLAItAi4CLgIvAjACMAIxAjICMgIzAjQCNAI1AjYCNgI3AjgCOAI5AjoCOgI7AjwCPAI9Aj4CPgI/AuAB4AHiAeQB5AHmAegB6AHqAewB7AHuAfAB8AHyAfQB9AH2AfgB+AH6AfwB/AH+AQACAAICAgQCBAIGAggCCAIKAgwCDAIOAhACEAISAhQCFAIWAhgCGAIaAhwCHAIeAiACIAIiAiQCJAImAigCKAIqAiwCLAIuAjACMAIyAjQCNAI2AjgCOAI6AjwCPAI+AuAB4AHkAegB6AHsAfAB8AH0AfgB+AH8AQACAAIEAggCCAIMAhACEAIUAhgCGAIcAiACIAIkAigCKAIsAjACMAI0AjgCOAI8AuAB4AHoAfAB8AH4AQACAAIIAhACEAIYAiACIAIoAjACMAI4AuAB4AHwAQACAAIQAiACIAIwAuAB4AEAAiACggGBAeABgQHhAeABgQGAAeEBgAHiAeEBgAGEAeIBhAHjAeIBhAGDAeMBgwHkAeMBgwGGAeQBhgHlAeQBhgGFAeUBhQHmAeUBhQGIAeYBiAHnAeYBiAGHAecBhwHoAecBhwGKAegBigHpAegBigGJAekBiQHqAekBiQGMAeoBjAHrAeoBjAGLAesBiwHsAesBiwGOAewBjgHtAewBjgGNAe0BjQHuAe0BjQGQAe4BkAHvAe4BkAGPAe8BjwHwAe8BjwGSAfABkgHxAfABkgGRAfEBkQHyAfEBkQGUAfIBlAHzAfIBlAGTAfMBkwH0AfMBkwGWAfQBlgH1AfQBlgGVAfUBlQH2AfUBlQGYAfYBmAH3AfYBmAGXAfcBlwH4AfcBlwGaAfgBmgH5AfgBmgGZAfkBmQH6AfkBmQGcAfoBnAH7AfoBnAGbAfsBmwH8AfsBmwGeAfwBngH9AfwBngGdAf0BnQH+Af0BnQGgAf4BoAH/Af4BoAGfAf8BnwEAAv8BnwGiAQACogEBAgACogGhAQECoQECAgECoQGkAQICpAEDAgICpAGjAQMCowEEAgMCowGmAQQCpgEFAgQCpgGlAQUCpQEGAgUCpQGoAQYCqAEHAgYCqAGnAQcCpwEIAgcCpwGqAQgCqgEJAggCqgGpAQkCqQEKAgkCqQGsAQoCrAELAgoCrAGrAQsCqwEMAgsCqwGuAQwCrgENAgwCrgGtAQ0CrQEOAg0CrQGwAQ4CsAEPAg4CsAGvAQ8CrwEQAg8CrwGyARACsgERAhACsgGxARECsQESAhECsQG0ARICtAETAhICtAGzARMCswEUAhMCswG2ARQCtgEVAhQCtgG1ARUCtQEWAhUCtQG4ARYCuAEXAhYCuAG3ARcCtwEYAhcCtwG6ARgCugEZAhgCugG5ARkCuQEaAhkCuQG8ARoCvAEbAhoCvAG7ARsCuwEcAhsCuwG+ARwCvgEdAhwCvgG9AR0CvQEeAh0CvQHAAR4CwAEfAh4CwAG/AR8CvwEgAh8CvwHCASACwgEhAiACwgHBASECwQEiAiECwQHEASICxAEjAiICxAHDASMCwwEkAiMCwwHGASQCxgElAiQCxgHFASUCxQEmAiUCxQHIASYCyAEnAiYCyAHHAScCxwEoAicCxwHKASgCygEpAigCygHJASkCyQEqAikCyQHMASoCzAErAioCzAHLASsCywEsAisCywHOASwCzgEtAiwCzgHNAS0CzQEuAi0CzQHQAS4C0AEvAi4C0AHPAS8CzwEwAi8CzwHSATAC0gExAjAC0gHRATEC0QEyAjEC0QHUATIC1AEzAjIC1AHTATMC0wE0AjMC0wHWATQC1gE1AjQC1gHVATUC1QE2AjUC1QHYATYC2AE3AjYC2AHXATcC1wE4AjcC1wHaATgC2gE5AjgC2gHZATkC2QE6AjkC2QHcAToC3AE7AjoC3AHbATsC2wE8AjsC2wHeATwC3gE9AjwC3gHdAT0C3QE+Aj0C3QHfAT4C3wE/Aj4C3wGCAT8CggHgAT8C","vf":0.67471,"c":[-0.0071,0,-0.06451],"size":[6.4,4.2,9.4],"closed":true,"tris0":1152,"tris":1140,"bytes0":57684},"aframe":{"id":"stl_ex_aframe","label":"A-frame","v":"qupGF/DBquoAAPDBqupGFwAAquoAAAAAVRVGFwAAVRUAAAAAVRVGF/DBVRUAAPDBqur///DBquq56PDBqur//wAAquq56AAAVRX//wAAVRW56AAAVRX///DBVRW56PDB/////zXZ//8AADXZ//////DB//8AAPDBAAD///DBAAAAAPDBAAD//zXZAAAAADXZVNW56IQPVNVGF4QPVNW56AAAVNVGFwAAqyq56AAAqypGFwAAqyq56IQPqypGF4QPqupGF///quoAAP//qupGF5PNquoAAJPNVRVGF5PNVRUAAJPNVRVGF///VRUAAP//qur/////quq56P//qur//5PNquq56JPNVRX//5PNVRW56JPNVRX/////VRW56P//","i":"AAABAAIAAQADAAIABAAFAAYABQAHAAYABAAGAAIABgAAAAIABwAFAAEABQADAAEABgAHAAAABwABAAAAAgADAAQAAwAFAAQACAAJAAoACQALAAoADAANAA4ADQAPAA4ADAAOAAoADgAIAAoADwANAAkADQALAAkADgAPAAgADwAJAAgACgALAAwACwANAAwAEAARABIAEQATABIAFAAVABYAFQAXABYAFAAWABIAFgAQABIAFwAVABEAFQATABEAFgAXABAAFwARABAAEgATABQAEwAVABQAGAAZABoAGQAbABoAHAAdAB4AHQAfAB4AHAAeABoAHgAYABoAHwAdABkAHQAbABkAHgAfABgAHwAZABgAGgAbABwAGwAdABwAIAAhACIAIQAjACIAJAAlACYAJQAnACYAJAAmACIAJgAgACIAJwAlACEAJQAjACEAJgAnACAAJwAhACAAIgAjACQAIwAlACQAKAApACoAKQArACoALAAtAC4ALQAvAC4ALAAuACoALgAoACoALwAtACkALQArACkALgAvACgALwApACgAKgArACwAKwAtACwA","vf":0.2686,"c":[0,0,0.03757],"size":[1.2,11,13.2],"closed":true,"tris0":72,"tris":72,"bytes0":3684}};
+
+</script>
+<script>
+/* General Arrangement drawing: A3 sheets (profile, midship section, tables, deck plans, lines plan) made from the blocks and hulls,
+   written as DXF (R12, ASCII, full-scale millimetres) or PDF (white sheet). Needs DBBCore (core.js) loaded first.
+   The drawing is first built as a list of entities per sheet, in paper millimetres (y up). DXF multiplies them by the sheet scale,
+   so the model is at full size and plots at 1:scale; PDF draws them as they are. */
+(function (root) {
+  'use strict';
+  var C = root.DBBCore || (typeof require !== 'undefined' ? require('./core.js') : null);
+  var SW = 420, SH = 297, MG = 10;                                   // A3 landscape and the frame margin, mm
+  var STD = [50, 75, 100, 125, 150, 200, 250, 300, 400, 500, 600, 750, 1000, 1500, 2000, 3000];
+  var TXT = 0.56;                                                    // average character width / height, to fit labels
+
+  /* ---------- layers ---------- */
+  var BASE_LAYERS = {
+    FRAME:      { col: '#000000', w: 0.5,  aci: 7 },
+    TITLE:      { col: '#000000', w: 0.25, aci: 7 },
+    TEXT:       { col: '#000000', w: 0.18, aci: 7 },
+    HULL:       { col: '#0b4f8a', w: 0.5,  aci: 5 },
+    WATERLINE:  { col: '#1976d2', w: 0.25, aci: 5, dash: 'DASHED' },
+    DECKEDGE:   { col: '#0b4f8a', w: 0.18, aci: 5, dash: 'DASHED' },
+    CENTRELINE: { col: '#c62828', w: 0.18, aci: 1, dash: 'CENTER' },
+    BASELINE:   { col: '#000000', w: 0.35, aci: 7 },
+    FRAMES:     { col: '#9aa3ad', w: 0.1,  aci: 8 },
+    DIMS:       { col: '#2e7d32', w: 0.18, aci: 3 },
+    LINES_STA:  { col: '#c62828', w: 0.2,  aci: 1 },
+    LINES_WL:   { col: '#2e7d32', w: 0.2,  aci: 3 },
+    LINES_BUT:  { col: '#1565c0', w: 0.2,  aci: 5 },
+    TABLE:      { col: '#000000', w: 0.18, aci: 7 }
+  };
+  var ACI = [[1, 0xff0000], [2, 0xffff00], [3, 0x00ff00], [4, 0x00ffff], [5, 0x0000ff], [6, 0xff00ff], [7, 0x000000], [8, 0x808080], [9, 0xc0c0c0],
+    [30, 0xff7f00], [40, 0xffbf00], [92, 0x4c9900], [94, 0x006600], [120, 0x00a85a], [140, 0x0066ff], [150, 0x3f72d6], [190, 0x8e63c9], [240, 0xb3005c], [52, 0xb2a000]];
+  function nearestAci(hex) {
+    var n = parseInt(String(hex).replace('#', ''), 16) || 0, r = n >> 16 & 255, g = n >> 8 & 255, b = n & 255, best = 7, bd = 1e12;
+    ACI.forEach(function (a) {
+      var dr = (a[1] >> 16 & 255) - r, dg = (a[1] >> 8 & 255) - g, db = (a[1] & 255) - b, d = dr * dr + dg * dg + db * db;
+      if (d < bd) { bd = d; best = a[0]; }
+    });
+    return best;
+  }
+  function tint(hex, k) {                                            // blend with white, k = share of the colour
+    var n = parseInt(String(hex).replace('#', ''), 16) || 0, c = [n >> 16 & 255, n >> 8 & 255, n & 255].map(function (v) { return Math.round(255 - (255 - v) * k); });
+    return '#' + c.map(function (v) { return ('0' + v.toString(16)).slice(-2); }).join('');
+  }
+  function layerName(s) { return 'GRP_' + String(s).toUpperCase().replace(/[^A-Z0-9]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 24); }
+
+  /* ---------- sheet and entities ---------- */
+  function Sheet(title, den) {
+    var sh = { title: title, den: den, w: SW, h: SH, ents: [] };
+    sh.line = function (ly, x1, y1, x2, y2) { sh.ents.push({ t: 'l', ly: ly, x1: x1, y1: y1, x2: x2, y2: y2 }); };
+    sh.poly = function (ly, pts, closed, fill) { if (pts.length > 1) sh.ents.push({ t: 'p', ly: ly, pts: pts, closed: !!closed, fill: fill || null }); };
+    sh.rect = function (ly, x, y, w, h, fill) { sh.poly(ly, [[x, y], [x + w, y], [x + w, y + h], [x, y + h]], true, fill); };
+    sh.text = function (ly, x, y, s, h, al, bold) { if (s !== '' && s != null) sh.ents.push({ t: 't', ly: ly, x: x, y: y, s: String(s), h: h, al: al || 'l', bold: !!bold }); };
+    return sh;
+  }
+  function fmt(v, d) { return Number(v).toLocaleString('en-GB', { minimumFractionDigits: d == null ? 1 : d, maximumFractionDigits: d == null ? 1 : d }); }
+
+  /* ---------- geometry: meshes and cuts ---------- */
+  function worldMesh(b) {
+    var g = C.makeGeometry(b.shape), pa = g.attributes.position, e = C.blockMatrix(b).elements, n = pa.count, P = new Float64Array(n * 3);
+    for (var i = 0; i < n; i++) {
+      var x = pa.getX(i), y = pa.getY(i), z = pa.getZ(i);
+      P[i * 3] = e[0] * x + e[4] * y + e[8] * z + e[12];
+      P[i * 3 + 1] = e[1] * x + e[5] * y + e[9] * z + e[13];
+      P[i * 3 + 2] = e[2] * x + e[6] * y + e[10] * z + e[14];
+    }
+    var I = g.index ? g.index.array : null;
+    var mn = [Infinity, Infinity, Infinity], mx = [-Infinity, -Infinity, -Infinity];
+    for (i = 0; i < n; i++) for (var k = 0; k < 3; k++) { var v = P[i * 3 + k]; if (v < mn[k]) mn[k] = v; if (v > mx[k]) mx[k] = v; }
+    return { P: P, I: I, n: n, min: mn, max: mx, b: b, convex: !(C.SHAPES && C.SHAPES[b.shape] && C.SHAPES[b.shape].custom) };
+  }
+  var AX = [[1, 2], [0, 2], [0, 1]];                                // plane normal to x: (y, z); to y: (x, z); to z: (x, y)
+  function sliceMesh(m, ax, val) {
+    var P = m.P, I = m.I, nt = I ? I.length / 3 : m.n / 3, u = AX[ax][0], v = AX[ax][1], segs = [], val2 = val + 1e-6, a = new Array(3), d = new Array(3), t, q;
+    for (t = 0; t < nt; t++) {
+      for (q = 0; q < 3; q++) { a[q] = (I ? I[t * 3 + q] : t * 3 + q) * 3; d[q] = P[a[q] + ax] - val2; }
+      var s0 = d[0] > 0, s1 = d[1] > 0, s2 = d[2] > 0;
+      if (s0 === s1 && s1 === s2) continue;
+      var pts = [];
+      for (q = 0; q < 3; q++) {
+        var r = (q + 1) % 3;
+        if ((d[q] > 0) !== (d[r] > 0)) { var k = d[q] / (d[q] - d[r]); pts.push(P[a[q] + u] + k * (P[a[r] + u] - P[a[q] + u]), P[a[q] + v] + k * (P[a[r] + v] - P[a[q] + v])); }
+      }
+      if (pts.length === 4) segs.push(pts);
+    }
+    if (m.convex) {                                                  // a plane cuts a convex solid in a convex polygon: take the hull of the cut points
+      var cp = [];
+      segs.forEach(function (q) { cp.push([q[0], q[1]], [q[2], q[3]]); });
+      cp = hull2(cp);
+      return cp.length >= 3 ? [{ pts: simplify(cp, true), closed: true }] : [];
+    }
+    return chain(segs);
+  }
+  function chain(segs) {
+    var map = {}, used = new Uint8Array(segs.length), out = [], i;
+    function key(x, y) { return Math.round(x * 2000) + ',' + Math.round(y * 2000); }
+    function add(k, j) { (map[k] || (map[k] = [])).push(j); }
+    for (i = 0; i < segs.length; i++) { add(key(segs[i][0], segs[i][1]), i); add(key(segs[i][2], segs[i][3]), i); }
+    function extend(pts) {
+      for (;;) {
+        var last = pts[pts.length - 1], k = key(last[0], last[1]), c = map[k], nxt = -1, j;
+        if (c) for (j = 0; j < c.length; j++) if (!used[c[j]]) { nxt = c[j]; break; }
+        if (nxt < 0) return false;
+        used[nxt] = 1;
+        var s = segs[nxt];
+        pts.push(key(s[0], s[1]) === k ? [s[2], s[3]] : [s[0], s[1]]);
+        if (key(pts[pts.length - 1][0], pts[pts.length - 1][1]) === key(pts[0][0], pts[0][1])) return true;
+      }
+    }
+    for (i = 0; i < segs.length; i++) {
+      if (used[i]) continue;
+      used[i] = 1;
+      var pts = [[segs[i][0], segs[i][1]], [segs[i][2], segs[i][3]]], closed = extend(pts);
+      if (!closed) { pts.reverse(); closed = extend(pts); }
+      if (closed) pts.pop();
+      pts = simplify(pts, closed);
+      if (pts.length >= (closed ? 3 : 2)) out.push({ pts: pts, closed: closed });
+    }
+    return out;
+  }
+  function simplify(pts, closed) {
+    var n = pts.length, out = [], i;
+    if (n < 3) return pts;
+    for (i = 0; i < n; i++) {
+      var p = pts[(i + n - 1) % n], c = pts[i], q = pts[(i + 1) % n];
+      if (!closed && (i === 0 || i === n - 1)) { out.push(c); continue; }
+      var cr = (c[0] - p[0]) * (q[1] - c[1]) - (c[1] - p[1]) * (q[0] - c[0]), l = Math.abs(c[0] - p[0]) + Math.abs(c[1] - p[1]) + Math.abs(q[0] - c[0]) + Math.abs(q[1] - c[1]);
+      if (Math.abs(cr) > 1e-7 * Math.max(1, l * l)) out.push(c);
+    }
+    return out;
+  }
+  function hull2(pts) {
+    pts = pts.slice().sort(function (a, b) { return a[0] - b[0] || a[1] - b[1]; });
+    if (pts.length < 3) return pts;
+    function cr(o, a, b) { return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]); }
+    var lo = [], up = [], i;
+    for (i = 0; i < pts.length; i++) { while (lo.length >= 2 && cr(lo[lo.length - 2], lo[lo.length - 1], pts[i]) <= 0) lo.pop(); lo.push(pts[i]); }
+    for (i = pts.length - 1; i >= 0; i--) { while (up.length >= 2 && cr(up[up.length - 2], up[up.length - 1], pts[i]) <= 0) up.pop(); up.push(pts[i]); }
+    up.pop(); lo.pop();
+    return lo.concat(up);
+  }
+  function silhouette(m, ax) {                                       // outline seen along an axis (all shapes are convex or close to it)
+    var u = AX[ax][0], v = AX[ax][1], pts = [];
+    for (var i = 0; i < m.n; i++) pts.push([m.P[i * 3 + u], m.P[i * 3 + v]]);
+    return hull2(pts);
+  }
+  function polyArea(p) { var s = 0; for (var i = 0; i < p.length; i++) { var j = (i + 1) % p.length; s += p[i][0] * p[j][1] - p[j][0] * p[i][1]; } return Math.abs(s) / 2; }
+
+  /* ---------- geometry: hulls ---------- */
+  function hullHalfAt(h, x, t) {
+    var r = C.hullXRange(h, t);
+    if (x < r[0] - 1e-9 || x > r[1] + 1e-9 || r[1] - r[0] < 1e-9) return null;
+    return C.hullHalf(h, Math.min(1, Math.max(0, (x - r[0]) / (r[1] - r[0]))), t);
+  }
+  function hullPlan(h, z) {                                          // closed outline in (x, y) at height z
+    var t = Math.min(1, Math.max(0, z / h.depth)), r = C.hullXRange(h, t), n = 80, port = [], stbd = [], i;
+    for (i = 0; i <= n; i++) {
+      var u = 0.5 - 0.5 * Math.cos(Math.PI * i / n), x = r[0] + u * (r[1] - r[0]), y = C.hullHalf(h, u, t);
+      port.push([x, (h.y || 0) + y]); stbd.push([x, (h.y || 0) - y]);
+    }
+    return port.concat(stbd.reverse());
+  }
+  function hullProfile(h) {                                          // closed outline in (x, z) on the centreline
+    var n = 24, aft = [], fwd = [], i;
+    for (i = 0; i <= n; i++) { var t = i / n, r = C.hullXRange(h, t); aft.push([r[0], t * h.depth]); fwd.push([r[1], t * h.depth]); }
+    return aft.concat(fwd.reverse());
+  }
+  function hullSection(h, x) {                                       // half outline (y >= 0 side) in (y, z), keel to deck
+    var n = 40, pts = [], i;
+    for (i = 0; i <= n; i++) { var t = i / n, y = hullHalfAt(h, x, t); if (y != null) pts.push([y, t * h.depth]); }
+    return pts;
+  }
+  function stationHalf(h, x, nz) {
+    var pts = [], i;
+    for (i = 0; i <= nz; i++) { var t = i / nz, y = hullHalfAt(h, x, t); pts.push(y == null ? null : [y, t * h.depth]); }
+    return pts;
+  }
+
+  /* ---------- view: metres to paper millimetres ---------- */
+  function View(sh, ox, oy, den, x0, a0, flip) {                     // (x0, a0) in metres appear at paper (ox, oy); flip turns the second axis the other way
+    var k = 1000 / den;
+    return { k: k, X: function (x) { return ox + (x - x0) * k; }, Y: function (a) { return oy + (flip ? -(a - a0) : (a - a0)) * k; },
+      P: function (p) { return [ox + (p[0] - x0) * k, oy + (flip ? -(p[1] - a0) : (p[1] - a0)) * k]; } };
+  }
+  function viewX(sh, ox, oy, den, x0, a0) { return View(sh, ox, oy, den, x0, a0, false); }
+
+  /* ---------- drawing helpers ---------- */
+  function arrowTick(sh, ly, x, y) { sh.line(ly, x - 0.9, y - 0.9, x + 0.9, y + 0.9); }
+  function dimH(sh, xa, xb, y, yref, label, off) {                    // horizontal dimension: extension lines from yref to y, text above the line
+    var dir = y >= yref ? 1 : -1;
+    sh.line('DIMS', xa, yref + dir * 1, xa, y + dir * 1.5); sh.line('DIMS', xb, yref + dir * 1, xb, y + dir * 1.5);
+    sh.line('DIMS', xa, y, xb, y); arrowTick(sh, 'DIMS', xa, y); arrowTick(sh, 'DIMS', xb, y);
+    sh.text('DIMS', (xa + xb) / 2, y + (off == null ? 0.8 : off), label, 2, 'c');
+  }
+  function dimV(sh, ya, yb, x, xref, label) {
+    var dir = x >= xref ? 1 : -1;
+    sh.line('DIMS', xref + dir * 1, ya, x + dir * 1.5, ya); sh.line('DIMS', xref + dir * 1, yb, x + dir * 1.5, yb);
+    sh.line('DIMS', x, ya, x, yb); arrowTick(sh, 'DIMS', x, ya); arrowTick(sh, 'DIMS', x, yb);
+    sh.text('DIMS', x - 0.8, (ya + yb) / 2 - 1, label, 2, 'r');
+  }
+  function niceFrame(L) {
+    var c = [0.5, 1, 2, 2.5, 5, 10, 20, 25, 50], i;
+    for (i = 0; i < c.length; i++) if (L / c[i] <= 45) return c[i];
+    return 100;
+  }
+  function frameLines(sh, V, x0, x1, ya, yb, ytxt, sp, den) {         // thin vertical frame lines with numbers, spacing sp metres from x0
+    var n = Math.floor((x1 - x0) / sp + 1e-9), every = Math.max(1, Math.ceil(9 / (sp * 1000 / den))), i;
+    for (i = 0; i <= n; i++) {
+      var X = V.X(x0 + i * sp);
+      sh.line('FRAMES', X, ya, X, yb);
+      if (i % every === 0 && ytxt != null) sh.text('TEXT', X, ytxt, String(i), 1.8, 'c');
+    }
+  }
+  function tableGrid(sh, x, ytop, cols, rows, o) {                   // rows: arrays of strings (first row bold when o.head); returns the bottom y
+    o = o || {};
+    var th = o.th || 2.2, rh = o.rh || 4.2, w = cols.reduce(function (a, c) { return a + c; }, 0), y = ytop, i, j, cx;
+    rows.forEach(function (r, ri) {
+      var bold = (o.head && ri === 0) || r.bold;
+      if (bold && o.head && ri === 0) sh.rect('TABLE', x, y - rh, w, rh, '#e6eaef');
+      cx = x;
+      for (j = 0; j < cols.length; j++) {
+        var s = String(r[j] == null ? '' : r[j]), al = o.right && o.right.indexOf(j) >= 0 ? 'r' : 'l';
+        sh.text('TEXT', al === 'r' ? cx + cols[j] - 1 : cx + 1, y - rh + (rh - th) / 2 + 0.2, s, th, al, bold);
+        cx += cols[j];
+      }
+      y -= rh;
+    });
+    sh.poly('TABLE', [[x, ytop], [x + w, ytop], [x + w, y], [x, y]], true);
+    for (i = 1; i < rows.length; i++) sh.line('TABLE', x, ytop - i * rh, x + w, ytop - i * rh);
+    cx = x; for (j = 0; j < cols.length - 1; j++) { cx += cols[j]; sh.line('TABLE', cx, ytop, cx, y); }
+    return y;
+  }
+  function trim(s, w, h) {                                           // shorten a text to fit a width (mm) at height h
+    s = String(s); var max = Math.floor(w / (TXT * h));
+    return s.length <= max ? s : (max > 3 ? s.slice(0, max - 1) + '.' : '');
+  }
+
+  /* ---------- the model's bits: levels, blocks, groups ---------- */
+  function liveBlocks(model) { return model.blocks.filter(function (b) { return !b.hidden; }); }
+  function deckLevels(meshes) {
+    var cnt = {}, n = meshes.length;
+    meshes.forEach(function (m) { [m.min[2], m.max[2]].forEach(function (z) { var k = Math.round(z * 20) / 20; cnt[k] = (cnt[k] || 0) + 1; }); });
+    var thr = Math.max(2, Math.round(0.04 * n)), keep = Object.keys(cnt).map(Number).filter(function (z) { return cnt[z] >= thr; }).sort(function (a, b) { return a - b; });
+    var out = [], i;
+    for (i = 0; i + 1 < keep.length; i++) {
+      var a = keep[i], b = keep[i + 1], mid = 0.5 * (a + b);
+      if (b - a < 1.0) continue;
+      var c = meshes.filter(function (m) { return m.min[2] < mid && m.max[2] > mid; }).length;
+      if (c >= 2) out.push({ a: a, b: b, z: mid, n: c });
+    }
+    if (out.length > 12) { out.sort(function (p, q) { return q.n - p.n; }); out = out.slice(0, 12).sort(function (p, q) { return p.a - q.a; }); }
+    return out;
+  }
+  function blockLabel(b, withQ, model) {
+    var q = '';
+    if (withQ) { var v = C.blockVolume(b), a = C.blockArea(b); q = b.deck || b.group === 'g_acc' ? fmt(a, 0) + ' m2' : fmt(v, 0) + ' m3'; }
+    return { name: b.name, q: q };
+  }
+  function drawBlockLoops(sh, V, m, ax, val, gmap, labels, model, minLabelH) {
+    var loops = sliceMesh(m, ax, val), b = m.b, g = gmap[b.group], ly = layerName(g ? g.name : 'BLOCKS'), col = g ? g.color : '#888888', best = null, i;
+    loops.forEach(function (lp) {
+      var pts = lp.pts.map(function (p) { return V.P(p); });
+      sh.poly(ly, pts, lp.closed, lp.closed ? tint(col, 0.28) : null);
+      if (lp.closed) { var ar = polyArea(pts); if (!best || ar > best.ar) best = { ar: ar, pts: pts }; }
+    });
+    if (labels && best) labelIn(sh, best.pts, b, model);
+    return loops.length > 0;
+  }
+  function labelIn(sh, pts, b, model) {
+    var mn = [Infinity, Infinity], mx = [-Infinity, -Infinity];
+    pts.forEach(function (p) { if (p[0] < mn[0]) mn[0] = p[0]; if (p[1] < mn[1]) mn[1] = p[1]; if (p[0] > mx[0]) mx[0] = p[0]; if (p[1] > mx[1]) mx[1] = p[1]; });
+    var w = mx[0] - mn[0], h = mx[1] - mn[1], cx = (mn[0] + mx[0]) / 2, cy = (mn[1] + mx[1]) / 2, lab = blockLabel(b, true, model), th, nm;
+    for (var k = 0; k < 2; k++) {
+      th = k === 0 ? 2.0 : 1.5;
+      var two = lab.q && h >= th * 3.0, need = Math.max(lab.name.length, two ? lab.q.length : 0) * TXT * th;
+      if (h >= th * 1.6 && (w - 1.2) >= Math.min(need, lab.name.length * TXT * th * 0.7)) {
+        nm = trim(lab.name, w - 1.2, th);
+        if (!nm) continue;
+        if (two) { sh.text('TEXT', cx, cy + th * 0.2, nm, th, 'c'); sh.text('TEXT', cx, cy - th * 1.1, trim(lab.q, w - 1.2, th * 0.9), th * 0.9, 'c'); }
+        else sh.text('TEXT', cx, cy - th * 0.35, nm, th, 'c');
+        return;
+      }
+    }
+  }
+
+  /* ---------- sheets ---------- */
+  function frameAndTitle(sh, model, n, N, when, gmap, groupsUsed, sub, stamp) {
+    sh.rect('FRAME', MG, MG, SW - 2 * MG, SH - 2 * MG);
+    var x = SW - MG - 180, y = MG, w = 180, h = 40;
+    sh.rect('TITLE', x, y, w, h);
+    sh.line('TITLE', x, y + 28, x + w, y + 28); sh.line('TITLE', x, y + 14, x + w, y + 14); sh.line('TITLE', x + 120, y, x + 120, y + 14);
+    sh.line('TITLE', x + 60, y, x + 60, y + 14);
+    sh.text('TEXT', x + 3, y + 31, stamp, 1.9, 'l');
+    sh.text('TEXT', x + 3, y + 22, model.name || 'Design', 5, 'l', true);
+    sh.text('TEXT', x + 3, y + 16.5, sh.title.toUpperCase() + (sub ? '  ' + sub : ''), 3, 'l', true);
+    sh.text('TEXT', x + 3, y + 8.5, 'SCALE', 1.6, 'l'); sh.text('TEXT', x + 3, y + 3.5, '1:' + sh.den + '  (A3)', 3, 'l', true);
+    sh.text('TEXT', x + 63, y + 8.5, 'DATE', 1.6, 'l'); sh.text('TEXT', x + 63, y + 3.5, when || '', 3, 'l', true);
+    sh.text('TEXT', x + 123, y + 8.5, 'SHEET', 1.6, 'l'); sh.text('TEXT', x + 123, y + 3.5, n + ' / ' + N, 3, 'l', true);
+    // legend of the groups used
+    var lx = MG + 4, ly = MG + 36, cw = 62, cols = 3, i;
+    sh.text('TEXT', lx, ly + 3, 'GROUPS', 1.8, 'l', true);
+    groupsUsed.slice(0, 12).forEach(function (g, k) {
+      var c = k % cols, r = Math.floor(k / cols), xx = lx + c * cw, yy = ly - r * 5.2 - 3;
+      sh.rect(layerName(g.name), xx, yy, 4, 3, tint(g.color, 0.5));
+      sh.text('TEXT', xx + 5.5, yy + 0.5, trim(g.name, cw - 8, 2.2), 2.2, 'l');
+    });
+  }
+
+  function envOf(meshes, hulls) {
+    var mn = [Infinity, Infinity, Infinity], mx = [-Infinity, -Infinity, -Infinity];
+    meshes.forEach(function (m) { for (var k = 0; k < 3; k++) { if (m.min[k] < mn[k]) mn[k] = m.min[k]; if (m.max[k] > mx[k]) mx[k] = m.max[k]; } });
+    hulls.forEach(function (h) {
+      var r0 = C.hullXRange(h, 0), r1 = C.hullXRange(h, 1);
+      mn[0] = Math.min(mn[0], r0[0], r1[0]); mx[0] = Math.max(mx[0], r0[1], r1[1]);
+      mn[1] = Math.min(mn[1], (h.y || 0) - h.beam / 2); mx[1] = Math.max(mx[1], (h.y || 0) + h.beam / 2);
+      mn[2] = Math.min(mn[2], 0); mx[2] = Math.max(mx[2], h.depth);
+    });
+    if (!isFinite(mn[0])) { mn = [0, -5, 0]; mx = [10, 5, 5]; }
+    return { min: mn, max: mx, L: mx[0] - mn[0], B: mx[1] - mn[1], H: mx[2] - mn[2] };
+  }
+
+  function chooseDen(L, H, B, mode) {
+    for (var i = 0; i < STD.length; i++) {
+      var d = STD[i], l = L * 1000 / d, h = H * 1000 / d;
+      if (l <= 350 && 2 * h + 10 <= 205) return d;
+    }
+    return STD[STD.length - 1];
+  }
+
+  function buildGA(model, o) {
+    o = o || {};
+    var stamp = o.stamp || C.stampText(new Date()), when = o.when || stamp.slice(0, 16), gm = {}, hulls = model.hulls || [], blocks = liveBlocks(model), meshes = blocks.map(worldMesh), env = envOf(meshes, hulls), sheets = [];
+    model.groups.forEach(function (g) { gm[g.id] = g; });
+    var used = [], seen = {};
+    blocks.forEach(function (b) { if (!seen[b.group] && gm[b.group]) { seen[b.group] = 1; used.push(gm[b.group]); } });
+    var den = chooseDen(env.L, env.H, env.B, 'ga'), k = 1000 / den, x0 = env.min[0], sp = niceFrame(env.L);
+    meshes.sort(function (p, q) { return (q.max[0] - q.min[0]) * (q.max[1] - q.min[1]) * (q.max[2] - q.min[2]) - (p.max[0] - p.min[0]) * (p.max[1] - p.min[1]) * (p.max[2] - p.min[2]); });
+    var levels = deckLevels(meshes), ox = MG + 26 + Math.max(0, (SW - 2 * MG - 52 - env.L * k) / 2);
+
+    /* sheet 1: profile, section, tables */
+    var s1 = Sheet('General arrangement', den);
+    var top = SH - MG - 14, Hm = env.H * k, ybase = top - Hm, V = View(s1, ox, ybase, den, x0, env.min[2], false);
+    s1.text('TEXT', ox, top + 5, 'PROFILE', 4, 'l', true);
+    s1.text('TEXT', ox + 32, top + 5, 'section on the centreline, hull outline and structure above the deck. Frame lines every ' + fmt(sp, 1) + ' m, numbered from the aft end.', 2.2, 'l');
+    frameLines(s1, V, x0, env.max[0], V.Y(env.min[2]), V.Y(env.max[2]), V.Y(env.max[2]) + 1.2, sp, den);
+    hulls.forEach(function (h) { s1.poly('HULL', hullProfile(h).map(V.P), true); s1.line('DECKEDGE', V.X(C.hullXRange(h, 1)[0]), V.Y(h.depth), V.X(C.hullXRange(h, 1)[1]), V.Y(h.depth)); });
+    meshes.forEach(function (m) {                                    // outside the centreline: silhouette, thin; on it: the cut
+      var cl = m.min[1] <= (hulls[0] ? hulls[0].y || 0 : 0) + 1e-6 && m.max[1] >= (hulls[0] ? hulls[0].y || 0 : 0) - 1e-6, g = gm[m.b.group], ly = layerName(g ? g.name : 'BLOCKS');
+      if (cl) drawBlockLoops(s1, V, m, 1, hulls[0] ? hulls[0].y || 0 : 0, gm, true, model);
+      else if (hulls.length && m.min[2] >= hulls[0].depth - 1e-6) s1.poly(ly, silhouette(m, 1).map(V.P), true);
+      else if (!hulls.length) s1.poly(ly, silhouette(m, 1).map(V.P), true);
+    });
+    hulls.forEach(function (h) {
+      if (h.draught > 0 && h.draught < h.depth) {
+        var t = h.draught / h.depth, r = C.hullXRange(h, t), Y = V.Y(h.draught);
+        s1.line('WATERLINE', V.X(r[0]) - 6, Y, V.X(r[1]) + 6, Y); s1.text('TEXT', V.X(r[0]) - 7, Y - 0.7, 'WL ' + fmt(h.draught, 2) + ' m', 1.8, 'r');
+      }
+    });
+    s1.line('BASELINE', V.X(x0) - 4, V.Y(env.min[2]), V.X(env.max[0]) + 4, V.Y(env.min[2]));
+    dimH(s1, V.X(env.min[0]), V.X(env.max[0]), V.Y(env.min[2]) - 6, V.Y(env.min[2]), 'L = ' + fmt(env.L, 1) + ' m');
+    dimV(s1, V.Y(env.min[2]), V.Y(env.max[2]), V.X(env.max[0]) + 8, V.X(env.max[0]), 'H = ' + fmt(env.H, 1) + ' m');
+    var ytab = ybase - 16;
+    /* section at the middle */
+    var xm = hulls.length ? (C.hullXRange(hulls[0], 0.5)[0] + C.hullXRange(hulls[0], 0.5)[1]) / 2 : (env.min[0] + env.max[0]) / 2;
+    var sw = env.B * k, sx0 = MG + 12, sxc = sx0 + sw / 2, Vs = { X: function (y) { return sxc - (y - (env.min[1] + env.max[1]) / 2) * k; }, Y: function (z) { return ytab - Hm + (z - env.min[2]) * k; } };
+    Vs.P = function (p) { return [Vs.X(p[0]), Vs.Y(p[1])]; };
+    s1.text('TEXT', sx0, ytab + 4, 'SECTION AT x = ' + fmt(xm, 1) + ' m', 3.2, 'l', true);
+    s1.text('TEXT', sx0, ytab + 0.6, 'looking forward', 1.8, 'l');
+    hulls.forEach(function (h) {
+      var half = hullSection(h, xm), yc = h.y || 0;
+      if (half.length > 1) {
+        var port = half.map(function (p) { return [yc + p[0], p[1]]; }), stb = half.map(function (p) { return [yc - p[0], p[1]]; }).reverse();
+        s1.poly('HULL', stb.concat(port).map(Vs.P), false);
+        s1.line('HULL', Vs.X(yc + half[0][0]), Vs.Y(0), Vs.X(yc - half[0][0]), Vs.Y(0));
+        s1.line('DECKEDGE', Vs.X(yc + half[half.length - 1][0]), Vs.Y(h.depth), Vs.X(yc - half[half.length - 1][0]), Vs.Y(h.depth));
+        if (h.draught > 0 && h.draught < h.depth) { var hw = hullHalfAt(h, xm, h.draught / h.depth) || half[0][0]; s1.line('WATERLINE', Vs.X(yc + hw) + 4, Vs.Y(h.draught), Vs.X(yc - hw) - 4, Vs.Y(h.draught)); }
+      }
+    });
+    s1.line('CENTRELINE', Vs.X((env.min[1] + env.max[1]) / 2), Vs.Y(env.min[2]) - 3, Vs.X((env.min[1] + env.max[1]) / 2), Vs.Y(env.max[2]) + 3);
+    meshes.forEach(function (m) { if (m.min[0] <= xm && m.max[0] >= xm) drawBlockLoops(s1, Vs, m, 0, xm, gm, true, model); });
+    /* tables */
+    var tx = sx0 + sw + 22, ty = ytab + 4;
+    var rows = [['MAIN PARTICULARS', '']];
+    rows.push(['Length overall (blocks and hull)', fmt(env.L, 2) + ' m'], ['Beam', fmt(env.B, 2) + ' m']);
+    if (hulls.length) { rows.push(['Depth to the deck', fmt(hulls[0].depth, 2) + ' m'], ['Draught', fmt(hulls[0].draught, 2) + ' m']); }
+    rows.push(['Height above the baseline', fmt(env.max[2], 2) + ' m']);
+    try { var ws = C.weightSummary(model); if (ws && ws.total && ws.total.mass > 0) rows.push(['Total weight', fmt(ws.total.mass, 0) + ' t']); } catch (e) { /* no weights */ }
+    try { var gt = C.grossTonnage(model); if (gt && gt.GT > 0) rows.push(['Gross tonnage (estimate)', fmt(gt.GT, 0) + ' GT']); } catch (e2) { /* no GT */ }
+    rows.push(['Blocks', String(blocks.length)]);
+    var yb = tableGrid(s1, tx, ty, [58, 30], rows, { head: true, right: [1] }), ygb = yb;
+    var sm = C.summarize(model), grows = [['GROUP', 'BLOCKS', 'AREA m2', 'VOLUME m3']];
+    sm.rows.forEach(function (r) { if (r.total.n > 0) grows.push([new Array(r.depth + 1).join('  ') + r.group.name, String(r.total.n), fmt(r.total.area, 0), fmt(r.total.vol, 0)]); });
+    if (grows.length > 14) grows.length = 14;
+    ygb = tableGrid(s1, tx + 96, ty, [48, 16, 22, 24], grows, { head: true, right: [1, 2, 3] });
+    var ev = C.evaluateRequirements(model);
+    if (ev.length) {
+      var rr = [['REQUIREMENT', 'TARGET', 'ACHIEVED', 'STATUS']];
+      ev.slice(0, 10).forEach(function (x) {
+        var r = x.req, un = C.METRICS[r.metric] ? C.METRICS[r.metric].unit : '', tgt = (r.sense === 'max' ? '<= ' : '>= ') + fmt(r.shall != null ? r.shall : r.should, r.metric === 'volume' || r.metric === 'area' || r.metric === 'gt' ? 0 : 1);
+        rr.push([r.name, tgt, fmt(x.achieved, r.metric === 'volume' || r.metric === 'area' || r.metric === 'gt' ? 0 : 1) + ' ' + un.replace('²', '2').replace('³', '3'), x.status]);
+      });
+      tableGrid(s1, tx, Math.min(yb, ygb) - 6, [58, 24, 30, 16], rr, { head: true, right: [1, 2] });
+    }
+    sheets.push(s1);
+
+    /* deck plans */
+    var avail = (SH - MG - 14) - (MG + 46), per = [], cur = [], used2 = 0, BH = env.B * k, step = BH + 12;
+    levels.forEach(function (lv) { if (used2 + step > avail && cur.length) { per.push(cur); cur = []; used2 = 0; } cur.push(lv); used2 += step; });
+    if (cur.length) per.push(cur);
+    per.forEach(function (grp, gi) {
+      var sh = Sheet('Deck plans', den), yy = SH - MG - 14;
+      grp.forEach(function (lv, li) {
+        var yTopPlan = yy - 8, yc = yTopPlan - BH / 2, Vp = View(sh, ox, yc, den, x0, (env.min[1] + env.max[1]) / 2, false);
+        sh.text('TEXT', ox, yTopPlan + 3.2, 'PLAN AT z = ' + fmt(lv.z, 2) + ' m', 3.6, 'l', true);
+        sh.text('TEXT', ox + 46, yTopPlan + 3.2, 'level ' + fmt(lv.a, 1) + ' to ' + fmt(lv.b, 1) + ' m above the baseline, looking down, bow to the right', 2, 'l');
+        frameLines(sh, Vp, x0, env.max[0], yc - BH / 2, yc + BH / 2, yc + BH / 2 + 1, sp, den);
+        hulls.forEach(function (h) {
+          if (lv.z <= h.depth) sh.poly('HULL', hullPlan(h, lv.z).map(Vp.P), true);
+          else sh.poly('DECKEDGE', hullPlan(h, h.depth).map(Vp.P), true);
+        });
+        meshes.forEach(function (m) { if (m.min[2] <= lv.z && m.max[2] >= lv.z) drawBlockLoops(sh, Vp, m, 2, lv.z, gm, true, model); });
+        sh.line('CENTRELINE', Vp.X(x0) - 4, yc, Vp.X(env.max[0]) + 4, yc);
+        sh.text('TEXT', Vp.X(env.max[0]) + 5, yc - 0.7, 'CL', 2, 'l');
+        dimV(sh, yc - BH / 2, yc + BH / 2, Vp.X(x0) - 10, Vp.X(x0), 'B = ' + fmt(env.B, 1) + ' m');
+        yy -= step;
+      });
+      sheets.push(sh);
+    });
+
+    /* lines plan, when there is a hull */
+    if (hulls.length) sheets.push(linesSheet(model, hulls[0]));
+    var N = sheets.length;
+    sheets.forEach(function (sh, i) {
+      var sub = sh.title === 'Deck plans' ? '' : '';
+      frameAndTitle(sh, model, i + 1, N, when, gm, used, sub, stamp);
+    });
+    return { sheets: sheets, layers: layerTable(model, gm, used) };
+  }
+
+  function linesSheet(model, h) {
+    var L = h.loa, B = h.beam, D = h.depth, den = 50, i, j, t, bi;
+    for (i = 0; i < STD.length; i++) { den = STD[i]; var kk = 1000 / den; if (L * kk <= 350 && (D + B / 2 + D) * kk + 60 <= 217) break; }
+    var k = 1000 / den, sh = Sheet('Lines plan', den), x0 = h.x, ox = MG + 26 + Math.max(0, (SW - 2 * MG - 52 - L * k) / 2), top = SH - MG - 14;
+    var NS = 10, NW = Math.max(3, Math.min(8, Math.round(D / 1.0))), NB = 4, nst = 60;
+    function st(n) { return x0 + L * n / NS; }
+    /* sheer plan */
+    var yS = top - 8 - D * k, Vs = View(sh, ox, yS, den, x0, 0, false);
+    sh.text('TEXT', ox, top - 1, 'SHEER PLAN', 3.6, 'l', true);
+    for (i = 0; i <= NS; i++) { sh.line('LINES_STA', Vs.X(st(i)), Vs.Y(0), Vs.X(st(i)), Vs.Y(D)); sh.text('TEXT', Vs.X(st(i)), Vs.Y(D) + 1.2, String(i), 1.8, 'c'); }
+    for (j = 0; j <= NW; j++) sh.line('LINES_WL', Vs.X(x0) - 2, Vs.Y(D * j / NW), Vs.X(x0 + L) + 2, Vs.Y(D * j / NW));
+    for (bi = 1; bi <= NB; bi++) {                                    // buttocks: the height at which the half-breadth reaches y
+      var yb = (B / 2) * bi / (NB + 1), pts = [];
+      for (i = 0; i <= nst; i++) {
+        var x = x0 + L * i / nst, zz = null, prev = null;
+        for (j = 0; j <= 60; j++) {
+          t = j / 60; var hy = hullHalfAt(h, x, t);
+          if (hy != null && hy >= yb) { zz = (prev != null && prev[1] < yb && hy > prev[1]) ? (prev[0] + (t - prev[0]) * (yb - prev[1]) / (hy - prev[1])) * D : t * D; break; }
+          if (hy != null) prev = [t, hy];
+        }
+        if (zz != null) pts.push([x, zz]);
+      }
+      sh.poly('LINES_BUT', pts.map(Vs.P), false);
+      if (pts.length) sh.text('TEXT', Vs.X(pts[pts.length - 1][0]) + 1, Vs.Y(pts[pts.length - 1][1]) + 0.4, 'B' + bi, 1.5, 'l');
+    }
+    sh.poly('HULL', hullProfile(h).map(Vs.P), true);
+    if (h.draught > 0 && h.draught < D) { var r = C.hullXRange(h, h.draught / D); sh.line('WATERLINE', Vs.X(r[0]) - 4, Vs.Y(h.draught), Vs.X(r[1]) + 4, Vs.Y(h.draught)); sh.text('TEXT', Vs.X(r[0]) - 5, Vs.Y(h.draught) - 0.6, 'DWL', 1.8, 'r'); }
+    sh.text('TEXT', ox, Vs.Y(0) - 4.5, 'Stations 0 to ' + NS + ' at ' + fmt(L / NS, 2) + ' m. Waterlines every ' + fmt(D / NW, 2) + ' m. Buttocks B1 to B' + NB + ' every ' + fmt(B / 2 / (NB + 1), 2) + ' m from the centreline.', 2, 'l');
+    /* half-breadth plan */
+    var yHtop = Vs.Y(0) - 14, yH = yHtop - 6 - (B / 2) * k, Vh = View(sh, ox, yH, den, x0, 0, false);
+    sh.text('TEXT', ox, yHtop - 1, 'HALF-BREADTH PLAN', 3.6, 'l', true);
+    for (i = 0; i <= NS; i++) sh.line('LINES_STA', Vh.X(st(i)), Vh.Y(0), Vh.X(st(i)), Vh.Y(B / 2));
+    sh.line('CENTRELINE', Vh.X(x0) - 3, Vh.Y(0), Vh.X(x0 + L) + 3, Vh.Y(0));
+    for (bi = 1; bi <= NB; bi++) { var y2 = (B / 2) * bi / (NB + 1); sh.line('LINES_BUT', Vh.X(x0), Vh.Y(y2), Vh.X(x0 + L), Vh.Y(y2)); }
+    for (j = 0; j <= NW; j++) {
+      var tw = j / NW, rw = C.hullXRange(h, tw), p2 = [];
+      for (i = 0; i <= 80; i++) { var u = 0.5 - 0.5 * Math.cos(Math.PI * i / 80); p2.push([rw[0] + u * (rw[1] - rw[0]), C.hullHalf(h, u, tw)]); }
+      sh.poly(j === NW ? 'HULL' : 'LINES_WL', p2.map(Vh.P), false);
+    }
+    /* body plan, bottom left; the table of the hull to its right */
+    var bw = (B / 2) * k, bx = ox + bw + 6, by = Vh.Y(0) - 16 - D * k - 6;
+    if (by < MG + 52) by = MG + 52;
+    sh.text('TEXT', bx - bw, by + D * k + 6, 'BODY PLAN', 3.6, 'l', true);
+    sh.line('CENTRELINE', bx, by - 3, bx, by + D * k + 3);
+    for (j = 0; j <= NW; j++) sh.line('LINES_WL', bx - bw - 2, by + D * j / NW * k, bx + bw + 2, by + D * j / NW * k);
+    for (bi = 1; bi <= NB; bi++) { var y3 = (B / 2) * bi / (NB + 1) * k; sh.line('LINES_BUT', bx + y3, by, bx + y3, by + D * k); sh.line('LINES_BUT', bx - y3, by, bx - y3, by + D * k); }
+    for (i = 0; i <= NS; i++) {
+      var half = stationHalf(h, st(i) + (i === 0 ? 0.02 * L / NS : i === NS ? -0.02 * L / NS : 0), 40).filter(function (p) { return p; });
+      if (half.length < 2) continue;
+      var sgn = i <= NS / 2 ? -1 : 1, pts3 = half.map(function (p) { return [bx + sgn * p[0] * k, by + p[1] * k]; });
+      sh.poly('LINES_STA', pts3, false);
+      sh.text('TEXT', pts3[pts3.length - 1][0] + sgn * 0.8, pts3[pts3.length - 1][1] + 0.8, String(i), 1.6, sgn > 0 ? 'l' : 'r');
+    }
+    sh.text('TEXT', bx - bw, by - 6, 'Aft stations (0 to 5) on the left, forward stations (5 to 10) on the right.', 2, 'l');
+    sh.text('TEXT', bx - bw, by - 9.5, (h.lib ? 'Hull from a table of offsets: ' : 'Parametric hull: ') + h.name + ((model.hulls || []).length > 1 ? ' (first hull of ' + model.hulls.length + ')' : ''), 2, 'l');
+    var tr = [['HULL', ''], ['Length (LOA)', fmt(L, 2) + ' m'], ['Beam', fmt(B, 2) + ' m'], ['Depth', fmt(D, 2) + ' m'], ['Draught', fmt(h.draught, 2) + ' m']];
+    try { var hh = C.hullHydro(h, h.draught, model.rho || 1.025); if (hh) tr.push(['Displacement', fmt(hh.disp, 0) + ' t'], ['Block coefficient', fmt(hh.Cb, 3)]); } catch (e) { /* no hydrostatics */ }
+    tableGrid(sh, bx + bw + 30, by + D * k, [38, 30], tr, { head: true, right: [1] });
+    return sh;
+  }
+
+  function layerTable(model, gm, used) {
+    var L = {}, k;
+    Object.keys(BASE_LAYERS).forEach(function (n) { L[n] = BASE_LAYERS[n]; });
+    used.forEach(function (g) { L[layerName(g.name)] = { col: g.color, w: 0.25, aci: nearestAci(g.color) }; });
+    L.GRP_BLOCKS = { col: '#888888', w: 0.25, aci: 8 };
+    return L;
+  }
+
+  /* ---------- DXF (R12, ASCII) ---------- */
+  function ascii(s) { return String(s).replace(/\u00b7/g, '-').replace(/²/g, '2').replace(/³/g, '3').replace(/[^\x20-\x7e]/g, '?'); }
+  function toDXF(d) {
+    var out = [], w = function (c, v) { out.push(String(c), String(v)); }, xoff = 0, offs = [];
+    d.sheets.forEach(function (s) { offs.push(xoff); xoff += s.w * s.den + 0.1 * s.w * s.den; });
+    w(0, 'SECTION'); w(2, 'HEADER'); w(9, '$ACADVER'); w(1, 'AC1009'); w(9, '$INSUNITS'); w(70, 4); w(9, '$MEASUREMENT'); w(70, 1); w(0, 'ENDSEC');
+    w(0, 'SECTION'); w(2, 'TABLES');
+    w(0, 'TABLE'); w(2, 'LTYPE'); w(70, 3);
+    w(0, 'LTYPE'); w(2, 'CONTINUOUS'); w(70, 0); w(3, 'Solid line'); w(72, 65); w(73, 0); w(40, 0);
+    w(0, 'LTYPE'); w(2, 'DASHED'); w(70, 0); w(3, 'Dashed'); w(72, 65); w(73, 2); w(40, 6); w(49, 4); w(49, -2);
+    w(0, 'LTYPE'); w(2, 'CENTER'); w(70, 0); w(3, 'Centre'); w(72, 65); w(73, 4); w(40, 18); w(49, 12); w(49, -2); w(49, 2); w(49, -2);
+    w(0, 'ENDTAB');
+    var names = Object.keys(d.layers);
+    w(0, 'TABLE'); w(2, 'LAYER'); w(70, names.length);
+    names.forEach(function (n) { var l = d.layers[n]; w(0, 'LAYER'); w(2, n); w(70, 0); w(62, l.aci || 7); w(6, l.dash || 'CONTINUOUS'); });
+    w(0, 'ENDTAB');
+    w(0, 'TABLE'); w(2, 'STYLE'); w(70, 1); w(0, 'STYLE'); w(2, 'STANDARD'); w(70, 0); w(40, 0); w(41, 1); w(50, 0); w(71, 0); w(42, 0.2); w(3, 'txt'); w(4, ''); w(0, 'ENDTAB');
+    w(0, 'ENDSEC');
+    w(0, 'SECTION'); w(2, 'ENTITIES');
+    d.sheets.forEach(function (s, si) {
+      var K = s.den, ox = offs[si];
+      function X(x) { return (ox + x * K).toFixed(1); }
+      function Y(y) { return (y * K).toFixed(1); }
+      s.ents.forEach(function (e) {
+        var ly = d.layers[e.ly] ? e.ly : 'TEXT';
+        if (e.t === 'l') { w(0, 'LINE'); w(8, ly); w(10, X(e.x1)); w(20, Y(e.y1)); w(30, 0); w(11, X(e.x2)); w(21, Y(e.y2)); w(31, 0); }
+        else if (e.t === 'p') {
+          w(0, 'POLYLINE'); w(8, ly); w(66, 1); w(70, e.closed ? 1 : 0);
+          e.pts.forEach(function (p) { w(0, 'VERTEX'); w(8, ly); w(10, X(p[0])); w(20, Y(p[1])); w(30, 0); });
+          w(0, 'SEQEND'); w(8, ly);
+        } else {
+          w(0, 'TEXT'); w(8, ly); w(10, X(e.x)); w(20, Y(e.y)); w(30, 0); w(40, (e.h * K).toFixed(1)); w(1, ascii(e.s)); w(7, 'STANDARD');
+          if (e.al !== 'l') { w(72, e.al === 'c' ? 1 : 2); w(11, X(e.x)); w(21, Y(e.y)); w(31, 0); }
+        }
+      });
+    });
+    w(0, 'ENDSEC'); w(0, 'EOF');
+    return out.join('\n') + '\n';
+  }
+
+  /* ---------- PDF ---------- */
+  function addPDFPages(doc, d) {
+    var MM = 72 / 25.4;
+    d.sheets.forEach(function (s) {
+      doc.addPage(true, s.w * MM, s.h * MM);
+      var H = s.h * MM;
+      s.ents.forEach(function (e) {
+        var l = d.layers[e.ly] || d.layers.TEXT, col = l.col, lw = Math.max(0.15, l.w * MM);
+        if (e.t === 'l') doc.line(e.x1 * MM, H - e.y1 * MM, e.x2 * MM, H - e.y2 * MM, { color: col, w: lw });   // the writer takes y from the top
+        else if (e.t === 'p') doc.poly(e.pts.map(function (p) { return [p[0] * MM, H - p[1] * MM]; }), { color: col, w: lw, close: e.closed, fill: e.fill, dash: l.dash === 'DASHED' ? [4, 2] : l.dash === 'CENTER' ? [10, 2, 2, 2] : null });
+        else doc.text(e.x * MM, H - e.y * MM, e.s, { size: e.h * MM * 0.98, bold: e.bold, color: '#111111', align: e.al === 'c' ? 'center' : e.al === 'r' ? 'right' : 'left' });
+      });
+    });
+  }
+  function toPDF(d, title) {
+    var doc = C.pdfWriter(title || 'General arrangement');
+    addPDFPages(doc, d);
+    return doc.build();
+  }
+
+  var api = { buildGA: buildGA, toDXF: toDXF, toPDF: toPDF, addPDFPages: addPDFPages, sliceMesh: sliceMesh, worldMesh: worldMesh, deckLevels: deckLevels };
+  root.DBBGA = api;
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+})(typeof window !== 'undefined' ? window : globalThis);
 
 </script>
 <script>
@@ -5861,7 +6447,7 @@ var DBB_PSV_DETAILED = "{\"app\":\"dbb-block-editor\",\"version\":2,\"name\":\"P
       '<li><b>Add weight.</b> In the <i>Hydrostatics</i> tab set a density per group, and override it on a block if needed, with a fill % for tanks or a typed mass. Tick <i>Free surface</i> on a part-filled liquid tank. The structure share is set in the same tab.</li>' +
       '<li><b>Float it.</b> Press <i>Float</i> in the toolbar and the draught, trim and heel follow the weight as you move blocks. The <i>Hydrostatics</i> tab shows the floating condition, the weight balance, and the initial stability: KB, BM, KM and GM, with a few basic checks. Below it, the righting lever (GZ) is drawn with the standard criteria for guidance.</li>' +
       '<li><b>Read the Summary.</b> It opens with an assessment: chips for requirements, weight and hull, floating and stability, then the problems, notes and what passes. Click an item to go to the tab or block. Below it come the geometry and the hulls. <i>Requirements</i> shows each target with its margin: red if the shall is not met, green between shall and should, orange beyond the should (an excess), and <i>Blocks</i> lists every block; choose its column sets and click a title to sort.</li>' +
-      '<li><b>Iterate and save.</b> <i>Save</i> writes a JSON file you can reopen later, with imported shapes inside. <i>XLSX</i> saves the whole project as an Excel workbook, and <i>PDF</i> writes a report: views, assessment, requirements, weights, hydrostatics, stability, the GZ curve and a list of all blocks. Nothing is kept in the browser, so save before you leave.</li>' +
+      '<li><b>Iterate and save.</b> <i>Save</i> writes a JSON file you can reopen later, with imported shapes inside. <i>XLSX</i> saves the whole project as an Excel workbook, and <i>PDF</i> writes a report, with the GA sheets at the end: views, assessment, requirements, weights, hydrostatics, stability, the GZ curve and a list of all blocks. <i>GA drawing</i> makes A3 sheets as DXF or PDF: profile, section, tables, deck plans and, with a hull, the lines plan. Nothing is kept in the browser, so save before you leave.</li>' +
       '</ol>' +
       '<p class="note">Axes: X forward from the aft end, Y to port, Z up from the baseline, in metres. For educational use only: hulls are illustrative and weights, hydrostatics and stability are indicative.</p>';
   }
@@ -6142,11 +6728,46 @@ var DBB_PSV_DETAILED = "{\"app\":\"dbb-block-editor\",\"version\":2,\"name\":\"P
     setTimeout(function () {
       var bytes;
       try {
-        var views = captureViews();
-        bytes = C.buildReport(S.model, { when: new Date().toISOString().slice(0, 10), images: views, logo: logoJpeg(), floatRes: S.floatRes, stability: S.model.hulls.length ? stabilityOf(S.model) : null, assumptions: $$('.limits li').map(function (li) { return li.textContent.trim(); }) });
+        var views = captureViews(), stamp = C.stampText(new Date());
+        bytes = C.buildReport(S.model, { when: new Date().toISOString().slice(0, 10), images: views, logo: logoJpeg(), floatRes: S.floatRes, stability: S.model.hulls.length ? stabilityOf(S.model) : null, assumptions: $$('.limits li').map(function (li) { return li.textContent.trim(); }),
+          stamp: stamp, appendPages: typeof DBBGA === 'undefined' ? null : function (doc) { DBBGA.addPDFPages(doc, DBBGA.buildGA(S.model, { stamp: stamp })); } });
       } catch (err) { toast('Could not make the PDF: ' + (err && err.message ? err.message : err), true); return; }
       deliver(slug(S.model.name) + '.pdf', bytes, 'PDF report');
     }, 60);
+  }
+
+  /* General arrangement drawing: A3 sheets built in ga.js, saved as DXF (full size, millimetres) or PDF */
+  function gaDialog() {
+    if (typeof DBBGA === 'undefined') { toast('The drawing is not available in this page.', true); return; }
+    var ov = document.createElement('div');
+    ov.className = 'overlay';
+    ov.innerHTML = '<div class="dialog" role="dialog" aria-modal="true" aria-label="GA drawing"><h2>GA drawing</h2>' +
+      '<p class="stlnote">A3 sheets: profile, section, tables, deck plans and, when there is a hull, the lines plan. The DXF is at full size in millimetres; plot it at the scale on the sheet.</p>' +
+      '<div class="actions"><button class="btn" data-x="close">Cancel</button><button class="btn primary" data-x="dxf">DXF</button><button class="btn primary" data-x="pdf">PDF</button></div></div>';
+    document.body.appendChild(ov);
+    function close() { ov.remove(); document.removeEventListener('keydown', esc); }
+    function esc(e) { if (e.key === 'Escape') close(); }
+    document.addEventListener('keydown', esc);
+    ov.addEventListener('click', function (e) {
+      if (e.target === ov) { close(); return; }
+      var b = e.target.closest('[data-x]');
+      if (!b) return;
+      var x = b.getAttribute('data-x');
+      if (x === 'close') { close(); return; }
+      close();
+      toast('Making the drawing ...');
+      setTimeout(function () {
+        try {
+          var d = DBBGA.buildGA(S.model, { stamp: C.stampText(new Date()) });
+          if (x === 'dxf') {
+            var dn = 'GA_' + slug(S.model.name) + '.dxf', dt = DBBGA.toDXF(d);
+            if (window.claude && window.claude.use) deliver(dn.replace(/\.dxf$/, '_dxf.zip'), C.zipStore([[dn, dt]]), 'GA drawing (DXF in a zip file)');   // the artifact page cannot save .dxf
+            else deliver(dn, dt, 'GA drawing (DXF)');
+          }
+          else deliver('GA_' + slug(S.model.name) + '.pdf', DBBGA.toPDF(d, (S.model.name || 'Design') + ' - general arrangement'), 'GA drawing (PDF)');
+        } catch (err) { toast('Could not make the drawing: ' + (err && err.message ? err.message : err), true); }
+      }, 60);
+    });
   }
 
   function openText(text, label) {
@@ -6478,6 +7099,7 @@ var DBB_PSV_DETAILED = "{\"app\":\"dbb-block-editor\",\"version\":2,\"name\":\"P
     $$('.tab').forEach(function (b) { b.addEventListener('click', function () { setTab(b.getAttribute('data-tab')); if (!S.drawerOpen) toggleDrawer(); }); });
     $('#btnDrawer').addEventListener('click', toggleDrawer);
     $('#btnPdf').addEventListener('click', exportPdf);
+    $('#btnGa').addEventListener('click', gaDialog);
     $('#btnXlsx').addEventListener('click', exportXlsx);
     $('#btnAddReq').addEventListener('click', addRequirement);
     var reqTbl = $('#reqTbl');
@@ -6527,7 +7149,7 @@ var DBB_PSV_DETAILED = "{\"app\":\"dbb-block-editor\",\"version\":2,\"name\":\"P
         if (moved) window.addEventListener('click', function (e) { e.stopPropagation(); e.preventDefault(); }, { capture: true, once: true });
       }
       function down(e) {
-        if (!S.drawerOpen || e.button > 0 || e.target.closest('select,input,label,#btnPdf,#btnXlsx,#btnDrawer')) return;
+        if (!S.drawerOpen || e.button > 0 || e.target.closest('select,input,label,#btnPdf,#btnGa,#btnXlsx,#btnDrawer')) return;
         startY = e.clientY; startH = dr.getBoundingClientRect().height; moved = false;
         document.body.style.userSelect = 'none';
         window.addEventListener('pointermove', move); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', up);

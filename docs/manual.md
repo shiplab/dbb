@@ -24,6 +24,10 @@ Appendix B. Table of offsets as input and output
 
 Appendix C. The project file (JSON)
 
+Appendix D. Seakeeping formulas as used in the app
+
+Appendix E. Structure formulas as used in the app
+
 
 ---
 
@@ -39,13 +43,32 @@ The app began as an implementation of the Design Building Block (DBB) approach f
 
 ### 1.3 Web-based tools from the lab
 
-Since 2013 the Ship Design and Operations Lab at NTNU in Ålesund, mostly the author and his students, has published ship design and engineering tools as web apps, starting with a simple parametric design in HTML and JavaScript. The reasoning is in *JavaScript Applied to Maritime Design and Engineering* (Gaspar, COMPIT 2017). If a model must be used, shared and developed by more than one person, a browser removes the installation, version and licence barriers of spreadsheets, Matlab code and static slides. The paper noted that JavaScript work in the ship design community was still very rare. It argued for open, shared code, and the open Vessel.js library for conceptual ship design followed (IMDC 2018, updated at IMDC 2022).
+The Ship Design and Operations Lab at NTNU in Ålesund has published ship design and engineering tools as web apps since 2013. The first was a simple parametric design written in HTML and JavaScript. Most of the tools were made by the author with students.
+
+The reason for the web is practical. A model that several people must use, share and develop is easier to handle in a browser than as a spreadsheet, a Matlab script or a set of slides, because nothing has to be installed and there are no version or licence problems. This argument is made in *JavaScript Applied to Maritime Design and Engineering* (Gaspar, COMPIT 2017), which also noted that JavaScript was still rare in ship design. It called for open, shared code. The open Vessel.js library for conceptual ship design followed (IMDC 2018, updated at IMDC 2022).
+
+The lab's view of open and collaborative ship design, and the use of open web tools in teaching, is in Gaspar (COMPIT 2022). This app follows that line: the code is open and the project file is a documented JSON file (Appendix C).
 
 ### 1.4 Then and now
 
 In 2017 the argument for web apps in ship design had to be made. In 2026 AI writes web apps routinely, and the barrier is no longer writing the code but deciding what a tool should do and trusting what it says. This app and manual are a case of that. It was developed by Henrique Gaspar in dialogue with Claude (Anthropic). Claude wrote and tested the code, and the author set the scope, decided the content and checked the results. It reuses much from the lab: the DBB approach, a web implementation of the Holtrop resistance method, the general-arrangement block idea and the R/V Gunnerus data.
 
-### 1.5 What it is and is not
+### 1.5 Credits
+
+The app reuses ideas, methods and code from several people, and the list below is not exhaustive. The credits are given here in more detail than in the app.
+
+- **Block layout.** The 2D block layout prototype of 2015 is by Henrique Gaspar.
+- **Design Building Block approach.** David Andrews, Rachel Pawling and Alexander Piperakis, University College London (UCL).
+- **System-based ship design.** Kai Levander and Stein Ove Erikstad, NTNU (Levander, 2012; Erikstad and Levander, 2012). The anchor handling tug supply (AHTS) example is based on the offshore vessel studies of this approach (Levander, 2012).
+- **Resistance.** The code of the ShipLab Holtrop web app is by Jefferson Flor (NTNU and the Federal University of Santa Catarina, UFSC), with insights from Christopher Ryan (UCL). The method is that of Holtrop and Mennen (1982) and Holtrop (1984).
+- **Ship motion.** The code of the ShipLab ship motion web app is by Sthefano Lande Andrade (NTNU), developed with the author in 2015 and updated by Gaël Porée and Maxime Albouy (SeaTech, Toulon) during an internship. The method is that of Jensen, Mansour and Olsen (2004).
+- **Ship structure.** The ship structure web app of the ShipLab (2015, version 0.2) is by Sthefano Lande Andrade (NTNU). The structure tab takes its idea of a first check from the weight and buoyancy distribution and the hull girder moments of that app, and applies the rules of DNV (Rules for Ships, Pt.3 Ch.2, Hull structural design, ships with length less than 100 metres, January 2015).
+- **Vessel.js library.** Felipe Ferrari, Ícaro Fonseca, Olivia Chaves, Thiago Monteiro and Elias Hasle (all NTNU). The formulation of the app also draws on it.
+- **Motion sickness.** The weighting filter, the dose value and the limit values follow the doctoral research on motion sickness of seafarers by Nicole Catherine Taylor and Anriëtte Bekker, Stellenbosch University (Taylor, 2023).
+
+The approach and the app also owe much to the many colleagues, students and collaborators at NTNU, UCL and other institutions, whose discussions, testing and feedback over the years shaped them, and who cannot all be listed here.
+
+### 1.6 What it is and is not
 
 A tool for teaching and early concept exploration. It is not for design approval, class or safety decisions (see section 7).
 
@@ -56,11 +79,17 @@ A tool for teaching and early concept exploration. It is not for design approval
 - Andrews, D.J. (2011). Marine Requirements Elucidation and the Nature of Preliminary Ship Design. *The International Journal of Maritime Engineering*, 153(1), A23–A39.
 - Gaspar, H.M. (2017). JavaScript Applied to Maritime Design and Engineering. 16th International Conference on Computer and IT Applications in the Maritime Industries (COMPIT'17), pp. 428–443.
 - Gaspar, H.M. (2018). Vessel.js: An open and collaborative ship design object-oriented library. In *Marine Design XIII*, Vol. 1, Proceedings of the 13th International Marine Design Conference (IMDC 2018), Helsinki. CRC Press.
+- Gaspar, H.M. (2022). Open and Collaborative Ship Design. 21st International Conference on Computer and IT Applications in the Maritime Industries (COMPIT'22), pp. 416–428.
 - Gaspar, H.M. (2022). Current State of the Vessel.js Library: A Web-based Toolbox for Maritime Simulations. 14th International Marine Design Conference (IMDC 2022), Vancouver. SNAME. https://doi.org/10.5957/IMDC-2022-271
 - Gaspar, H.M. and Andrews, D. (2022). Quantifying Interfaces in General Arrangement Drawings. 14th International Marine Design Conference (IMDC 2022), Vancouver. SNAME. https://doi.org/10.5957/IMDC-2022-269
 - Gaspar, H.M., Fonseca, Í.A. and Andrews, D. (2024). Wither now the Design Building Block (DBB) Approach. International Marine Design Conference (IMDC 2024). https://doi.org/10.59490/imdc.2024.915
+- Erikstad, S.O. and Levander, K. (2012). System based design of offshore support vessels. 11th International Marine Design Conference (IMDC 2012), Glasgow.
+- Holtrop, J. (1984). A statistical re-analysis of resistance and propulsion data. *International Shipbuilding Progress*, 31(363), 272–276.
+- Holtrop, J. and Mennen, G.G.J. (1982). An approximate power prediction method. *International Shipbuilding Progress*, 29(335), 166–170.
+- Jensen, J.J., Mansour, A.E. and Olsen, A.S. (2004). Estimation of ship motions using closed-form expressions. *Ocean Engineering*, 31, 61–85.
 - Levander, K. (2012). System-Based Ship Design (SBSD). NTNU.
 - Pawling, R.J. and Andrews, D.J. (2008). Concept studies for a joint support ship. *Journal of Naval Engineering*.
+- Taylor, N.C. (2023). *A human cyber-physical system implementation for seafarers*. Doctoral dissertation, Stellenbosch University.
 
 ---
 
@@ -103,7 +132,8 @@ Open the **Requirements** tab. Each requirement has a metric, a direction (at le
 1. Press **Float** in the toolbar. The draught, trim and heel now follow the weight as blocks are moved.
 2. Open the **Hydrostatics** tab. It shows the floating condition, the weight balance (weight against displacement), the initial stability (KB, BM, KM and GM) and the righting lever (GZ).
 3. Open the **Resistance** tab. It draws the total resistance against speed by the Holtrop method, with the parts at the service speed.
-4. To change the shape of the hull, press **Hull** (beside Float). The Hull view opens full screen. Move a shape slider or drag a point on a curve, and press **Apply** to replace the hull or **Cancel** to leave it as it was.
+4. Open the **Seakeeping** tab. It gives the ship motions in regular waves, and then in a sea state, with significant and maximum values and the limiting wave height for chosen motion limits.
+5. To change the shape of the hull, press **Hull** (beside Float). The Hull view opens full screen. Move a shape slider or drag a point on a curve, and press **Apply** to replace the hull or **Cancel** to leave it as it was.
 
 ![Float on. The 3D view shows the draught, trim, heel and stability figures, and the Hydrostatics tab lists the weight balance, the initial stability and the righting lever.](img/04-hydrostatics.png)
 
@@ -239,6 +269,7 @@ where (xᵢ, yᵢ, zᵢ) is the centre of gravity of block i, with x from the af
 A negative margin means the weight is more than the hull carries at that draught. With **Float** on, the draught is solved so that the margin is zero (section 4.5).
 
 **Limits.**
+
 - Blocks that overlap count twice, in volume, area and weight.
 - A block is a simple shape with one density. Real spaces, tanks and equipment are more detailed than this.
 - The structure is one share of the displacement. It does not change with the size of the blocks, and it is not checked against any structural rule.
@@ -311,6 +342,7 @@ The app reads the table in a simple way. At a given height it finds the first an
 **4.3.4 Fitting a hull to the blocks.** When a hull is added, or **Fit to blocks** is pressed, the hull is sized around the blocks that lie below the main deck. The depth is the main deck, the beam is the width of those blocks plus 0.4 m, and the hull is centred on them sideways. For a parametric hull the length starts as the length of the blocks plus 0.6 m (0.3 m at each end) and is increased in steps of 2%, up to 30%, until no more than 2.5% of the block volume below the deck lies outside the hull. If that is never reached, the length with the least volume outside is used. The draught of a new hull is the depth times the ratio in the table above. For a table hull, the length and beam are scaled independently to the blocks, with the same margins (0.3 m at each end and 0.4 m on the beam), which changes the shape somewhat, while the depth and the shape of the lines in height are kept.
 
 **Limits.**
+
 - Parametric hulls are illustrative shapes, not fair lines. They have no keel, skeg, bulb or appendages. Only a hull from a table or from the Hull view can have a bulb.
 - A table hull is read with straight lines between stations and heights, so a coarse table gives a coarse hull.
 - The hull is open at the main deck: there is no buoyancy above it (section 4.5).
@@ -340,6 +372,7 @@ The hydrostatics are worked out for each hull at the draught T (limited to the d
 **Several hulls.** For a catamaran, trimaran or any set of hulls, the volumes, the waterplane areas and the TPC are added. LCB and KB are weighted by the volume of each hull, the transverse centre of buoyancy TCB is weighted by volume and the hull's lateral position, and LCF is weighted by the waterplane area. All hulls share one draught.
 
 **Limits.**
+
 - The integration is numerical (64 layers, 240 strips), and a hull from a coarse table is read as it is.
 - The hydrostatics are for the upright, even-keel hull at the draught. Trim and heel are handled in section 4.5.
 - There are no appendages, no shell plating thickness, no free surface here, and the hull is open above the main deck.
@@ -399,6 +432,7 @@ The hulls are counted only up to the main deck, so there is no buoyancy above it
 When the deck edge enters the water before an angle, the criterion is worked out up to that angle only and is marked.
 
 **Limits.**
+
 - The model has no buoyancy above the main deck, no superstructure and no downflooding points. GZ beyond deck-edge immersion is not meaningful, so the curve stops there.
 - G is taken on the centre line and at the height found from the blocks. The weights come from simple blocks and densities.
 - There is no wind, wave, icing, passenger or damage case. The criteria are for guidance only and are not a class or flag-state assessment.
@@ -448,6 +482,7 @@ where x_aft is the aft end of the waterline. The same draught is used forward an
 **Range of the method.** The app shows a warning when L/B is outside 3.9 to 15, B/T outside 2.1 to 4, or Cp outside 0.55 to 0.85. The result is then less accurate. For some shapes the formulas give no number, and then no curve is drawn.
 
 **Limits.**
+
 - It is an estimate for displacement ships in calm water. The wave term grows quickly at high speed.
 - There are no appendages (the appendage term is zero), no propulsion and no power estimate.
 - With several hulls, one hull is chosen at a time. The interaction between hulls is not included.
@@ -460,6 +495,103 @@ where x_aft is the aft end of the waterline. The same draught is used forward an
 - Holtrop, J. and Mennen, G.G.J. (1982). An approximate power prediction method. *International Shipbuilding Progress*, 29(335), 166–170.
 - Holtrop, J. (1984). A statistical re-analysis of resistance and propulsion data. *International Shipbuilding Progress*, 31(363), 272–276.
 
+### 4.8 Seakeeping
+
+**Purpose.** The Seakeeping tab estimates the motions of the ship in waves, to compare designs. It has two parts: the response in regular waves, for each wave frequency, and the response in one sea state, with significant and maximum values and the comparison with motion limits. It uses the closed-form expressions of Jensen, Mansour and Olsen (2004), for which the ship is a box of the waterline length L, the draught T and a breadth of the waterline breadth times C_b. The formulas are listed in Appendix D.
+
+**Inputs.** For a hull, the app reads length, breadth, C_b and C_wp from its hydrostatics at the draught. The tab sets:
+
+- the **speed**, in knots, shared with the Resistance tab;
+- the **wave heading**, in degrees: 180 is head waves, 90 and 270 are beam waves, 0 is waves from astern;
+- the **wave amplitude**, in metres, for the regular-wave charts;
+- the **position**, where the vertical motion and acceleration are read: 0 is the centre of gravity, which the method takes at midlength, 100 the bow and −100 the stern, in % of half the length;
+- for roll, **GM** (taken from the Hydrostatics tab unless typed), the **natural roll period** (0.85 B / √GM unless typed), the **damping** as a percentage of critical, and the **prismatic length ratio** δ (the length of the first of the two prismatic bodies of the roll model, as a share of the ship length, not greater than C_wp).
+
+**Regular waves.** Six charts give, against wave frequency: the vertical motion and the vertical acceleration at the position, the pitch motion at the position, the heave, the wave-induced vertical bending moment at midship, and the roll. The values scale with the wave amplitude. Heave and pitch are taken 90° out of phase, and deep water is assumed.
+
+![The Seakeeping tab of the feeder: the six charts in regular waves, then the sea state, the statistics, the limits and the spectra.](img/12-seakeeping.png)
+
+*Figure 7. The Seakeeping tab of the feeder: the six charts in regular waves, then the sea state, the statistics, the limits and the spectra.*
+
+**Sea state.** The sea is described by a spectrum of Pierson–Moskowitz (peak factor γ = 1) or JONSWAP form (Eqs. 7.2 to 7.6 of Jensen, Mansour and Olsen, 2004), from the significant wave height H_s, a period and the peak factor γ (3.3 is the usual JONSWAP value, up to 6 for a narrow sea). The period can be given as the mean zero-crossing period T_z or the peak period T_p. The spectrum is scaled so that its area is exactly H_s²/16. The app warns when more than 1% of its energy lies outside 0.05 to 2.0 rad/s, the range of the calculation.
+
+**Statistics.** Each response is taken as a stationary Gaussian process with the variance m₀ = ∫ Φ² S dω, where Φ is the response per metre of wave amplitude and S the wave spectrum. The table gives, for heave, pitch angle, vertical motion and acceleration at the position, and roll:
+
+- the **RMS**, the square root of m₀;
+- the **significant** amplitude, twice the RMS;
+- the **most probable maximum** in the duration set, RMS √(2 ln N), from the Rayleigh distribution of the peaks, where N = 3600 × hours / T_r is the number of cycles and T_r = 2π √(m₀/m₂) the zero-crossing period of the response, with m₂ taken with the encounter frequency. The values are amplitudes.
+
+The bending moment is not included: the paper treats it as non-linear and unsuited to this analysis. There is one sea state and one heading, with no scatter diagram, so there are no long-term values.
+
+**Limits.** The RMS of the vertical acceleration (in g), of the roll and of the pitch (in degrees) can be compared with limits. A preset sets them, and every value stays editable. The presets are those quoted by Stevens and Parsons (2002) from NORDFORSK (1987), by type of work (light and heavy manual work, intellectual work, transit passengers, cruise liner) and by ship type and location, and from NATO STANAG 4154 (roll 4.0°, pitch 1.5°, acceleration 0.2 g). The lateral acceleration limits are not used, because the method has no sway. The **limiting H_s** is the wave height at which the response reaches the limit, for the period, heading and speed set. As the response grows in proportion to H_s, it is H_s × limit / RMS. A chart shows the limiting H_s against heading, from 0° to 180°.
+
+**Motion sickness.** The motion sickness dose value (MSDV) is the square root of the exposure time times the RMS of the vertical acceleration at the position, weighted by the filter W_f of ISO 2631-1 (1997), which is most sensitive near 0.175 Hz and covers 0.08 to 0.63 Hz. The energy of each wave frequency is placed at its encounter frequency. The vomiting incidence is VI = K × MSDV with K = 1/3, in % (ISO 2631-1; Lawther and Griffin, 1987). ISO 2631-1 defines the MSDV for 20 minutes to 6 hours, and a warning shows outside that range. The presets are the limit of 30 m/s^1.5 of ABS (2021), taken to keep the incidence below 10%, and 45 m/s^1.5 for 6 hours from the ship trials of Taylor (2023). The weighting is implemented as in Appendix G of Taylor (2023), after Rimell and Mansfield (2007).
+
+**Range of the method.** The paper compares its formulas with model tests of ships at Froude numbers from 0.13 to 0.84. The app marks in pink, and warns, where the case is outside the limits: B/T from 1 to 6 (roll); Froude number below 0.3 and C_b of at least 0.6 (bending moment); the prismatic length ratio above C_wp; beam waves, where the formulas give no pitch and too high a heave peak; and waves that overtake the ship (following and quartering seas), where the roll is not defined. Bands of a chart are pink where the paper says the formulas are less good: heave too small for waves longer than the ship, pitch too large for wave lengths near the ship length above Fn 0.2 (shown from 0.75 to 1.25 of it), and roll too large near resonance (shown where the encounter frequency is within 20% of the roll frequency). When more than 20% of the variance of a response lies in a pink band, the sea-state table warns.
+
+**Limits.**
+
+- It is a first estimate for comparing designs, not a strip theory or a model test.
+- It is for one hull. Seakeeping of multihulls (catamarans, trimarans) is not possible.
+- The ship is a box with the centre of gravity at midlength, with no appendages, bilge keels or active stabilisation, in deep water.
+- Roll damping is the wave damping of the paper plus a viscous share typed in the tab.
+- Sea water at 1025 kg/m³ is used, whatever density is set for the hydrostatics.
+
+**References for 4.8**
+
+- ABS (2021). *Guide for passenger comfort on ships*. American Bureau of Shipping.
+- ISO 2631-1 (1997). *Mechanical vibration and shock: evaluation of human exposure to whole-body vibration, Part 1: General requirements*.
+- Jensen, J.J., Mansour, A.E. and Olsen, A.S. (2004). Estimation of ship motions using closed-form expressions. *Ocean Engineering*, 31, 61–85.
+- Lawther, A. and Griffin, M.J. (1987). Prediction of the incidence of motion sickness from the magnitude, frequency and duration of vertical oscillation. *Journal of the Acoustical Society of America*, 82(3), 957–966.
+- Rimell, A.N. and Mansfield, N.J. (2007). Design of digital filters for frequency weightings required for risk assessments of workers exposed to vibration. *Industrial Health*, 45(4), 512–519.
+- Stevens, S.C. and Parsons, M.G. (2002). Effects of motion at sea on crew performance: a survey. *Marine Technology*, 39(1), 29–47.
+- Taylor, N.C. (2023). *A human cyber-physical system implementation for seafarers*. Doctoral dissertation, Stellenbosch University.
+
+### 4.9 Structure
+
+The Structure tab is a first check of the hull structure to the DNV Rules for Ships, Pt.3 Ch.2 (January 2015, ships with length less than 100 m). It is for learning and for comparing concepts. It is not a class check.
+
+![The Structure tab of the PSV example: the load curves with the rule limits, the required modulus, and the midship section.](img/13-structure.png)
+
+**Rule dimensions.** The rule length is L = 0.96 L_WL, with the aft perpendicular (AP) at the aft end of the waterline. B is the waterline breadth, D the depth, T the draught of the hull, and C_B = V / (L B T). The wave coefficient is C_W = 0.0792 L (m). The steel grade gives the material factor f1: NV-NS 1.00, NV-27 1.08, NV-32 1.28, NV-36 1.39 and NV-40 1.47. The service area R0 to RE reduces the wave bending moment by twice the percentage of Table C1 (0 to 50%) and the dynamic part of the local pressures by the percentage of Table B2 (0 to 50%). A corrosion addition t_k, zero by default, is added to the required thicknesses.
+
+**Load along the ship.** The hull is cut into 120 strips. The weight per metre is the sum of the block masses, each spread uniformly over its length, and the structure share (or the steel weight), spread in proportion to the section area of the hull up to the deck. The buoyancy per metre is the density of the water times the immersed section area at the floating position of the Float state, with trim. The load is the weight minus the buoyancy. Its integral from the aft end is the shear force, and the integral of the shear force is the bending moment. The moment is positive in sagging, when the middle of the ship is heavier than its buoyancy. The weight and the buoyancy balance at the floating position, but the strips and the box shape of the blocks leave a small residual at the fore end. The residual is removed linearly, so that shear force and moment return to zero at the ends, and a warning is given if it is large.
+
+**Rule moments and modulus.** Within 0.4 L amidships the rule stillwater moment is M_SO = 0.0052 L³ B (C_B + 0.7) kN·m, reduced to zero at the perpendiculars. The wave moment amidships is M_WO = 0.11 C_W L² B (C_B + 0.7) in sagging and 0.19 C_W L² B C_B in hogging (C_B not less than 0.6). It is applied from 0.4 L to 0.65 L from the AP, and reduced linearly to zero at the ends. The stillwater moment used is the larger of M_SO and the calculated value within 0.4 L amidships (Sec.4 B102). The required section modulus is Z = (M_S + M_W) / 175 × 10³ cm³, and not less than Z_0 = C_WO L² B (C_B + 0.7), with C_WO = 5.7 + 0.022 L (at least 7.0, reduced by the Table C1 percentage) and C_B not less than 0.5. The approximate deck area A = 0.11 L² B / D (cm²) is shown for comparison.
+
+**Midship section.** The section is a box of breadth B and depth D. The inputs are the thickness of the deck, side, bottom and keel plates, an optional double bottom with an inner bottom plate, the spacing of the longitudinals of each plate, and their profile, flat bar or T (web height and thickness, flange breadth and thickness). A hatch share removes a part of the deck breadth. The area, the neutral axis and the moment of inertia of plates and longitudinals give the section modulus at the deck and at the bottom, which are compared with the required value. **Size to the rules** sets plates and T profiles to the rule values and raises the deck and bottom plates until the modulus is met. It is a starting point to edit.
+
+**Local scantlings.** Pressures are taken at midship (k_s = 2), at half breadth. The sea pressure below the waterline is p1 = 10 h_0 + p_dp, above it p2 = p_dp − (4 + 0.2 k_s) h_0 (not below 6.25 + 0.025 L), and for the weather deck p = 0.8 (p_dp − (4 + 0.2 k_s) h_0), at least 5.0 kN/m². The plate thickness is t = 15.8 k_a s √(p / (σ f1)) + t_k, not less than the minimum thickness of the member. The modulus of a longitudinal is Z = 83 l² s p / (σ f1) cm³ (at least 15 cm³), against the modulus of the stiffener with a plate flange of one spacing. The allowable stress is 120 N/mm² for the plating within 0.4 L, and for the longitudinals from 95 N/mm² when the section modulus just meets the requirement to 160 N/mm² when it is twice the requirement (the side longitudinals: 160 N/mm² near the neutral axis). The web and flange thickness of the longitudinals is checked against the minimum. The table gives pressure, stress, required and chosen size and OK or not enough for each item.
+
+**Steel weight.** The mass is the section area times 7.85 t/m³ times the hull length times an allowance factor (default 1.5) for the ends, floors, frames and bulkheads. A switch uses it in place of the structure share in the weights, the floating position and the stability (default off).
+
+**References for 4.9**
+
+- DNV (2015). *Rules for Classification of Ships, Part 3 Chapter 2: Hull structural design, ships with length less than 100 metres* (Sec.1 to 8). Det Norske Veritas AS, January 2015.
+
+### 4.10 What if
+
+The What if tab proposes changes to the ship so that one requirement is met, and shows what they cost in the other figures. It is a simplified form of the epoch-era idea of testing a design in more or less demanding scenarios (Ross and Rhodes, 2008; Gaspar et al., 2015): one requirement at a time is moved to a chosen value, and the ship is changed to follow. Clicking the tab opens a window with the 3D view, a panel of choices and the comparison.
+
+**Choice of requirement and target.** One of the requirements is chosen, and a target is offered: the original, the shall, midway between the shall and the should, or the should. A value can also be typed. For a requirement of the type "at least" the target is higher than the original when the ship is to be larger, and lower when a smaller ship would still do.
+
+**Scaled directions.** The directions in which the ship is scaled are ticked: length, beam, depth, or a combination. For a requirement on volume, mass or gross tonnage the factor F needed is spread equally, so that each of k ticked directions is scaled by F^(1/k). A requirement on area can be scaled in length and beam only. A requirement on length, beam or height scales the whole ship in that direction. If typed weights make the metric non-linear, the factor is found by iteration.
+
+**What is scaled.** The blocks linked to the requirement are stretched along the ticked directions. Blocks beyond them move by the same amount, so that the layout stays closed, and blocks that span the stretch are stretched with it. Blocks with a typed weight and imported shapes are moved and not resized. The hulls follow the same stretch in length, in breadth (symmetric about the centreline) and in depth. Blocks that cannot be scaled (rotated by an angle other than a multiple of 90 degrees) stop the change, with a message.
+
+**Result.** The changed ship is settled at its own level draught. The 3D view shows the original in a light colour beside the variant, and the original can be switched off. A table gives weight, draught, trim, heel, GM, gross tonnage, the main dimensions (length overall and at the waterline, beam, depth, displacement, L/B, B/T, L/D), the coefficients (C_B, C_M, C_P, C_WP, LCB and KB) and the value and status of every requirement. Bar plots show the change in percent against the original, and the value of each requirement against its shall and should lines.
+
+**Saved variants.** A variant is saved with **Save**, with an optional name, and gets an id (V1 to V5). Up to five are kept in the project, and the tab shows their number. Saved variants are compared in the same table, plots and 3D view, can be shown or hidden one by one, applied to the project with **Apply**, and deleted. They are stored in the project file (Appendix C), and the PDF report and the Excel workbook list the original and the variants side by side. They are not part of undo.
+
+![The What if window: the original (light) and two saved variants of the container ship with the table of weight, stability and dimensions.](img/14-what-if.png)
+
+*Figure 8. The What if window: the original and two saved variants, with the comparison table.*
+
+**References for 4.10**
+
+- Gaspar, H.M., Brett, P.O., Erikstad, S.O. and Ross, A.M. (2015). Quantifying value robustness of OSV designs taking into consideration medium to long term stakeholders' expectations. 12th International Marine Design Conference (IMDC 2015), Tokyo.
+- Ross, A.M. and Rhodes, D.H. (2008). Using natural value-centric time scales for conceptualizing system timelines through epoch-era analysis. INCOSE International Symposium 2008, Utrecht.
+
 ## 5. The Hull view
 
 The Hull view is a full-screen editor for the shape of one hull. It is opened with the **Hull** button beside Float, with **Shift+H**, or with **Hull view…** in the hull panel. If the design has no hull, the button adds one first. The view shows the hull that is selected, or the first hull.
@@ -470,7 +602,7 @@ The hull is described by a few curves. The curves, or the sliders that draw them
 
 ![The Hull view: sheer plan, half-breadth plan, body plan and 3D view, with the size, sliders and hydrostatics on the left.](img/07-hullview.png)
 
-*Figure 7. The Hull view: sheer plan, half-breadth plan, body plan and 3D view, with the size, sliders and hydrostatics on the left.*
+*Figure 9. The Hull view: sheer plan, half-breadth plan, body plan and 3D view, with the size, sliders and hydrostatics on the left.*
 
 If the hull was a table hull or a parametric type, the view starts from a close copy of its shape, made as curves from the table (sampled 80 by 30). The copy is not exact. The view shows how much the volume differs from the old hull, and the difference stays small for ordinary hulls.
 
@@ -507,7 +639,7 @@ The sliders redraw all curves, so manual edits are replaced when one is moved. U
 
 ![The Hull view with a bulbous bow: the bulb shows dashed in the three views, and the sliders for its length, breadth and height are open.](img/08-hullview-bulb.png)
 
-*Figure 8. The Hull view with a bulbous bow: the bulb shows dashed in the three views, and the sliders for its length, breadth and height are open.*
+*Figure 10. The Hull view with a bulbous bow: the bulb shows dashed in the three views, and the sliders for its length, breadth and height are open.*
 
 ### 5.4 Editing the curves
 
@@ -550,26 +682,29 @@ Everything the app calculates is available on screen, in the report, in the draw
 | Blocks | The table of blocks, with size, position, rotation, group, density, fill and mass. |
 | Hydrostatics | The floating condition, the hydrostatics of the hulls, the initial stability, the checks, and the GZ curve with its criteria. |
 | Resistance | The curve of total resistance against speed and its parts (4.7). |
+| Seakeeping | The ship motions in regular waves, and in a sea state: statistics, motion limits, limiting wave height and motion sickness (4.8). |
+| What if | A window that scales the blocks linked to one requirement to a target between the shall and the should, compares the result with the original and keeps up to five variants (4.10). |
+| Structure | The load, shear force and bending moment along the ship, the rule section modulus, a midship section, the local plate and stiffener sizes and a steel weight (4.9). |
 
 ### 6.2 PDF report
 
-**PDF** makes a design report. It has the title page with the perspective view and the key figures and assessment, then the views (top, side, front), the requirements, the systems with area and volume, the gross tonnage, the hulls, the weight and centres of gravity, the floating condition, the hydrostatics and stability (with the GZ curve), the resistance, the assumptions and limits, and an appendix with all blocks. All pages are portrait, and the wide tables are rotated.
+**PDF** makes a design report. It has the title page with the perspective view and the key figures and assessment, then the views (top, side, front), the requirements, the systems with area and volume, the gross tonnage, the hulls, the weight and centres of gravity, the floating condition, the hydrostatics and stability (with the GZ curve), the resistance, the seakeeping, the assumptions and limits, and an appendix with all blocks. All pages are portrait, and the wide tables are rotated.
 
 ![First page of the PDF report.](img/10-pdf-page1.png)
 
-*Figure 9. First page of the PDF report.*
+*Figure 11. First page of the PDF report.*
 
 ### 6.3 General arrangement drawing
 
-**GA drawing** makes A3 sheets with the profile, a section, tables, the deck plans and, when there is a hull, the lines plan. It can be saved as a PDF, or as a DXF at full size in millimetres, to plot at the scale given on each sheet.
+**GA drawing** makes A3 sheets with the profile, a section, tables, the deck plans and, when there is a hull, the lines plan. It can be saved as a PDF, or as a DXF at full size in millimetres, to plot at the scale given on each sheet. The scale is chosen so that the length, the height and the beam fit the sheet, which also holds for wide multihulls.
 
 ![First sheet of the general arrangement drawing: profile, section and tables.](img/11-ga-sheet.png)
 
-*Figure 10. First sheet of the general arrangement drawing: profile, section and tables.*
+*Figure 12. First sheet of the general arrangement drawing: profile, section and tables.*
 
 ### 6.4 Excel workbook
 
-**XLSX** saves the project as a workbook with sheets Summary, Project, Output, Blocks, Weight, Hydrostatics, GZ, Resistance, Offsets and Requirements. The masses and totals are formulas, so changing a density or a fill in Excel updates the weights. The other sheets hold values from the app at the time of export.
+**XLSX** saves the project as a workbook with sheets Summary, Project, Output, Blocks, Weight, Hydrostatics, GZ, Resistance, Seakeeping, Structure (single hull), Variants (when variants are saved), Offsets and Requirements. The masses and totals are formulas, so changing a density or a fill in Excel updates the weights. The other sheets hold values from the app at the time of export.
 
 ### 6.5 Project file and tables
 
@@ -626,9 +761,35 @@ Gross tonnage is an estimate by the 1969 formula from the blocks that count as e
 - It gives the towing resistance only. There is no propulsion, no propeller or hull efficiency, and no sea margin.
 - Sea water of 1025 kg/m³ is used in this tab whatever the water density is set to.
 
-### 7.7 Software
+### 7.7 Seakeeping
 
-The app runs in the browser. The calculations are covered by an automatic test suite, and the Holtrop code is tested to give the same results as the Hull Generator code it was taken from. They have not been validated against model tests or ship trials. Check any result that matters with other tools before using it.
+- The method is a closed-form estimate for a ship taken as a box in deep water, and it gives a first estimate for comparing designs. It is less accurate outside its range, which the app marks in pink (4.8).
+- It is for one hull at a time. Seakeeping of multihulls is not possible.
+- The sea state is one spectrum and one heading. There is no scatter diagram and no long-term result. The bending moment is not given in a sea state.
+- The motion limits are RMS values from the literature, and they are guides, not rules. Lateral acceleration is not checked.
+- The motion sickness dose value is defined for 20 minutes to 6 hours. The incidence VI = MSDV/3 is a rough guide, and the incidence of motion sickness (MSI) is not calculated.
+
+### 7.8 Structure
+
+- The check is for one hull. Multihulls are not covered. The rules edition is that of 2015 for ships under 100 m, and a warning is given above 100 m.
+- The load uses the weights and the buoyancy at the floating position only. Other loading conditions (ballast, partly filled tanks, harbour) are not run, and the wave moment is the rule value, not a calculated one.
+- The block weight is spread uniformly over the length of the block, so the distribution is smooth where the real one is stepped.
+- The midship section is a box with sides of constant thickness: no bilge, sheer strake, girders, transverses or superstructure. The plate flange of a longitudinal is one stiffener spacing. Net thicknesses are those entered.
+- Local scantlings are checked at midship for the bottom, side and strength deck plating and longitudinals, the keel plate and the inner bottom minimum. Not covered: bulkheads, floors, girders, frames, tank structure, superstructure, buckling (Sec.12), shear strength, fatigue and finite element analysis.
+- The steel weight is a rough estimate. The allowance factor for the ends and the transverse structure is a guess to be set from similar ships.
+
+### 7.9 What if
+
+- The change is a scaling of the blocks linked to one requirement, with the hulls following. It is not a new design: nothing is re-arranged, and the machinery, tanks and structure keep their sizes unless they are linked to the requirement.
+- One requirement is changed at a time. Other requirements, including those on length, beam and gross tonnage, can become not met, and the table shows it.
+- Blocks with a typed weight and imported shapes keep their size. If the metric depends on them the target may not be reached, and a message says so.
+- The variants are at the level draught that carries their weight, with the weights of the blocks as given. The structure share, the resistance and the seakeeping are not recalculated for them; the variant is applied to the project to do that.
+- Epochs and eras (time-changing needs and contexts) are not modelled. The tab shows only how the ship could change to meet a different level of one requirement.
+- At most five variants are kept.
+
+### 7.10 Software
+
+The app runs in the browser. The calculations are covered by an automatic test suite, and the Holtrop and seakeeping code is tested against the web apps it was taken from. They have not been validated against model tests or ship trials. Check any result that matters with other tools before using it.
 
 ---
 
@@ -665,6 +826,21 @@ The app runs in the browser. The calculations are covered by an automatic test s
 | Sheer plan, half-breadth plan, body plan | The side view, the view from above, and the cross-sections of the hull. |
 | Froude number (Fn) | v / √(g · LWL). |
 | Imported shape (STL) | A mesh from an STL file, used as one block. |
+| Wave heading | Direction the waves come from, relative to the bow, in degrees: 180 is head waves, 0 is waves from astern (4.8). |
+| H_s, T_z, T_p | Significant wave height, mean zero-crossing period and peak period of a sea state. |
+| γ (peak factor) | Peak enhancement of the JONSWAP spectrum. 1 gives Pierson–Moskowitz, 3.3 is the usual value. |
+| RMS, significant, most probable maximum | Standard deviation of a response, twice that, and the largest amplitude expected in the duration, RMS √(2 ln N). |
+| Limiting H_s | The significant wave height at which a response reaches its limit. |
+| What if | A change of the ship to meet one requirement at a target between the shall and the should, by scaling the blocks linked to it (4.10). |
+| Variant | A what if saved in the project with an id (V1 to V5) and an optional name (4.10). |
+| Structure check | First check of the hull structure to the DNV rules (2015, ships under 100 m): bending moments, section modulus, midship section, local plate and stiffener sizes, steel weight (4.9). |
+| Sagging, hogging | Bending of the hull girder with the middle heavier than its buoyancy (sagging, positive) or lighter (hogging). |
+| M_SO, M_WO | DNV rule stillwater moment and wave bending moment amidships, in kN·m. |
+| Section modulus Z | Modulus of the midship section at deck or bottom, cm³, required as (M_S + M_W)/175, and not less than Z_0. |
+| Material factor f1 | Steel strength grade factor: NV-NS 1.00 to NV-40 1.47. |
+| Service area | R0 to RE, a restriction that reduces the wave moment and the dynamic pressures. |
+| Corrosion addition t_k | Thickness in mm added to every required thickness. |
+| MSDV, VI | Motion sickness dose value, in m/s^1.5, and vomiting incidence VI = MSDV/3 in % (ISO 2631-1). |
 
 The same terms, with more detail, are in the **How to** window of the app, under **Glossary**. Hovering over a table heading shows a short explanation.
 
@@ -693,13 +869,13 @@ Keys work when no text field is focused. In the Hull view, F fits the hull, M ma
 
 ### 8.3 File formats
 
-**Project file (JSON).** *Save* writes a text file with the format name `dbb-block-editor` and a version number (2). It holds the name, the groups, the requirements, the blocks (id, name, group, shape, size, position, rotation, density, fill, mass override, free surface, deck, GT, area override), the imported shapes used by the blocks, the water density, the draught, the Float switch, the resistance settings, the structure share, and the hulls. A curves hull also holds its curves (`hullGen`) and slider values (`hullGenParams`). A summary of the computed results (weight, hydrostatics, stability) is written too, for reading by other programs, and is ignored on opening. Units are metres, tonnes and degrees. Axes: x forward from the aft end, y to port from the centreline, z up from the baseline. Block positions are block centres, and rotation is Euler XYZ in degrees. A file with a newer version number opens with a warning, and unreadable parts are skipped with a message.
+**Project file (JSON).** *Save* writes a text file with the format name `dbb-block-editor` and a version number (2). It holds the name, the groups, the requirements, the blocks (id, name, group, shape, size, position, rotation, density, fill, mass override, free surface, deck, GT, area override), the imported shapes used by the blocks, the water density, the draught, the Float switch, the resistance settings, the seakeeping settings, the structure share, and the hulls. A curves hull also holds its curves (`hullGen`) and slider values (`hullGenParams`). A summary of the computed results (weight, hydrostatics, stability) is written too, for reading by other programs, and is ignored on opening. Units are metres, tonnes and degrees. Axes: x forward from the aft end, y to port from the centreline, z up from the baseline. Block positions are block centres, and rotation is Euler XYZ in degrees. A file with a newer version number opens with a warning, and unreadable parts are skipped with a message.
 
 **Table of offsets (CSV).** The first row has the stations (m, from the aft end), the first column has the heights (m, from the baseline), and the cells hold the half-breadths in metres. A blank cell means no hull. Two layouts are read, and the Offsets window copies the other one (Appendix B).
 
 **STL.** ASCII or binary STL. The unit of the file (mm, cm, m or inch) is chosen on import, and the mesh is reduced.
 
-**Excel workbook (XLSX).** The sheets are Summary, Project, Output, Blocks, Weight, Hydrostatics, GZ, Resistance, Offsets and Requirements (6.4).
+**Excel workbook (XLSX).** The sheets are Summary, Project, Output, Blocks, Weight, Hydrostatics, GZ, Resistance, Seakeeping, Structure, Variants, Offsets and Requirements (6.4).
 
 **PDF report and GA drawing.** PDF pages are portrait, with wide tables rotated. The GA drawing is saved as PDF or as DXF at full size in millimetres (6.2, 6.3).
 
@@ -764,7 +940,9 @@ R_T = (1 + k₁) R_F + R_APP + R_W + R_B + R_TR + R_A
 
 with R_APP = 0 because no appendages are included.
 
-The formulation follows the ShipLab Holtrop web app (Flor, Monteiro and Gaspar), and the app's code gives the same results as the Hull Generator code it was taken from (checked by a test).
+The formulation follows the ShipLab Holtrop web app (Flor, Monteiro and Gaspar), and the app's code gives the same results as that code (checked by a test).
+
+**References for Appendix A**: as for 4.7.
 
 ---
 
@@ -850,7 +1028,7 @@ For each height, the app finds the first and last station with hull. These are t
 
 ![The Offsets window of the feeder, with 20 stations and 10 heights.](img/09-offsets.png)
 
-*Figure 11. The Offsets window of the feeder, with 20 stations and 10 heights.*
+*Figure 13. The Offsets window of the feeder, with 20 stations and 10 heights.*
 
 **Excel and PDF.** The Excel workbook has an *Offsets* sheet with one such table for each hull, and the PDF report has the table of offsets in the section on the hulls.
 
@@ -888,8 +1066,10 @@ For each height, the app finds the first and last station with hull. These are t
 | `waterline` | Whether the waterline is drawn in 3D. |
 | `float` | The Float switch. |
 | `resistance` | Settings of the Resistance tab. |
+| `seakeeping` | Settings of the Seakeeping tab (C.7). |
 | `structurePercent` | Structure and outfitting as a percentage of the displacement (25 as default). |
 | `weight` | Totals of the weight calculation. For information only. |
+| `variants` | The saved what if variants, up to five: `id`, `name`, the requirement, the target, the scaled directions, the numbers and the full project of the variant. |
 | `hulls` | The hulls. |
 | `blocks` | The blocks. |
 
@@ -938,6 +1118,8 @@ Each requirement has `id`, `name`, `metric`, `sense`, `shall` and `should`. The 
 
 `resistance` holds `serviceSpeed` (knots, or `null` for the speed at Fn = 0.2), `afterbody` (1 to 4: pram with gondola, V-shaped, normal, U-shaped with Hogner stern), `transom` (true or false) and `bulb` (true if a bulb is assumed).
 
+`seakeeping` holds the settings of the Seakeeping tab. Every field can be `null`, which gives the default in brackets. For the regular waves: `heading` (degrees, 150), `waveAmplitude` (m, 1), `position` (% of half the length, 100), `damping` (% of critical, 20), `prismaticLengthRatio` (0.6), `rollPeriod` (s, or `null` for 0.85 B / √GM) and `gm` (m, or `null` for the Hydrostatics value). For the sea state: `hs` (m, 3), `period` (s, 8), `periodType` (`"Tz"` or `"Tp"`), `gamma` (1 to 6, 3.3) and `hours` (3). For the limits: `limitAcceleration` (g, RMS), `limitRoll` and `limitPitch` (degrees, RMS), `limitMsdv` (m/s^1.5) and `limitSet` (the identifier of the preset chosen, or `"own"`). The speed is the service speed of `resistance`.
+
 ### C.8 Rules when a file is opened
 
 The app reads the file with care and does not stop for most errors. It uses the following rules, and lists what it changed in a message.
@@ -956,4 +1138,122 @@ The app reads the file with care and does not stop for most errors. It uses the 
 A minimal file needs `app`, `version`, a list of `groups` and a list of `blocks`. Everything else takes defaults. A program that writes a file can leave out the `computed`, `weight`, `shapes`, `units` and `axes` fields.
 
 
-**References for Appendix A**: as for 4.7.
+---
+
+## Appendix D. Seakeeping formulas as used in the app
+
+Symbols: L = LWL, B₀ = BWL, T = draught, C_b and C_wp from the hydrostatics, B = B₀ C_b (breadth of the box), ρ = 1025 kg/m³, g = 9.81 m/s², V the speed in m/s, Fn = V / √(g L), β the wave heading (180° head waves), a the wave amplitude, ω the wave frequency in rad/s. The formulas are those of Jensen, Mansour and Olsen (2004), in the form of the ShipLab ship motion web app.
+
+**Wave and encounter**
+
+- Wave number k = ω² / g, k_e = |k cos β|, and α = 1 − Fn √(kL) cos β
+- Encounter frequency ω_e = ω α
+- Sectional damping term N = 2 sin(½ k B α²) exp(−k T α²)
+
+**Heave, pitch, vertical motion and acceleration**
+
+- f = √[(1 − kT)² + (N² / (k B α³))²]
+- Wave force on heave F = e^(−kT) f · [2 / (k_e L)] sin(k_e L / 2)
+- Wave moment on pitch G = e^(−kT) f · [24 / ((k_e L)² L)] [sin(k_e L / 2) − (k_e L / 2) cos(k_e L / 2)]
+- Dynamic factor η = 1 / √[(1 − 2 k T α²)² + (N² / (k B α²))²]
+- Heave h = a η |F| and pitch angle θ = a η |G| (radians; shown in degrees)
+- Vertical motion at the distance x from the centre of gravity, x = L · pos / 200: z = √(h² + θ² x²)
+- Vertical acceleration at that position: a_z = α² k g z
+- Pitch motion at the position: θ x
+
+**Wave bending moment at midship**
+
+- φ = 2.5 (1 − max(0.6, C_b)), F_Cb = (1 − φ)² + 0.6 α (2 − φ), F_v = 1 + 3 Fn²
+- M = a e^(−kT) {(1 − kT) / (k_e L)²} [1 − cos(k_e L / 2) − (k_e L / 4) sin(k_e L / 2)] F_v F_Cb |cos β|^(1/3) ρ g B₀ L², in N·m (shown in 10⁶ N·m)
+
+**Roll.** The ship is two prismatic bodies of the same draught, the first of length δ L and breadth B₀, the second narrower. With δ the prismatic length ratio:
+
+- b_r = (C_wp − δ) / (1 − δ), B₁ = b_r B₀, A₀ = C_b B₀ T / (δ + b_r (1 − δ)), A₁ = b_r A₀
+- Sectional damping of body i (i = 0, 1): b_i = ρ A_i B_i² c_a exp(c_b ω_e^(−1.3)) ω_e^(c_d) / √(B_i / (2g)), with, for B_i / T = r: if r > 3, c_a = 0.256 r − 0.286, c_b = −0.11 r − 2.55, c_d = 0.033 r − 1.419; otherwise c_a = −3.94 r + 13.69, c_b = −2.12 r − 1.89, c_d = 1.16 r − 7.97
+- d_r = √(b₁ / b₀) and wave damping B₄₄ = L b₀ [δ + (b₁ / b₀)(1 − δ)]
+- Restoring C₄₄ = ρ g C_b L B₀ T GM, and total damping B_t = B₄₄ + C₄₄ T_n ζ / π, with T_n the natural roll period and ζ the extra damping as a fraction of critical
+- Excitation, beam waves: E = √(ρ g² b₀ / ω_e) [δ + d_r (1 − δ)] L
+- Excitation otherwise: E = |sin β| √(ρ g² / ω_e) √b₀ (2 / k_e) √(s₁ + s₂ + s₃), with s₁ = sin²(δ L k_e / 2), s₂ = d_r² sin²((1 − δ) L k_e / 2), s₃ = 2 d_r sin(δ L k_e / 2) sin((1 − δ) L k_e / 2) cos(L k_e / 2)
+- Roll angle φ_r = a E / √[(1 − (ω_e T_n / 2π)²)² C₄₄² + (ω_e B_t)²], in radians (shown in degrees). It is not defined when ω_e ≤ 0.
+
+**Wave spectrum.** With γ the peak factor, T_s the mean period and H_s the significant wave height:
+
+- T_s = T_z √[(10.89 + γ)(5 + γ)] / (6.774 + γ)
+- F₁ and F₂ depend on γ: for γ ≤ 2, F₁ = 0.24γ + 0.76 and F₂ = −0.05γ + 1.05; for 2 < γ ≤ 3, F₁ = 0.22γ + 0.80 and F₂ = −0.02γ + 0.99; for 3 < γ ≤ 4, F₁ = 0.20γ + 0.86 and F₂ = −0.02γ + 0.99; for 4 < γ ≤ 5, F₁ = 0.20γ + 0.86 and F₂ = −0.01γ + 0.95; for γ > 5, F₁ = 0.18γ + 0.96 and F₂ = −0.01γ + 0.95
+- With T = F₂ T_s and x = 0.206 T ω: S(ω) = 173 H_s² T⁻⁴ ω⁻⁵ exp(−692 (T ω)⁻⁴) / F₁ · γ^exp[−½ ((x − 1) / σ)²], with σ = 0.07 for x ≤ 1 and 0.09 otherwise
+- The spectrum is multiplied by a constant so that ∫ S dω = H_s² / 16. The peak period T_p is found numerically from the maximum of S.
+
+**Statistics of a response Φ (per metre of wave)**
+
+- m₀ = ∫ Φ² S dω and m₂ = ∫ ω_e² Φ² S dω, summed over 0.05 to 2.0 rad/s in 1001 steps, with no contribution where Φ is not defined
+- RMS = √m₀, significant = 2 RMS, T_r = 2π √(m₀ / m₂), N = 3600 · hours / T_r
+- Most probable maximum = RMS √(2 ln N), with N not less than 3
+- Limiting H_s = H_s · limit / RMS
+
+**Motion sickness**
+
+- The weighting W_f(s) = H_h H_l H_t H_s with s = i 2π f, f = ω_e / 2π in Hz. H_h = s² / (s² + ω₁ s / Q₁ + ω₁²) with f₁ = 0.08 Hz; H_l = ω₂² / (s² + ω₂ s / Q₂ + ω₂²) with f₂ = 0.63 Hz; Q₁ = Q₂ = 1/√2; H_t = ω₄² / (s² + ω₄ s / Q₄ + ω₄²) with f₄ = 0.25 Hz and Q₄ = 0.86; H_s = (s² + ω₅ s / Q₅ + ω₅²) / (s² + ω₆ s / Q₆ + ω₆²) with f₅ = 0.0605 Hz, f₆ = 0.10 Hz and Q₅ = Q₆ = 0.8. Here ω_j = 2π f_j. The magnitude |W_f| is 0.69 at 0.10 Hz, 1.02 at 0.175 Hz, 0.38 at 0.4 Hz and 0.08 at 0.7 Hz.
+- MSDV = √(3600 · hours) · √[Σ |W_f(ω_e / 2π)|² Φ_a² S Δω], with Φ_a the vertical acceleration per metre of wave, and VI = MSDV / 3 in %.
+
+**References for Appendix D.** Jensen, Mansour and Olsen (2004); ISO 2631-1 (1997); Rimell and Mansfield (2007); Taylor (2023). The full entries are in the references for 4.8.
+
+## Appendix E. Structure formulas as used in the app
+
+Units: m, t, kN, kN·m, N/mm², cm³. Section numbers refer to DNV Rules for Ships, Pt.3 Ch.2, January 2015.
+
+**E.1 Symbols**
+
+| Symbol | Meaning |
+|---|---|
+| L | rule length, 0.96 L_WL |
+| B, D, T | waterline breadth, depth, draught |
+| C_B | V / (L B T) |
+| C_W | 0.0792 L |
+| f1 | material factor, Sec.2 B200 |
+| t_k | corrosion addition |
+| s, l | stiffener spacing and span, m |
+| k_a | (1.1 − 0.25 s/l)², between 0.72 and 1.0 |
+| σ | allowable stress, N/mm² |
+| p | design pressure, kN/m² |
+
+**E.2 Longitudinal strength (Sec.4)**
+
+- M_SO = 0.0052 L³ B (C_B + 0.7)
+- M_WO = 0.11 C_W L² B (C_B + 0.7) sagging; 0.19 C_W L² B C_B hogging (C_B ≥ 0.6)
+- With service area reduction r (Table C1): C_W is multiplied by 1 − 2r
+- Z = (M_S + M_W) / 175 × 10³ (C101); Z_0 = C_WO L² B (C_B + 0.7), C_WO = 5.7 + 0.022 L ≥ 7.0 times 1 − r, C_B ≥ 0.5 (C104)
+- A = 0.11 L² B / D (C105)
+
+**E.3 Pressures (Sec.5 B101, Sec.6 B100, Sec.7 B100)**
+
+- p_dp = p_l + 135 y / (B + 75) − 1.2 (T − z), p_l = k_s C_W + k_f, k_s = 2 at midship, k_f = min(T, D − T, 0.8 C_W)
+- p_l is multiplied by 0.8 + 0.15 V/√L when V/√L > 1.5 (V in knots)
+- Bottom and side below the waterline: p1 = 10 h_0 + p_dp; side above it: p2 = max(p_dp − (4 + 0.2 k_s) h_0, 6.25 + 0.025 L)
+- Weather deck: p1 = 0.8 (p_dp − (4 + 0.2 k_s) h_0), not less than 5.0
+- Service area: C_W in p_l reduced by 0, 10, 20, 30, 40 or 50% (Table B2, Sec.3 B1103)
+
+**E.4 Plating (Sec.3 B400)**
+
+- t = 15.8 k_a s √(p / (σ f1)) + t_k; t_min = t_0 + k L / √f1 + t_k
+- Bottom: σ = 120, t_0 = 5.0, k = 0.04; keel plate t = 7.0 + 0.05 L + t_k, breadth 800 + 5 L mm
+- Side: σ = 120, t_0 = 5.0, k = 0.04
+- Deck: σ = 120, t_0 = 5.5, k = 0.02 (single continuous deck)
+- Inner bottom minimum: 5.0 + 0.03 L + t_k
+
+**E.5 Longitudinals (Sec.5, 6, 7)**
+
+- Z = 83 l² s p / (σ f1), at least 15 cm³
+- σ = 95 + 65 min(1, max(0, Z_A / Z_R − 1)) at deck or bottom within 0.4 L, 160 within 0.25 D of the neutral axis, linear between
+- Web and flange thickness at least the larger of 4.5 + 0.01 L + t_k and 1.5 + h_w / g + t_k, g = 75 for T profiles and 22 for flat bars
+
+**E.6 Midship section**
+
+The parts are plates and longitudinals as rectangles with their own inertia. The neutral axis is the area-weighted mean height, I the sum of own inertia and area times the squared distance, and Z_deck = I / (D − z_NA), Z_bottom = I / z_NA. A stiffener with plate flange is checked at the flange and at the plate, the smaller modulus is used.
+
+**E.7 Load curves**
+
+With weight w(x) and buoyancy b(x) in t/m on strips of width Δx, the load is q = w − b, the shear force F(x) = g ∫q dx and the moment M(x) = ∫F dx, with g = 9.80665 m/s². The linear end residual is removed from F and then from M.
+
+**References for Appendix E**
+
+- DNV (2015). *Rules for Classification of Ships, Part 3 Chapter 2: Hull structural design, ships with length less than 100 metres*. Det Norske Veritas AS, January 2015.

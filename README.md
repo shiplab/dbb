@@ -1,6 +1,6 @@
 # Ship Design Building Block Editor
 
-**A small 3D editor for teaching early-stage ship design, inspired by the Design Building Block (DBB) approach.**
+**A small 3D editor for teaching early-stage ship design.**
 
 **Open the app: https://shiplab.github.io/dbb/**
 
@@ -10,9 +10,7 @@
 
 ## What it is
 
-The Design Building Block (DBB) approach builds a ship design from physical blocks (volumes and areas) that are grouped by function and linked to requirements. This app is a deliberately simple "Tinkercad for DBB". You place and shape blocks in 3D, give each one a group, a requirement and a density, and the tables sum up volume, area, weight and centres of gravity. An illustrative hull, floating at the weight, gives a first check of draught, trim, heel and initial stability.
-
-It is an editor and calculator for the early stage. In a course it fits after Systems Based Ship Design (SBSD): the spaces that come out of the system breakdown become the first blocks.
+The Ship Design Building Block Editor is an app for early-stage ship design, inspired by the Design Building Block (DBB) approach. Spaces and systems are modelled as blocks in 3D; the app sums volume, area, weight and centres of gravity by system, checks them against shall and should requirements, floats the design on an illustrative hull that you can reshape with curves in the hull view, gives its hydrostatics and initial stability (GM), estimates the gross tonnage and writes a PDF report. You can bring in your own shapes as STL files.
 
 ## What it does
 

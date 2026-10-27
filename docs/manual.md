@@ -1,6 +1,6 @@
 # Ship Design Building Block Editor: Manual
 
-**Version 1.1.0 · October 2026**
+**Version 1.2.0 · October 2026**
 Henrique M. Gaspar, NTNU · https://shiplab.github.io/dbb/
 
 > **Educational use only.** This tool is made for teaching and for early concept exploration. The hulls are illustrative, not real lines, and the weights, hydrostatics, stability and resistance are simplified estimates. The results must not be used for design approval, class or flag-state documentation, or any safety-critical decision. The software is provided as it is, without warranty.
@@ -581,7 +581,11 @@ The What if tab proposes changes to the ship so that one requirement is met, and
 
 **Result.** The changed ship is settled at its own level draught. The 3D view shows the original in a light colour beside the variant, and the original can be switched off. A table gives weight, draught, trim, heel, GM, gross tonnage, the main dimensions (length overall and at the waterline, beam, depth, displacement, L/B, B/T, L/D), the coefficients (C_B, C_M, C_P, C_WP, LCB and KB) and the value and status of every requirement. Bar plots show the change in percent against the original, and the value of each requirement against its shall and should lines.
 
-**Saved variants.** A variant is saved with **Save**, with an optional name, and gets an id (V1 to V5). Up to five are kept in the project, and the tab shows their number. Saved variants are compared in the same table, plots and 3D view, can be shown or hidden one by one, applied to the project with **Apply**, and deleted. They are stored in the project file (Appendix C), and the PDF report and the Excel workbook list the original and the variants side by side. They are not part of undo.
+**Saved variants.** A variant is saved with **Save**, with an optional name, and gets an id (V1 to V5). Up to five are kept in the project, and the tab shows their number. Saved variants are compared in the same table, plots and 3D view, can be shown or hidden one by one, applied to the project with **Apply**, and deleted. They are stored in the project file (Appendix C), and the PDF report and the Excel workbook list the original and the variants side by side.
+
+**Pictures in the report.** The PDF report shows a small 3D picture of the original and of each saved variant, with its length, beam and depth, L/B, B/T, L/D, weight, draught and GM, followed by the comparison table. When no variant is saved, the report says so and shows instead the options that the What if tab offers for its requirement (to the shall, midway and to the should).
+
+**What the requirements ask.** The PDF report also has a table, worked out when the report is made, of the ship with the blocks linked to each requirement scaled in length (or in its own direction, for length, beam and height) to the shall and to the should: the change in weight, the length, beam, draught, GM and the other requirements that are then not met. To keep the report quick, at most six requirements are taken (about half a second to a second for each target), and the rest are listed as not computed. They are not part of undo.
 
 ![The What if window: the original (light) and two saved variants of the container ship with the table of weight, stability and dimensions.](img/14-what-if.png)
 

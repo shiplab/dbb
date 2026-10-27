@@ -4136,7 +4136,7 @@ body.wvopen { overflow: hidden; }
   function bin2u8(s) { var a = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) a[i] = s.charCodeAt(i) & 255; return a; }
   function u82bin(u) { var s = '', k = 0x8000; for (var i = 0; i < u.length; i += k) s += String.fromCharCode.apply(null, u.subarray(i, i + k)); return s; }
   var PW = 595.28, PH = 841.89;
-  var APP_VERSION = '1.1.0', APP_URL = 'https://shiplab.github.io/dbb/';
+  var APP_VERSION = '1.2.0', APP_URL = 'https://shiplab.github.io/dbb/';
   /* the stamp on exports: date and time (computer clock, with its UTC offset), the tool, its version and its address */
   function stampText(d) {
     d = d || new Date();
@@ -4690,23 +4690,63 @@ body.wvopen { overflow: hidden; }
       if (stp.warnings.length) para('Warning: ' + stp.warnings.join(' '), 8, '#8a5a00');
     }
 
-    // ----- what if: saved variants
-    if ((model.variants || []).length && (model.hulls || []).length) {
-      var wcp = wiCols(model), nwc = wcp.length;
-      ensure(200);
-      heading('What if: saved variants', 'The original and the variants saved in the What if window: the blocks linked to one requirement are scaled to a target. Each design is at the level draught that carries its weight.');
-      var wcol = [{ t: 'Item', w: 30 }].concat(wcp.map(function (q) { return { t: q.label, w: 70 / nwc, a: 'r' }; }));
-      var wrw = [{ cells: ['What was changed', 'None'].concat(wcp.slice(1).map(function (q) { return wiRecipe(q.rec); })) }];
+    // ----- what if: the original with the saved variants, or with the options of the What if tab
+    var wsh = o.whatIfShow || null, wit = wsh ? wsh.items : ((model.variants || []).length && (model.hulls || []).length ? wiCols(model).map(function (q) { return { label: q.label, sub: q.rec ? wiRecipe(q.rec) : '', snap: q.snap, img: null }; }) : []);
+    if (wit.length > 1) {
+      var wsaved = wsh ? wsh.saved : true, nwc = wit.length;
+      ensure(250);
+      heading(wsaved ? 'What if: saved variants' : 'What if: options', wsaved ? 'The original and the variants saved in the What if window: the blocks linked to one requirement are scaled to a target. Each design is at the level draught that carries its weight.' : 'No variant is saved in this project. These are the options the What if tab offers for ' + wsh.reqName + ': the blocks linked to it are scaled in length to the shall, midway and the should (a target equal to the original is left out). Save variants in the What if tab to have your own here.');
+      if (wit.some(function (q) { return q.img; })) {
+        var per = Math.min(nwc, 3), cw = (CW - (per - 1) * 8) / per, k, ih0 = 0;
+        wit.forEach(function (q) { if (q.img) ih0 = Math.max(ih0, cw * q.img.h / q.img.w); });
+        for (k = 0; k < nwc; k += per) {
+          ensure(ih0 + 62);
+          wit.slice(k, k + per).forEach(function (q, j) {
+            var x = M + j * (cw + 8), s = q.snap, yy = y;
+            if (q.img) { var ii = doc.addImage(q.img.jpeg, q.img.w, q.img.h), hh = cw * q.img.h / q.img.w; doc.image(ii, x, yy, cw, hh); doc.rect(x, yy, cw, hh, { stroke: LINE }); }
+            yy += ih0 + 9;
+            doc.text(x, yy, q.label, { size: 8, bold: true }); yy += 9;
+            wrap(q.sub || ' ', cw, 6.5, false).slice(0, 2).forEach(function (ln) { doc.text(x, yy, ln, { size: 6.5, color: DIM }); yy += 8; });
+            doc.text(x, yy, 'L x B x D  ' + f(s.loa, 1) + ' x ' + f(s.beam, 1) + ' x ' + f(s.depth, 1) + ' m', { size: 6.5 }); yy += 8;
+            doc.text(x, yy, 'L/B ' + f(s.LB, 2) + '   B/T ' + f(s.BT, 2) + '   L/D ' + f(s.LD, 1), { size: 6.5 }); yy += 8;
+            doc.text(x, yy, f(s.weight, 0) + ' t   T ' + f(s.draught, 2) + ' m   GM ' + f(s.GM, 2) + ' m', { size: 6.5 });
+          });
+          y += ih0 + 56;
+        }
+      }
+      var wcol = [{ t: 'Item', w: 30 }].concat(wit.map(function (q) { return { t: q.label, w: 70 / nwc, a: 'r' }; }));
+      var wrw = [{ cells: ['What was changed', 'None'].concat(wit.slice(1).map(function (q) { return q.sub; })) }];
       WI_ROWS.forEach(function (rw) {
         if (rw[0] === 's') { wrw.push({ cells: [rw[1]], bold: true }); return; }
         if (['weight', 'draught', 'trim', 'GM', 'loa', 'beam', 'depth', 'disp', 'Cb'].indexOf(rw[1]) < 0) return;
-        wrw.push({ cells: [rw[0] + (rw[3] ? ' (' + rw[3] + ')' : '')].concat(wcp.map(function (q) { return q.snap[rw[1]] == null ? '-' : f(q.snap[rw[1]], rw[2]); })) });
+        wrw.push({ cells: [rw[0] + (rw[3] ? ' (' + rw[3] + ')' : '')].concat(wit.map(function (q) { return q.snap[rw[1]] == null ? '-' : f(q.snap[rw[1]], rw[2]); })) });
       });
       wrw.push({ cells: ['Requirements'], bold: true });
       model.requirements.forEach(function (rq) {
-        wrw.push({ cells: [rq.name].concat(wcp.map(function (q) { var x = (q.snap.reqs || []).filter(function (z) { return z.id === rq.id; })[0]; return x ? f(x.achieved, 1) + ' ' + (x.status === 'ok' ? 'met' : x.status === 'excess' ? 'excess' : x.status === 'fail' ? 'NOT MET' : '') : '-'; })) });
+        wrw.push({ cells: [rq.name].concat(wit.map(function (q) { var x = (q.snap.reqs || []).filter(function (z) { return z.id === rq.id; })[0]; return x ? f(x.achieved, 1) + ' ' + (x.status === 'ok' ? 'met' : x.status === 'excess' ? 'excess' : x.status === 'fail' ? 'NOT MET' : '') : '-'; })) });
       });
       table(wcol, wrw, { size: 7.5, keep: true });
+    }
+
+    // ----- what if: what each requirement would ask (computed by the app, optional)
+    if (o.whatIfAuto && o.whatIfAuto.rows && o.whatIfAuto.rows.length) {
+      var wa = o.whatIfAuto, b0 = wa.base;
+      ensure(Math.min(560, 70 + wa.rows.length * 14));
+      heading('What if: what the requirements ask', 'For each requirement, the ship with the blocks linked to it scaled in length (or in its own direction, for length, beam and height) to the shall and to the should. Each ship is at its level draught. One requirement is changed at a time.');
+      var wrows = [], lastReq = '';
+      wa.rows.forEach(function (r) {
+        var un = METRICS[r.metric] ? METRICS[r.metric].unit : '';
+        if (r.reqId !== lastReq) { lastReq = r.reqId; wrows.push({ cells: [r.reqName + ' (now ' + f(r.current, 1) + ' ' + un + ')', '', '', '', '', '', ''], bold: true }); }
+        var lab = (r.kind === 'shall' ? 'To the shall ' : 'To the should ') + f(r.target, 1) + ' ' + un;
+        if (r.same) { wrows.push({ cells: [lab, 'already', '', '', '', '', ''], indent: 1 }); return; }
+        if (r.skipped) { wrows.push({ cells: [lab, 'not computed', '', '', '', '', ''], indent: 1 }); return; }
+        if (!r.after) { wrows.push({ cells: [lab, r.reason || 'not possible', '', '', '', '', ''], indent: 1 }); return; }
+        var nm = (r.after.reqs || []).filter(function (x) { return x.id !== r.reqId && x.status === 'fail'; }).map(function (x) { var q = model.requirements.filter(function (z) { return z.id === x.id; })[0]; return q ? q.name : x.id; });
+        var dw = r.after.weight - b0.weight;
+        wrows.push({ cells: [lab, (dw >= 0 ? '+' : '') + f(dw, 0) + ' t', f(r.after.loa, 1), f(r.after.beam, 2), f(r.after.draught, 2), f(r.after.GM, 2), nm.length ? nm.join(', ') : 'none'], indent: 1 });
+      });
+      table([{ t: 'Target', w: 29 }, { t: 'Weight', w: 10, a: 'r' }, { t: 'LOA (m)', w: 9, a: 'r' }, { t: 'Beam (m)', w: 9, a: 'r' }, { t: 'Draught (m)', w: 10, a: 'r' }, { t: 'GM (m)', w: 8, a: 'r' }, { t: 'Other requirements not met', w: 25 }], wrows, { size: 7.5, keep: true });
+      para('Original: weight ' + f(b0.weight, 0) + ' t, LOA ' + f(b0.loa, 1) + ' m, beam ' + f(b0.beam, 2) + ' m, draught ' + f(b0.draught, 2) + ' m, GM ' + f(b0.GM, 2) + ' m.' + (wa.skipped ? ' ' + wa.skipped + ' more requirement' + (wa.skipped > 1 ? 's were' : ' was') + ' not computed (limit of the report).' : ''), 8);
     }
 
     // ----- assumptions
@@ -7119,7 +7159,7 @@ body.wvopen { overflow: hidden; }
     var v = res.model, notes = [];
     if (Math.abs(a - target) > 1e-3 * Math.abs(target)) notes.push('Blocks with a typed weight or an imported shape do not scale, so the target is reached only to ' + (a >= target ? '+' : '−') + (Math.abs(a - target) / target * 100).toFixed(1) + '%.');
     var s = settleCopy(v); v.draught = s.draught; syncDraught(v);
-    var before = wiSnapshot(model), after = wiSnapshot(v);
+    var before = (model.__wiBefore) || wiSnapshot(model), after = wiSnapshot(v);
     return { ok: true, all: all, model: v, req: r, axes: ticked, factor: res.s, target: target, achieved: a, before: before, after: after, notes: notes };
   }
   function settleCopy(m) { var c = wiClone(m); if ((c.hulls || []).length) settle(c); return c; }
@@ -7152,6 +7192,35 @@ body.wvopen { overflow: hidden; }
     });
     return out;
   }
+  /* What if for the report: for each requirement that can be scaled, what the ship would need to meet the shall and the should
+     (one direction, L, or the own direction of a length, beam or height). Limited to maxReq requirements and a time budget. */
+  function wiAuto(model, opt) {
+    opt = opt || {};
+    var maxReq = opt.maxReq || 6, budget = opt.budgetMs || 15000, t0 = Date.now(), rows = [], skipped = 0, n = 0;
+    if (!(model.hulls || []).length) return { rows: rows, skipped: 0 };
+    var base = wiSnapshot(model), cur = evaluateRequirements(model);
+    model.__wiBefore = base;
+    try {
+      model.requirements.forEach(function (r) {
+        var okm = ['volume', 'area', 'mass', 'length', 'beam', 'height', 'totalmass', 'gt'].indexOf(r.metric) >= 0;
+        if (!okm || (r.shall == null && r.should == null)) return;
+        if (n >= maxReq) { skipped++; return; }
+        n++;
+        var A0 = cur.filter(function (e) { return e.req.id === r.id; })[0].achieved, axes = r.metric === 'beam' ? { B: true } : r.metric === 'height' ? { D: true } : { L: true };
+        [['shall', r.shall], ['should', r.should]].forEach(function (k) {
+          if (k[1] == null || !(k[1] > 0)) return;
+          var row = { reqId: r.id, reqName: r.name, metric: r.metric, kind: k[0], target: k[1], current: A0, base: base };
+          if (Math.abs(k[1] - A0) <= 0.005 * Math.abs(A0)) { row.same = true; rows.push(row); return; }
+          if (Date.now() - t0 > budget) { row.skipped = true; rows.push(row); return; }
+          var w = whatIf(model, r.id, k[1], axes);
+          if (!w.ok) row.reason = w.reason; else { row.after = w.after; row.axes = w.axes; row.notes = w.notes; }
+          rows.push(row);
+        });
+      });
+    } finally { delete model.__wiBefore; }
+    return { rows: rows, skipped: skipped, base: base };
+  }
+
   /* the rows of the comparison of the original with the saved variants (What if), used by the app, the PDF report and the Excel file */
   var WI_ROWS = [['s', 'Weight and stability'], ['Weight', 'weight', 0, 't'], ['Draught', 'draught', 2, 'm'], ['Trim', 'trim', 2, 'm'], ['Heel', 'heel', 2, 'deg'], ['GM', 'GM', 2, 'm'], ['Gross tonnage (estimate)', 'GT', 0, 'GT'],
     ['s', 'Main dimensions'], ['Hull length (LOA)', 'loa', 1, 'm'], ['Length at the waterline', 'LWL', 1, 'm'], ['Hull beam', 'beam', 2, 'm'], ['Beam at the waterline', 'BWL', 2, 'm'], ['Depth', 'depth', 2, 'm'], ['Displacement', 'disp', 0, 't'], ['L/B (waterline)', 'LB', 2, ''], ['B/T', 'BT', 2, ''], ['L/D', 'LD', 2, ''],
@@ -7169,7 +7238,7 @@ body.wvopen { overflow: hidden; }
     blockWorldBox: blockWorldBox, envelope: envelope,
     defaultGroups: defaultGroups, groupMap: groupMap, groupOrder: groupOrder, groupPath: groupPath,
     isGroupVisible: isGroupVisible, descendantIds: descendantIds,
-    whatIf: whatIf, wiRange: wiRange, wiSnapshot: wiSnapshot, wiSave: wiSave, wiCols: wiCols, WI_ROWS: WI_ROWS, wiOpen: wiOpen, WI_MAX: WI_MAX,
+    whatIf: whatIf, wiRange: wiRange, wiSnapshot: wiSnapshot, wiSave: wiSave, wiCols: wiCols, wiAuto: wiAuto, wiRecipe: wiRecipe, WI_ROWS: WI_ROWS, wiOpen: wiOpen, WI_MAX: WI_MAX,
     modelStructure: modelStructure, stAutoSize: stAutoSize, stClean: stClean, stDefaults: stDefaults, stSection: stSection, stStiffenerZ: stStiffenerZ, stPdp: stPdp, stSea: stSea, stPlateT: stPlateT, stZreq: stZreq, stStiffenerZ: stStiffenerZ, ST_GRADES: ST_GRADES, ST_AREAS: ST_AREAS,
     summarize: summarize, weightSummary: weightSummary, blockMass: blockMass, blockCentroid: blockCentroid, groupDensity: groupDensity, hullCentroid: hullCentroid, SHAPE_CENTROID: SHAPE_CENTROID, DEFAULT_DENSITY: DEFAULT_DENSITY, DEFAULT_STRUCT_PCT: DEFAULT_STRUCT_PCT, evaluateRequirements: evaluateRequirements, blockReqs: blockReqs, hasReq: hasReq,
     emptyProject: emptyProject, exampleProject: withGT(withDeck(exampleProject), /^Open cargo deck$/), containerShipExample: withGT(withDeck(containerShipExample), /^Deck stack/), tankerExample: withDeck(tankerExample), ahtsExample: withGT(withDeck(ahtsExample), /^(Open working deck|Forward mooring deck)$/), cruiseShipExample: withGT(withDeck(cruiseShipExample), /^(Pool and sun deck|Funnel)$/), bulkCarrierExample: withDeck(bulkCarrierExample), sailingYachtExample: withGT(withDeck(sailingYachtExample), /^(Mast and rigging|Lead ballast)$/), simpleExample: withDeck(simpleExample), gunnerusExample: withGT(withDeck(gunnerusExample), /^Aft working deck$/), catamaranExample: withGT(withDeck(catamaranExample), /^Aft working deck$/), trimaranExample: withGT(withDeck(trimaranExample), /^Aft working deck$/), markedDeck: markedDeck,
@@ -7482,8 +7551,10 @@ var DBB_STL_PARTS = {"crane":{"id":"stl_ex_crane","label":"Deck crane","v":"7zp9
     sh.rect('TITLE', x, y, w, h);
     sh.line('TITLE', x, y + 28, x + w, y + 28); sh.line('TITLE', x, y + 14, x + w, y + 14); sh.line('TITLE', x + 120, y, x + 120, y + 14);
     sh.line('TITLE', x + 60, y, x + 60, y + 14);
-    sh.text('TEXT', x + 3, y + 31, stamp, 1.9, 'l');
-    sh.text('TEXT', x + 3, y + 22, model.name || 'Design', 5, 'l', true);
+    /* the stamp is long, so it goes on separate lines inside the box: date, tool and version, address */
+    String(stamp).replace(/ \u00b7 /g, '\n').replace(/\s{2,}/g, '\n').split('\n').filter(Boolean).slice(0, 3).forEach(function (ln, k, arr) { sh.text('TEXT', x + 3, y + 28 + 2.6 + (arr.length - 1 - k) * 3.2, ln, 1.9, 'l'); });
+    var nm = model.name || 'Design'; if (nm.length > 36) nm = nm.slice(0, 35) + '...';
+    sh.text('TEXT', x + 3, y + 22, nm, 5, 'l', true);
     sh.text('TEXT', x + 3, y + 16.5, sh.title.toUpperCase() + (sub ? '  ' + sub : ''), 3, 'l', true);
     sh.text('TEXT', x + 3, y + 8.5, 'SCALE', 1.6, 'l'); sh.text('TEXT', x + 3, y + 3.5, '1:' + sh.den + '  (A3)', 3, 'l', true);
     sh.text('TEXT', x + 63, y + 8.5, 'DATE', 1.6, 'l'); sh.text('TEXT', x + 63, y + 3.5, when || '', 3, 'l', true);
@@ -7703,8 +7774,19 @@ var DBB_STL_PARTS = {"crane":{"id":"stl_ex_crane","label":"Deck crane","v":"7zp9
   function toDXF(d) {
     var out = [], w = function (c, v) { out.push(String(c), String(v)); }, xoff = 0, offs = [];
     d.sheets.forEach(function (s) { offs.push(xoff); xoff += s.w * s.den + 0.1 * s.w * s.den; });
-    w(0, 'SECTION'); w(2, 'HEADER'); w(9, '$ACADVER'); w(1, 'AC1009'); w(9, '$INSUNITS'); w(70, 4); w(9, '$MEASUREMENT'); w(70, 1); w(0, 'ENDSEC');
+    /* the drawing extents, so that the file opens zoomed to all of it (AutoCAD uses the header extents and the active viewport) */
+    var ex1 = 0, ey1 = 0, ex0 = 0, ey0 = 0;
+    d.sheets.forEach(function (s, si) { ex1 = Math.max(ex1, offs[si] + s.w * s.den); ey1 = Math.max(ey1, s.h * s.den); });
+    var pad = 0.03 * Math.max(ex1, ey1), vx0 = ex0 - pad, vy0 = ey0 - pad, vx1 = ex1 + pad, vy1 = ey1 + pad, vw = vx1 - vx0, vh = vy1 - vy0, asp = 1.6, vhh = Math.max(vh, vw / asp);
+    w(0, 'SECTION'); w(2, 'HEADER'); w(9, '$ACADVER'); w(1, 'AC1009'); w(9, '$INSUNITS'); w(70, 4); w(9, '$MEASUREMENT'); w(70, 1);
+    w(9, '$EXTMIN'); w(10, ex0.toFixed(1)); w(20, ey0.toFixed(1)); w(30, 0); w(9, '$EXTMAX'); w(10, ex1.toFixed(1)); w(20, ey1.toFixed(1)); w(30, 0);
+    w(9, '$LIMMIN'); w(10, ex0.toFixed(1)); w(20, ey0.toFixed(1)); w(9, '$LIMMAX'); w(10, ex1.toFixed(1)); w(20, ey1.toFixed(1));
+    w(9, '$VIEWCTR'); w(10, ((vx0 + vx1) / 2).toFixed(1)); w(20, ((vy0 + vy1) / 2).toFixed(1)); w(0, 'ENDSEC');
     w(0, 'SECTION'); w(2, 'TABLES');
+    w(0, 'TABLE'); w(2, 'VPORT'); w(70, 1);
+    w(0, 'VPORT'); w(2, '*ACTIVE'); w(70, 0); w(10, 0); w(20, 0); w(11, 1); w(21, 1); w(12, ((vx0 + vx1) / 2).toFixed(1)); w(22, ((vy0 + vy1) / 2).toFixed(1)); w(13, 0); w(23, 0); w(14, 10); w(24, 10); w(15, 10); w(25, 10);
+    w(16, 0); w(26, 0); w(36, 1); w(17, 0); w(27, 0); w(37, 0); w(40, vhh.toFixed(1)); w(41, asp); w(42, 50); w(43, 0); w(44, 0); w(50, 0); w(51, 0); w(71, 0); w(72, 100); w(73, 1); w(74, 3); w(75, 0); w(76, 0); w(77, 0); w(78, 0);
+    w(0, 'ENDTAB');
     w(0, 'TABLE'); w(2, 'LTYPE'); w(70, 3);
     w(0, 'LTYPE'); w(2, 'CONTINUOUS'); w(70, 0); w(3, 'Solid line'); w(72, 65); w(73, 0); w(40, 0);
     w(0, 'LTYPE'); w(2, 'DASHED'); w(70, 0); w(3, 'Dashed'); w(72, 65); w(73, 2); w(40, 6); w(49, 4); w(49, -2);
@@ -9169,6 +9251,7 @@ var DBB_PSV_DETAILED = "{\"app\":\"dbb-block-editor\",\"version\":2,\"name\":\"P
   /* the floating condition, in the corner of the 3D view */
   function renderFloatHud() {
     var el = $('#floatHud'), f = S.floatRes, m = S.model;
+    if (m.float && f && f.overloaded) { el.innerHTML = '<div class="h">Floating</div><span class="v bad" style="grid-column:1/-1">Overloaded: the weight is more than the hulls displace at full depth. Lower a density or a fill.</span>'; el.hidden = false; return; }
     if (!m.float || !f || !f.trimOk) { el.hidden = true; return; }
     function row(k, v, bad) { return '<span class="k">' + k + '</span><span class="v' + (bad ? ' bad' : '') + '">' + v + '</span>'; }
     var h = ['<div class="h">Floating</div>', row('Draught', fmt(m.draught, 2) + ' m'),
@@ -9965,7 +10048,7 @@ var DBB_PSV_DETAILED = "{\"app\":\"dbb-block-editor\",\"version\":2,\"name\":\"P
         var m = C.wiOpen(rec); if (!m) { toast('This variant could not be opened.', true); return; }
         wvApplyModel(m, 'Variant ' + rec.id + ' applied. Undo brings back the previous project.');
       } else if (t.getAttribute('data-sure') === '1') {
-        WV.base.variants = wvVars().filter(function (v) { return v.id !== id; }); delete WV.opened[id]; WV.fitted = false; if (!WV.base.variants.length) WV.mode = 'one';
+        WV.base.variants = wvVars().filter(function (v) { return v.id !== id; }); delete WV.opened[id]; delete WV.hide[id]; WV.fitted = false; if (!WV.base.variants.length) WV.mode = 'one';
         toast('Variant ' + id + ' deleted.'); updateWifBadge(); wvRender();
       } else { t.setAttribute('data-sure', '1'); t.textContent = 'Sure?'; setTimeout(function () { if (t.isConnected) { t.removeAttribute('data-sure'); t.textContent = 'Delete'; } }, 3000); }
     });
@@ -10077,10 +10160,11 @@ var DBB_PSV_DETAILED = "{\"app\":\"dbb-block-editor\",\"version\":2,\"name\":\"P
     rows.forEach(function (r, i) {
       var y0 = T0 + i * rh; s.push('<text x="' + (Lm - 6) + '" y="' + (y0 + (n * (bh + gap)) / 2 + 3).toFixed(1) + '" text-anchor="end" class="gztx">' + esc(r.label) + '</text>');
       r.v.forEach(function (x, k) {
-        if (x === null) return;
-        var y = y0 + k * (bh + gap), x0 = X(0), x1 = X(Math.max(-mx, Math.min(mx, x)));
-        s.push('<rect x="' + Math.min(x0, x1).toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + Math.max(0.8, Math.abs(x1 - x0)).toFixed(1) + '" height="' + bh + '" fill="' + vars[k].color + '"><title>' + esc(vars[k].label + ': ' + (x >= 0 ? '+' : '') + x.toFixed(1) + '%') + '</title></rect>');
-        s.push('<text x="' + (x >= 0 ? x1 + 3 : x1 - 3).toFixed(1) + '" y="' + (y + bh - 0.5).toFixed(1) + '" text-anchor="' + (x >= 0 ? 'start' : 'end') + '" class="gztx" style="font-size:8.5px">' + (x >= 0 ? '+' : '\u2212') + Math.abs(x).toFixed(1) + '</text>');
+        var y = y0 + k * (bh + gap);
+        if (x === null) { s.push('<text x="' + (X(0) + 3).toFixed(1) + '" y="' + (y + bh - 0.5).toFixed(1) + '" class="gztx" style="font-size:8.5px" fill="' + vars[k].color + '">n/a</text>'); return; }
+        var x0 = X(0), x1 = X(Math.max(-mx, Math.min(mx, x)));
+        s.push('<rect x="' + Math.min(x0, x1).toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + Math.max(2, Math.abs(x1 - x0)).toFixed(1) + '" height="' + bh + '" fill="' + vars[k].color + '"><title>' + esc(vars[k].label + ': ' + (x >= 0 ? '+' : '') + x.toFixed(1) + '%') + '</title></rect>');
+        s.push('<text x="' + (x >= 0 ? x1 + 3 : x1 - 3).toFixed(1) + '" y="' + (y + bh - 0.5).toFixed(1) + '" text-anchor="' + (x >= 0 ? 'start' : 'end') + '" class="gztx" style="font-size:8.5px">' + (Math.abs(x) < 0.05 ? '0.0' : (x >= 0 ? '+' : '\u2212') + Math.abs(x).toFixed(1)) + '</text>');
       });
     });
     s.push('</svg>');
@@ -10328,7 +10412,7 @@ var DBB_PSV_DETAILED = "{\"app\":\"dbb-block-editor\",\"version\":2,\"name\":\"P
       '<li><b>Float it.</b> Press <i>Float</i> in the toolbar and the draught, trim and heel follow the weight as you move blocks. The <i>Hydrostatics</i> tab shows the floating condition, the weight balance, and the initial stability: KB, BM, KM and GM, with a few basic checks. Below it, the righting lever (GZ) is drawn with the standard criteria for guidance.</li>' +
       '<li><b>Shape the hull.</b> Press <i>Hull</i> (beside Float, or Shift+H) to edit the shape of the selected hull with curves; if there is no hull, one is added first: the sheer plan, the half-breadth plan and the body plan, with a live 3D hull, the blocks shown faintly inside it, and the hydrostatics. Pick a starting hull, move the shape sliders, add a bulbous bow, or drag the points. <i>Apply</i> replaces the hull; <i>Cancel</i> leaves it. A hull that has no curves starts as a close copy of its shape. The hull keeps its curves and slider values, so you can edit it again.</li>' +
       '<li><b>Check the resistance.</b> With a hull, the <i>Resistance</i> tab draws the total resistance against speed by the Holtrop method, with the parts at the service speed (the default is Froude number 0.2). Set the speed, the afterbody form and the transom. It is an estimate for comparing designs: no appendages, no propulsion, an optional assumed bulb, and a warning shows when the hull is outside the range of the method. The limits are listed in the tab.</li>' +
-      '<li><b>Try a what if.</b> Press the <i>What if</i> tab to open a window that proposes changes to meet one requirement. Pick the requirement, then one of the options (the original, to the shall, midway, to the should) or type a target, and tick the directions to scale: length, beam, depth. The blocks linked to that requirement are scaled, the blocks beyond move along and the hull follows, then the ship is settled at its level draught. The 3D view shows the original in light colour beside the variant, and the table and bar plots compare dimensions, coefficients, weight, stability and every requirement. Press <i>Save</i> to keep up to five variants in the project, give each an optional name, compare them side by side, show or hide any of them, apply one to the project (<i>Apply</i>) or delete it. Saved variants go into the project file, the PDF report and the Excel file.</li>' +
+      '<li><b>Try a what if.</b> Press the <i>What if</i> tab to open a window that proposes changes to meet one requirement. Pick the requirement, then one of the options (the original, to the shall, midway, to the should) or type a target, and tick the directions to scale: length, beam, depth. The blocks linked to that requirement are scaled, the blocks beyond move along and the hull follows, then the ship is settled at its level draught. The 3D view shows the original in light colour beside the variant, and the table and bar plots compare dimensions, coefficients, weight, stability and every requirement. Press <i>Save</i> to keep up to five variants in the project, give each an optional name, compare them side by side, show or hide any of them, apply one to the project (<i>Apply</i>) or delete it. Saved variants go into the project file, the PDF report and the Excel file. The PDF shows small 3D pictures of the original and the variants with their main figures (or, with none saved, the options of the tab) and a table of what each requirement would ask at its shall and its should.</li>' +
       '<li><b>Check the structure.</b> The <i>Structure</i> tab (single hull) follows the weights and the buoyancy at the floating position and plots the weight, buoyancy, load, shear force and bending moment along the ship, with the rule limits of the DNV Rules for Ships (2015, ships under 100 m). Choose the steel grade, service area and corrosion addition. The table gives the required section modulus. Build the midship section from plate thicknesses, spacings and longitudinal profiles, or press <i>Size to the rules</i> for a start, and compare its modulus at deck and bottom with the requirement. The local table checks the plating and longitudinals of the bottom, side and deck. The steel weight estimate can replace the structure share in the weights. An educational first check, not for class.</li>' +
       '<li><b>Check the motions.</b> The <i>Seakeeping</i> tab gives the heave, pitch, vertical motion and acceleration, wave bending moment and roll of the hull in regular waves, by the closed-form expressions of Jensen, Mansour and Olsen (2004). Set the speed, the wave heading (180° is head waves) and the wave amplitude, the position along the ship where the vertical motion is read, and for roll the damping, the roll period and the prismatic length ratio. GM and the roll period are taken from the model unless typed. A chart, or a band of it, turns pink where the case is outside the limits of the method, which are listed in the tab. Below the charts, a sea state (Hs, Tz or Tp, JONSWAP peak factor, duration) gives the RMS, significant and most probable maximum of each response, the response and wave spectra, and, against limits chosen from NORDFORSK or NATO presets or typed, the limiting Hs and its change with the heading. It is a first estimate for comparing designs.</li>' +
       '<li><b>Read the Summary.</b> It opens with an assessment: chips for requirements, weight and hull, floating and stability, then the problems, notes and what passes. Click an item to go to the tab or block. Below it come the geometry and the hulls. <i>Requirements</i> shows each target with its margin: red if the shall is not met, green between shall and should, orange beyond the should (an excess), and <i>Blocks</i> lists every block; choose its column sets and click a title to sort.</li>' +
@@ -10608,13 +10692,61 @@ var DBB_PSV_DETAILED = "{\"app\":\"dbb-block-editor\",\"version\":2,\"name\":\"P
       return jpegOf(cv, 0.92);
     } catch (e) { return null; }
   }
+  /* a small light picture of one design for the report (a separate renderer, so the main view is untouched) */
+  function wvStill(model, w, h) {
+    var r = null;
+    try {
+      r = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true }); r.setPixelRatio(1); r.setSize(w, h, false);
+      var sc = new THREE.Scene(), cam = new THREE.PerspectiveCamera(38, w / h, 0.5, 4000); cam.up.set(0, 0, 1); sc.background = new THREE.Color('#ffffff');
+      sc.add(new THREE.HemisphereLight(0xffffff, 0x56627a, 0.95)); var sun = new THREE.DirectionalLight(0xffffff, 0.75); sun.position.set(-60, -90, 140); sc.add(sun);
+      var g = new THREE.Group(); sc.add(g);
+      model.blocks.forEach(function (b) {
+        if (b.hidden) return;
+        var mesh = new THREE.Mesh(C.makeGeometry(b.shape), new THREE.MeshLambertMaterial({ color: groupColor(b.group), polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 }));
+        mesh.position.set(b.position[0], b.position[1], b.position[2]); mesh.rotation.set(b.rotation[0] * D2R, b.rotation[1] * D2R, b.rotation[2] * D2R, 'XYZ'); mesh.scale.set(b.size[0], b.size[1], b.size[2]);
+        mesh.add(new THREE.LineSegments(C.makeEdges(b.shape), new THREE.LineBasicMaterial({ color: 0x1c2430 }))); g.add(mesh);
+      });
+      (model.hulls || []).forEach(function (hh) {
+        if (hh.visible === false) return;
+        g.add(new THREE.Mesh(C.makeHullGeometry(hh), new THREE.MeshLambertMaterial({ color: 0x6b8fb8, transparent: true, opacity: 0.22, side: THREE.DoubleSide, depthWrite: false })));
+        var ln = C.makeHullLines(hh, model.draught), gg = new THREE.BufferGeometry(); gg.setAttribute('position', new THREE.Float32BufferAttribute(ln.sections, 3));
+        g.add(new THREE.LineSegments(gg, new THREE.LineBasicMaterial({ color: 0x2d5b8c })));
+      });
+      var bb = new THREE.Box3().setFromObject(g), cc = bb.getCenter(new THREE.Vector3()), d = bb.getSize(new THREE.Vector3()).length();
+      cam.position.set(cc.x - d * 0.4, cc.y - d * 0.68, cc.z + d * 0.48); cam.near = d / 200; cam.far = d * 40; cam.lookAt(cc); cam.updateProjectionMatrix();
+      r.render(sc, cam);
+      return jpegOf(r.domElement, 0.85);
+    } catch (e) { return null; } finally { if (r) { r.dispose(); if (r.forceContextLoss) r.forceContextLoss(); } }
+  }
+  /* what the report shows for What if: the original with the saved variants, or, with none saved, the options of the What if tab */
+  function reportWhatIf() {
+    var m = S.model; if (!m.hulls.length) return null;
+    var items = [{ label: 'Original', sub: '', snap: C.wiSnapshot(m), img: wvStill(m, 560, 330) }], saved = !!(m.variants && m.variants.length), reqName = '';
+    if (saved) {
+      m.variants.forEach(function (v) { var vm = C.wiOpen(v); if (vm) items.push({ label: v.id + (v.name ? ' ' + v.name : ''), sub: C.wiRecipe(v), snap: v.snap, img: wvStill(vm, 560, 330) }); });
+    } else {
+      var rs = wvReqs(), r = rs.filter(function (x) { return x.id === WV.req; })[0] || rs[0];
+      if (!r) return null;
+      reqName = r.name;
+      var A0 = C.evaluateRequirements(m).filter(function (e) { return e.req.id === r.id; })[0].achieved, un = C.METRICS && C.METRICS[r.metric] ? C.METRICS[r.metric].unit : '';
+      var ts = [['To the shall', r.shall]]; if (r.shall != null && r.should != null) ts.push(['Midway', (r.shall + r.should) / 2]); ts.push(['To the should', r.should]);
+      ts.forEach(function (t) {
+        if (t[1] == null || !(t[1] > 0) || Math.abs(t[1] - A0) <= 0.005 * Math.abs(A0)) return;
+        var w = C.whatIf(m, r.id, t[1], r.metric === 'beam' ? { B: true } : r.metric === 'height' ? { D: true } : { L: true });
+        if (w.ok) items.push({ label: t[0], sub: r.name + ' ' + (Math.round(t[1] * 10) / 10) + ' ' + un + ', scaled ' + w.axes.join(''), snap: w.after, img: wvStill(w.model, 560, 330) });
+      });
+    }
+    return items.length > 1 ? { saved: saved, reqName: reqName, items: items } : null;
+  }
   function exportPdf() {
     toast('Making the PDF ...');
     setTimeout(function () {
       var bytes;
       try {
-        var views = captureViews(), stamp = C.stampText(new Date());
-        bytes = C.buildReport(S.model, { when: new Date().toISOString().slice(0, 10), images: views, logo: logoJpeg(), floatRes: S.floatRes, stability: S.model.hulls.length ? stabilityOf(S.model) : null, assumptions: $$('.limits li').map(function (li) { return li.textContent.trim(); }).filter(function (x) { return !/^(References|Formulation follows|The formulation follows)/.test(x); }),
+        var views = captureViews(), stamp = C.stampText(new Date()), wia = null;
+        try { wia = C.wiAuto(S.model, { maxReq: 6, budgetMs: 15000 }); } catch (e1) { wia = null; }
+        var wis = null; try { wis = reportWhatIf(); } catch (e2) { wis = null; }
+        bytes = C.buildReport(S.model, { whatIfAuto: wia, whatIfShow: wis, when: new Date().toISOString().slice(0, 10), images: views, logo: logoJpeg(), floatRes: S.floatRes, stability: S.model.hulls.length ? stabilityOf(S.model) : null, assumptions: $$('.limits li').map(function (li) { return li.textContent.trim(); }).filter(function (x) { return !/^(References|Formulation follows|The formulation follows)/.test(x); }),
           stamp: stamp, appendPages: typeof DBBGA === 'undefined' ? null : function (doc) { DBBGA.addPDFPages(doc, DBBGA.buildGA(S.model, { stamp: stamp })); } });
       } catch (err) { toast('Could not make the PDF: ' + (err && err.message ? err.message : err), true); return; }
       deliver(slug(S.model.name) + '.pdf', bytes, 'PDF report');

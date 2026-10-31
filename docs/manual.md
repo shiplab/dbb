@@ -1,6 +1,6 @@
 # Ship Design Building Block Editor: Manual
 
-**Version 1.2.0 · October 2026**
+**Version 1.1.0 · October 2026**
 Henrique M. Gaspar, NTNU · https://shiplab.github.io/dbb/
 
 > **Educational use only.** This tool is made for teaching and for early concept exploration. The hulls are illustrative, not real lines, and the weights, hydrostatics, stability and resistance are simplified estimates. The results must not be used for design approval, class or flag-state documentation, or any safety-critical decision. The software is provided as it is, without warranty.
@@ -65,6 +65,7 @@ The app reuses ideas, methods and code from several people, and the list below i
 - **Ship structure.** The ship structure web app of the ShipLab (2015, version 0.2) is by Sthefano Lande Andrade (NTNU). The structure tab takes its idea of a first check from the weight and buoyancy distribution and the hull girder moments of that app, and applies the rules of DNV (Rules for Ships, Pt.3 Ch.2, Hull structural design, ships with length less than 100 metres, January 2015).
 - **Vessel.js library.** Felipe Ferrari, Ícaro Fonseca, Olivia Chaves, Thiago Monteiro and Elias Hasle (all NTNU). The formulation of the app also draws on it.
 - **Motion sickness.** The weighting filter, the dose value and the limit values follow the doctoral research on motion sickness of seafarers by Nicole Catherine Taylor and Anriëtte Bekker, Stellenbosch University (Taylor, 2023).
+- **Evacuation layout.** The rules for decks, walls, doors, stairs and obstacles in the walkable view, and the data format behind them, come from the Ship Evacuation tool of the ShipLab, by Tomasz Hinz, Henrique Gaspar, Katarzyna Bierkowska and Grzegorz Mazerski (Hinz et al., 2025). The population groups and the walking speeds are those of IMO MSC.1/Circ.1533.
 
 The approach and the app also owe much to the many colleagues, students and collaborators at NTNU, UCL and other institutions, whose discussions, testing and feedback over the years shaped them, and who cannot all be listed here.
 
@@ -185,7 +186,7 @@ Blocks belong to groups, which form a hierarchy. The groups of a new example fol
 
 A requirement is a target the design must meet. It has:
 
-- a **metric**: volume, area, weight, length, beam, height, total weight or gross tonnage;
+- a **metric**: volume, area, weight, length, beam, height, total weight, gross tonnage, persons on board or the evacuation time;
 - a **direction**: at least or at most;
 - two **targets**, *shall* (the minimum acceptable value) and *should* (the wanted value).
 
@@ -214,6 +215,55 @@ The structure of the hull, with its piping and cabling, is taken as a share of t
 
 A project is saved as a JSON file. It holds the groups, requirements, blocks, hulls (with their curves), imported shapes and settings. Nothing is stored in the browser, so the project should be saved before leaving the page. A file that was not made by this app is refused, and a file with a problem is opened with a message that lists what was changed. View-only options, such as the hull and water colours and the see-through setting, are not saved.
 
+
+
+### 3.8 Evacuation data and the walkable view
+
+A block can carry evacuation data, set in the *Evacuation* section of the *Selected block* panel. The data does not change the weights, volumes or any other result. It is kept in the project file and is used by the walkable view and by the Ship Evacuation tool.
+
+- **Role.** *None* (no data), *Room*, *Corridor*, *Open deck*, *Stair*, *Muster station* or *Obstacle*. A block with no role, or the role *Obstacle*, is an obstacle where it fills the walking height of a deck.
+- **Space, berths or capacity, persons, population, muster.** For a room, corridor or open deck. *Space* is cabin, public space, work or service space, or other. *Berths* (cabin) or *Capacity* is the most persons it holds. *Persons* is the number at the start when the occupancy is set in the blocks. *Population* is the mix of persons (crew, passengers or a mix defined in the project) and *Muster* the muster station they go to (the nearest by default).
+- **Doors.** For a room: the side of the block (+x, -x, +y or -y, in the axes of the block), the offset along that side from its middle in m, and the clear width in m. A room with no door gets one of 0.9 m where it meets a corridor.
+- **Up.** For a stair: the direction of climbing.
+
+*Walkable*, above the 3D view, shows the result. The view is not saved.
+### 3.9 The Simulation mode: evacuation
+
+The app has two workspaces, chosen with the **Design** and **Simulation** buttons in the top bar. Design is where the arrangement is built and checked; Simulation runs scenarios on it. For now the only simulation is the evacuation, chosen under *Type* in the left panel. Both workspaces work on the same project and file. In Simulation the blocks cannot be selected or edited, the left panel holds the scenario (case, population, response, seed, added doors), the table drawer shows the run, and the *Examples* menu lists only the cases with a scenario (the simple case, the SOV and the cruise ship). The simulation runs on the walkable layout (3.8, 4.10) and shows the result. The persons are shown at their start positions as soon as Simulation is open, with the circles giving the number of persons per space; the circles are hidden from the start of a run until Reset. Press **Run**: the persons walk in the 3D view (the walkable view is switched on), and the tiles, maps and charts update as the run goes. **Pause** and **Resume** stop and continue it, and **Reset** removes the persons. **Speed** sets how fast the run goes: *Real time* (one second of simulation per second of the clock), 2×, 5×, 10×, 30× or *Calculation speed* (as fast as the computer allows). It can be changed during a run and does not change the result. **Density in 3D** colours each deck in the 3D view by the highest density reached. **Person** sets how the persons are drawn: *Figure* (a low-poly human figure of 299 triangles, the default) or *Cylinder* (the lightest, for very large populations). **Colours** switches the state colours of the persons, the maps and the charts between *Standard* and *Vibrant*. Both settings change only the drawing, not the result, and are remembered in the browser.
+
+- **Case.** *As set in the blocks* (the persons of each block), *Night* or *Day*, as in the IMO guidelines. Night and day use the berths and capacities of the blocks, and set the matching response.
+- **Population, response, seed, added doors.** Who the persons are (unless a block names another population), when they start to move (*None*: all at once; *Night* and *Day*: each person starts after a response time drawn from the IMO tables, 400 to 700 s at night, so the persons set off one after another and the first moves only after a long wait), the seed of the random numbers (the same seed gives the same run) and whether doors are added by the rules.
+- **Hazards.** A fire or a flood can be added to the scenario: choose a block (a room, corridor, open deck or stair on a deck), press *+ Fire* or *+ Flood*, and set the start time (seconds after the alarm) and the spread speed (m/s) in the list. The hazard is a front that spreads over the walkable cells of the deck from the source block at that speed and leaves a room only through its doors. A door holds it back for a time that depends on the door type (set per door in Design: *open*, *closed*, *fire* or *watertight*) and on the hazard, in the table *Doors and hazards*: by default an open door holds nothing, a closed door holds fire for 120 s and water not at all, a fire door holds fire for 1800 s and water not at all, and a watertight door holds fire for 600 s and water for the whole run. Inside a room it has entered, the hazard spreads at 1 m/s, and on a stair at 4 (fire) or 0.1 (water) times the source speed going up, and at 1 times going down. All these values are assumptions to be set for the study and are not taken from a standard. The persons do not react to the hazard: a person in a cell the front has reached is *caught*. The examples *SOV with a fire in the galley* (night case, 4 of 60 persons caught) and *Cruise ship with a flood in the crew mess* (day case, 17 of 200 caught) show the effect. The 3D view shows a cone at each source and the area reached (orange for fire, blue for flood), and the density map shows the same area. There is no smoke, heat, toxic gas, water depth or ship motion.
+- **Check.** The warnings of the layout, rooms with no way to a muster station, persons that do not fit in a space or have no route. A run starts only when there is at least one muster station and one person.
+- **Tiles.** During a run: persons at a muster station, moving, waiting, the mean speed, the density now and the time so far above 4 persons per m². With a hazard the tiles also give the persons caught. After the run: persons arrived, total time (the last arrival), the 95% time, the highest density, congestion (more than 4 persons per m² for a long time) and whether any muster station is over its capacity.
+- **Density map.** A plan of each deck, bow to the right, coloured by the highest density reached so far (yellow 1, orange 3, red 4 or more persons per m²), with the persons as dots.
+- **Charts.** Persons by state (the top of the green area is the arrival curve), the mean walking speed, the highest local density over 1.5 m × 1.5 m with the congestion line at 4 persons per m², the persons on each deck, and the persons through each door and stair. The last arrival at each muster station is shown after the run. Pointing at a chart shows the values at that time.
+- **Saved result.** When a run ends, a summary is saved in the project file (`evacuation.results`) with the settings it was run on. If a block has moved or been changed since, the tab marks the result as out of date. The persons, the paths and the charts are not saved: they stay in the tab until Reset or until another project is opened.
+
+The run works on a frozen copy of the arrangement: editing blocks while it runs does not change it. The arrangement (blocks, roles, doors, berths) is edited in the editor. The same simulation code is used by the Ship Evacuation tool, which has the research functions (the IMO test cases and batch runs). Results are only comparable when they come from the same tool version and the same browser engine.
+
+Two requirement metrics use this data. **Persons on board** is the sum of the berths of the cabins (rooms with the space *Cabin*). **Evacuation time, 95%** is the 95% time of the saved run, and it counts only while the saved run is current; otherwise the requirement shows *No current run* and has no status.
+
+**References for 3.9**
+
+- IMO (2016). *Revised guidelines on evacuation analysis for new and existing passenger ships*. MSC.1/Circ.1533. International Maritime Organization, London.
+- madtrollstudio (n.d.). *Character Base* [3D model, glTF]. Poly Pizza, https://poly.pizza/m/qbDLeTtb8K. Reduced from 1,508 to 299 triangles, with the arms lowered, for the person figure of the Simulation mode.
+- Helbing, D. and Molnar, P. (1995). Social force model for pedestrian dynamics. *Physical Review E*, 51(5), 4282-4286.
+- Hinz, T., Gaspar, H. M., Bierkowska, K. and Mazerski, G. (2025). Simulating and visualizing persons movement in deck arrangements: a web-based approach. 16th International Symposium on Practical Design of Ships and Other Floating Structures (PRADS 2025), Ann Arbor, MI, USA.
+
+### 3.10 A worked example: from the engine room to the wheelhouse
+
+Open the example **Simple evacuation: engine room to wheelhouse** (9 blocks). Press **Walkable** to see the spaces, then open the **Evacuation** tab and press **Run**. Five persons start: three in the engine room and two in the cabin. They walk to the wheelhouse, which is the muster station, and the run ends after about 25 s.
+
+The walk follows these rules, block by block.
+
+1. **Engine room to corridor, deck 1.** The engine room is a *Room* with a door on its +x face, 1 m wide at the middle of the face. The corridor touches that face, so the door opens onto it. A room with no door of its own gets one of 0.9 m wherever it touches a corridor (amber in the view). The *Generator* has the role *Obstacle* and fills the height of the deck, so it is cut out of the floor, and the persons walk around it. The *Fuel tank* has no role and lies below the floor, so it is ignored.
+2. **Corridor, deck 1, to Stair 1.** A stair is entered at its low end. Stair 1 starts where the corridor ends (x = 10 m), and its *Up* direction is +x. The persons walk on along the corridor and onto the stair.
+3. **Stair 1 to the landing, deck 2.** The bottom of the stair is on deck 1 and its top, 3 m higher, is on deck 2. At the top end the persons step onto the walkable block just beyond it, here the *Landing*. If nothing walkable is there, the view warns that the stair has no landing.
+4. **Cabin to landing, deck 2.** The cabin is a *Room* of the space *Cabin* with two persons. Its door is added by the rules where it touches the landing. The two persons start on deck 2, so they leave by the landing and do not use Stair 1.
+5. **Landing to Stair 2 to the wheelhouse.** The landing is the corridor before Stair 2, which rises to deck 3. At its top end the persons reach the *Wheelhouse*, a block with the role *Muster station*, and they are counted as arrived.
+
+Each deck is found from the bottoms of the walkable blocks: the engine room and corridor at 3 m, the landing and cabin at 6 m, the wheelhouse at 9 m. Blocks whose bottoms are within 0.3 m of each other are on one deck. The examples *SOV with evacuation scenario* (99 blocks, three decks, two stairs, 60 persons at night) and *Cruise ship with evacuation scenario* (10 decks, 100 cabins, two stair towers, 200 persons at night, muster stations on the top deck) are larger cases of the same kind. Now try three changes. Move the Landing 1 m along x, so that it no longer touches the top of Stair 1: the Summary reports a stair without a landing, and the three persons in the engine room have no route. Change the engine room door to the -x face, which touches nothing: a door that is set is used as set, so the three persons have no route. Untick *Added doors* in the Evacuation tab: the Summary reports that the cabin has no door, and its two persons have no route.
 
 ---
 
@@ -569,32 +619,26 @@ The Structure tab is a first check of the hull structure to the DNV Rules for Sh
 
 - DNV (2015). *Rules for Classification of Ships, Part 3 Chapter 2: Hull structural design, ships with length less than 100 metres* (Sec.1 to 8). Det Norske Veritas AS, January 2015.
 
-### 4.10 What if
+### 4.10 The walkable layout
 
-The What if tab proposes changes to the ship so that one requirement is met, and shows what they cost in the other figures. It is a simplified form of the epoch-era idea of testing a design in more or less demanding scenarios (Ross and Rhodes, 2008; Gaspar et al., 2015): one requirement at a time is moved to a chosen value, and the ship is changed to follow. Clicking the tab opens a window with the 3D view, a panel of choices and the comparison.
+The layout is worked out by the rules of the Ship Evacuation tool, from the blocks as boxes (other shapes by their bounding box, and only the rotation about z is used).
 
-**Choice of requirement and target.** One of the requirements is chosen, and a target is offered: the original, the shall, midway between the shall and the should, or the should. A value can also be typed. For a requirement of the type "at least" the target is higher than the original when the ship is to be larger, and lower when a smaller ship would still do.
+**Decks.** The bottoms of the walkable blocks (position z minus half the height) are sorted, and bottoms within 0.3 m of each other form one deck. The level is their mean.
 
-**Scaled directions.** The directions in which the ship is scaled are ticked: length, beam, depth, or a combination. For a requirement on volume, mass or gross tonnage the factor F needed is spread equally, so that each of k ticked directions is scaled by F^(1/k). A requirement on area can be scaled in length and beam only. A requirement on length, beam or height scales the whole ship in that direction. If typed weights make the metric non-linear, the factor is found by iteration.
+**Obstacles.** A block with no role, or with the role *Obstacle*, is an obstacle on a deck when its bottom is at most 0.3 m above the deck and its top at least 1.0 m above it. A tank below the deck or a duct overhead is ignored. Where blocks overlap, the strongest wins: obstacle, muster station, stair, room, corridor, open deck.
 
-**What is scaled.** The blocks linked to the requirement are stretched along the ticked directions. Blocks beyond them move by the same amount, so that the layout stays closed, and blocks that span the stretch are stretched with it. Blocks with a typed weight and imported shapes are moved and not resized. The hulls follow the same stretch in length, in breadth (symmetric about the centreline) and in depth. Blocks that cannot be scaled (rotated by an angle other than a multiple of 90 degrees) stop the change, with a message.
+**Grid and walls.** Each deck is cut into cells of 0.1 m. A wall is drawn on each cell edge that has a walkable cell on one side and cannot be crossed, and the edges are merged into long segments. Corridors, open decks and muster stations that touch are open to each other. A room connects only through its doors.
 
-**Result.** The changed ship is settled at its own level draught. The 3D view shows the original in a light colour beside the variant, and the original can be switched off. A table gives weight, draught, trim, heel, GM, gross tonnage, the main dimensions (length overall and at the waterline, beam, depth, displacement, L/B, B/T, L/D), the coefficients (C_B, C_M, C_P, C_WP, LCB and KB) and the value and status of every requirement. Bar plots show the change in percent against the original, and the value of each requirement against its shall and should lines.
+**Doors.** A door is a gap in the wall on a face of the room. A room without a door gets an added door of 0.9 m (amber in the view) where it meets a corridor along at least 0.5 m. If it meets none, the Summary says that nobody can leave it.
 
-**Saved variants.** A variant is saved with **Save**, with an optional name, and gets an id (V1 to V5). Up to five are kept in the project, and the tab shows their number. Saved variants are compared in the same table, plots and 3D view, can be shown or hidden one by one, applied to the project with **Apply**, and deleted. They are stored in the project file (Appendix C), and the PDF report and the Excel workbook list the original and the variants side by side.
+**Stairs.** A stair is a block whose bottom is on one deck and whose top is on the next; its height is the rise. It is entered at its bottom end, and at the top it leads onto the walkable block just beyond its top end on the deck above, where the opening is cut out.
 
-**Pictures in the report.** The PDF report shows a small 3D picture of the original and of each saved variant, with its length, beam and depth, L/B, B/T, L/D, weight, draught and GM, followed by the comparison table. When no variant is saved, the report says so and shows instead the options that the What if tab offers for its requirement (to the shall, midway and to the should).
-
-**What the requirements ask.** The PDF report also has a table, worked out when the report is made, of the ship with the blocks linked to each requirement scaled in length (or in its own direction, for length, beam and height) to the shall and to the should: the change in weight, the length, beam, draught, GM and the other requirements that are then not met. To keep the report quick, at most six requirements are taken (about half a second to a second for each target), and the rest are listed as not computed. They are not part of undo.
-
-![The What if window: the original (light) and two saved variants of the container ship with the table of weight, stability and dimensions.](img/14-what-if.png)
-
-*Figure 8. The What if window: the original and two saved variants, with the comparison table.*
+**Limits.** The layout is a first check of the arrangement. It does not check widths against rules, handrails, fire doors, vertical ladders or the movement of persons; the Ship Evacuation tool does the simulation.
 
 **References for 4.10**
 
-- Gaspar, H.M., Brett, P.O., Erikstad, S.O. and Ross, A.M. (2015). Quantifying value robustness of OSV designs taking into consideration medium to long term stakeholders' expectations. 12th International Marine Design Conference (IMDC 2015), Tokyo.
-- Ross, A.M. and Rhodes, D.H. (2008). Using natural value-centric time scales for conceptualizing system timelines through epoch-era analysis. INCOSE International Symposium 2008, Utrecht.
+- IMO (2016). *Revised guidelines on evacuation analysis for new and existing passenger ships*. MSC.1/Circ.1533. International Maritime Organization, London.
+- Hinz, T., Gaspar, H. M., Bierkowska, K. and Mazerski, G. (2025). Simulating and visualizing persons movement in deck arrangements: a web-based approach. 16th International Symposium on Practical Design of Ships and Other Floating Structures (PRADS 2025), Ann Arbor, MI, USA.
 
 ## 5. The Hull view
 
@@ -606,7 +650,7 @@ The hull is described by a few curves. The curves, or the sliders that draw them
 
 ![The Hull view: sheer plan, half-breadth plan, body plan and 3D view, with the size, sliders and hydrostatics on the left.](img/07-hullview.png)
 
-*Figure 9. The Hull view: sheer plan, half-breadth plan, body plan and 3D view, with the size, sliders and hydrostatics on the left.*
+*Figure 8. The Hull view: sheer plan, half-breadth plan, body plan and 3D view, with the size, sliders and hydrostatics on the left.*
 
 If the hull was a table hull or a parametric type, the view starts from a close copy of its shape, made as curves from the table (sampled 80 by 30). The copy is not exact. The view shows how much the volume differs from the old hull, and the difference stays small for ordinary hulls.
 
@@ -643,7 +687,7 @@ The sliders redraw all curves, so manual edits are replaced when one is moved. U
 
 ![The Hull view with a bulbous bow: the bulb shows dashed in the three views, and the sliders for its length, breadth and height are open.](img/08-hullview-bulb.png)
 
-*Figure 10. The Hull view with a bulbous bow: the bulb shows dashed in the three views, and the sliders for its length, breadth and height are open.*
+*Figure 9. The Hull view with a bulbous bow: the bulb shows dashed in the three views, and the sliders for its length, breadth and height are open.*
 
 ### 5.4 Editing the curves
 
@@ -687,16 +731,15 @@ Everything the app calculates is available on screen, in the report, in the draw
 | Hydrostatics | The floating condition, the hydrostatics of the hulls, the initial stability, the checks, and the GZ curve with its criteria. |
 | Resistance | The curve of total resistance against speed and its parts (4.7). |
 | Seakeeping | The ship motions in regular waves, and in a sea state: statistics, motion limits, limiting wave height and motion sickness (4.8). |
-| What if | A window that scales the blocks linked to one requirement to a target between the shall and the should, compares the result with the original and keeps up to five variants (4.10). |
 | Structure | The load, shear force and bending moment along the ship, the rule section modulus, a midship section, the local plate and stiffener sizes and a steel weight (4.9). |
 
 ### 6.2 PDF report
 
-**PDF** makes a design report. It has the title page with the perspective view and the key figures and assessment, then the views (top, side, front), the requirements, the systems with area and volume, the gross tonnage, the hulls, the weight and centres of gravity, the floating condition, the hydrostatics and stability (with the GZ curve), the resistance, the seakeeping, the assumptions and limits, and an appendix with all blocks. All pages are portrait, and the wide tables are rotated.
+**PDF** makes a design report. It has the title page with the perspective view and the key figures and assessment, then the views (top, side, front), the requirements, the systems with area and volume, the gross tonnage, the hulls, the weight and centres of gravity, the floating condition, the hydrostatics and stability (with the GZ curve), the resistance, the seakeeping, the evacuation (when the project has a saved result: the case, the arrival figures, the muster stations and the arrival curve of the last run, with a note when the result is out of date), the assumptions and limits, and an appendix with all blocks. All pages are portrait, and the wide tables are rotated.
 
 ![First page of the PDF report.](img/10-pdf-page1.png)
 
-*Figure 11. First page of the PDF report.*
+*Figure 10. First page of the PDF report.*
 
 ### 6.3 General arrangement drawing
 
@@ -704,11 +747,11 @@ Everything the app calculates is available on screen, in the report, in the draw
 
 ![First sheet of the general arrangement drawing: profile, section and tables.](img/11-ga-sheet.png)
 
-*Figure 12. First sheet of the general arrangement drawing: profile, section and tables.*
+*Figure 11. First sheet of the general arrangement drawing: profile, section and tables.*
 
 ### 6.4 Excel workbook
 
-**XLSX** saves the project as a workbook with sheets Summary, Project, Output, Blocks, Weight, Hydrostatics, GZ, Resistance, Seakeeping, Structure (single hull), Variants (when variants are saved), Offsets and Requirements. The masses and totals are formulas, so changing a density or a fill in Excel updates the weights. The other sheets hold values from the app at the time of export.
+**XLSX** saves the project as a workbook with sheets Summary, Project, Output, Blocks, Weight, Hydrostatics, GZ, Resistance, Seakeeping, Structure (single hull), Offsets and Requirements. The masses and totals are formulas, so changing a density or a fill in Excel updates the weights. The other sheets hold values from the app at the time of export.
 
 ### 6.5 Project file and tables
 
@@ -717,6 +760,13 @@ Everything the app calculates is available on screen, in the report, in the draw
 ### 6.6 Imported shapes
 
 A block can take the shape of a mesh from an STL file. The mesh is reduced on import. The volume, the centre of gravity and the plan area come from the mesh, and the block scales with its size. An example project, *PSV with STL parts*, shows a crane, a funnel and an A-frame.
+
+
+### 6.7 The R/V Gunnerus example
+
+*R/V Gunnerus, STL parts* (45 blocks) is a compact model in which every visible block is an STL part of the vessel: the hull, the deckhouse with the wheelhouse, the mast, the radar, the engine casing, the stern and side A-frames, the crane, the net drum, the ROV hangar, the workboat, the rescue boat and davit, the life rafts, the azimuth thrusters, the main engines, the generators and the bow thruster. The parts come from the 3D model of the vessel; each is reduced to 0.2 to 7 thousand triangles, and the hull is a smooth loft of the shell and of the sides of the 1-deck house. The STL files, in metres, are in the `examples/gunnerus-parts` folder and can be imported into other projects. Nineteen internal blocks are hidden in the 3D view (group *Internal*): the tanks, with the volumes of the tank plan, and five blocks that carry the masses of systems, accommodation, common systems, ship equipment and fixed ballast. The masses are calibrated to the weight calculation of the vessel (light ship 411.79 t, seven weight groups); the hull steel is the mass of the hull and deckhouse blocks. The vessel floats level at 2.5 m with a metacentric height of about 1.5 m. Limits: there are no rooms, so only the tank, length, beam and height requirements remain; the buoyancy hull is moved 0.5 m, and the hidden blocks a little, to get an even keel; and the mesh volumes are not used for the gross tonnage.
+
+References. Weight calculation, list of main equipment and specification: C-JOB documents (CC BY-SA 4.0). Drawings, tank plan and 3D model: shiplab/gunnerus, courtesy of polarkonsult and NTNU (CC BY-NC 4.0).
 
 ---
 
@@ -738,7 +788,7 @@ The app is for teaching and early concept exploration. It shows how the pieces o
 
 ### 7.3 Hulls
 
-- The hulls are smooth parametric shapes or shapes from a table of offsets, not faired lines. The hull in the Gunnerus example is an illustration, not the lines of the ship.
+- The hulls are smooth parametric shapes or shapes from a table of offsets, not faired lines. The hull in the simplified Gunnerus example is an illustration, not the lines of the ship; the detailed example uses a hull sliced from the 3D model, with the shell as an envelope.
 - Buoyancy comes only from the hulls, up to the main deck. Blocks outside the hulls, appendages and propellers add nothing, and superstructure gives no buoyancy at large heel.
 - A curves hull is rebuilt as a table of 60 by 24 points. Hydrostatics are numerical integrals of that table (4.4), and a coarse table or an unusual shape reduces their accuracy.
 - A copy of a table hull into curves is close, not exact.
@@ -782,16 +832,7 @@ Gross tonnage is an estimate by the 1969 formula from the blocks that count as e
 - Local scantlings are checked at midship for the bottom, side and strength deck plating and longitudinals, the keel plate and the inner bottom minimum. Not covered: bulkheads, floors, girders, frames, tank structure, superstructure, buckling (Sec.12), shear strength, fatigue and finite element analysis.
 - The steel weight is a rough estimate. The allowance factor for the ends and the transverse structure is a guess to be set from similar ships.
 
-### 7.9 What if
-
-- The change is a scaling of the blocks linked to one requirement, with the hulls following. It is not a new design: nothing is re-arranged, and the machinery, tanks and structure keep their sizes unless they are linked to the requirement.
-- One requirement is changed at a time. Other requirements, including those on length, beam and gross tonnage, can become not met, and the table shows it.
-- Blocks with a typed weight and imported shapes keep their size. If the metric depends on them the target may not be reached, and a message says so.
-- The variants are at the level draught that carries their weight, with the weights of the blocks as given. The structure share, the resistance and the seakeeping are not recalculated for them; the variant is applied to the project to do that.
-- Epochs and eras (time-changing needs and contexts) are not modelled. The tab shows only how the ship could change to meet a different level of one requirement.
-- At most five variants are kept.
-
-### 7.10 Software
+### 7.9 Software
 
 The app runs in the browser. The calculations are covered by an automatic test suite, and the Holtrop and seakeeping code is tested against the web apps it was taken from. They have not been validated against model tests or ship trials. Check any result that matters with other tools before using it.
 
@@ -830,13 +871,16 @@ The app runs in the browser. The calculations are covered by an automatic test s
 | Sheer plan, half-breadth plan, body plan | The side view, the view from above, and the cross-sections of the hull. |
 | Froude number (Fn) | v / √(g · LWL). |
 | Imported shape (STL) | A mesh from an STL file, used as one block. |
+| Evacuation time (95%) | The time by which 95% of the persons have reached a muster station, from the saved run (3.9). |
+| Persons on board | The sum of the berths of the cabins (3.9). |
+| Walkable view | The spaces people can walk in (floors, walls with door gaps, stairs, obstacles), worked out from the evacuation roles of the blocks (3.8, 4.10). |
+| Role (evacuation) | What a block is for the evacuation: room, corridor, open deck, stair, muster station or obstacle. |
+| Muster station | Where the persons go. It counts 0.35 m² per person. |
 | Wave heading | Direction the waves come from, relative to the bow, in degrees: 180 is head waves, 0 is waves from astern (4.8). |
 | H_s, T_z, T_p | Significant wave height, mean zero-crossing period and peak period of a sea state. |
 | γ (peak factor) | Peak enhancement of the JONSWAP spectrum. 1 gives Pierson–Moskowitz, 3.3 is the usual value. |
 | RMS, significant, most probable maximum | Standard deviation of a response, twice that, and the largest amplitude expected in the duration, RMS √(2 ln N). |
 | Limiting H_s | The significant wave height at which a response reaches its limit. |
-| What if | A change of the ship to meet one requirement at a target between the shall and the should, by scaling the blocks linked to it (4.10). |
-| Variant | A what if saved in the project with an id (V1 to V5) and an optional name (4.10). |
 | Structure check | First check of the hull structure to the DNV rules (2015, ships under 100 m): bending moments, section modulus, midship section, local plate and stiffener sizes, steel weight (4.9). |
 | Sagging, hogging | Bending of the hull girder with the middle heavier than its buoyancy (sagging, positive) or lighter (hogging). |
 | M_SO, M_WO | DNV rule stillwater moment and wave bending moment amidships, in kN·m. |
@@ -875,11 +919,13 @@ Keys work when no text field is focused. In the Hull view, F fits the hull, M ma
 
 **Project file (JSON).** *Save* writes a text file with the format name `dbb-block-editor` and a version number (2). It holds the name, the groups, the requirements, the blocks (id, name, group, shape, size, position, rotation, density, fill, mass override, free surface, deck, GT, area override), the imported shapes used by the blocks, the water density, the draught, the Float switch, the resistance settings, the seakeeping settings, the structure share, and the hulls. A curves hull also holds its curves (`hullGen`) and slider values (`hullGenParams`). A summary of the computed results (weight, hydrostatics, stability) is written too, for reading by other programs, and is ignored on opening. Units are metres, tonnes and degrees. Axes: x forward from the aft end, y to port from the centreline, z up from the baseline. Block positions are block centres, and rotation is Euler XYZ in degrees. A file with a newer version number opens with a warning, and unreadable parts are skipped with a message.
 
+**Evacuation data.** Blocks may carry an `evac` field and the project an `evacuation` object (3.8, Appendix C). They are kept when a file is opened and saved, and the Ship Evacuation tool reads and writes the same file.
+
 **Table of offsets (CSV).** The first row has the stations (m, from the aft end), the first column has the heights (m, from the baseline), and the cells hold the half-breadths in metres. A blank cell means no hull. Two layouts are read, and the Offsets window copies the other one (Appendix B).
 
 **STL.** ASCII or binary STL. The unit of the file (mm, cm, m or inch) is chosen on import, and the mesh is reduced.
 
-**Excel workbook (XLSX).** The sheets are Summary, Project, Output, Blocks, Weight, Hydrostatics, GZ, Resistance, Seakeeping, Structure, Variants, Offsets and Requirements (6.4).
+**Excel workbook (XLSX).** The sheets are Summary, Project, Output, Blocks, Weight, Hydrostatics, GZ, Resistance, Seakeeping, Offsets and Requirements (6.4).
 
 **PDF report and GA drawing.** PDF pages are portrait, with wide tables rotated. The GA drawing is saved as PDF or as DXF at full size in millimetres (6.2, 6.3).
 
@@ -1032,7 +1078,7 @@ For each height, the app finds the first and last station with hull. These are t
 
 ![The Offsets window of the feeder, with 20 stations and 10 heights.](img/09-offsets.png)
 
-*Figure 13. The Offsets window of the feeder, with 20 stations and 10 heights.*
+*Figure 12. The Offsets window of the feeder, with 20 stations and 10 heights.*
 
 **Excel and PDF.** The Excel workbook has an *Offsets* sheet with one such table for each hull, and the PDF report has the table of offsets in the section on the hulls.
 
@@ -1073,8 +1119,8 @@ For each height, the app finds the first and last station with hull. These are t
 | `seakeeping` | Settings of the Seakeeping tab (C.7). |
 | `structurePercent` | Structure and outfitting as a percentage of the displacement (25 as default). |
 | `weight` | Totals of the weight calculation. For information only. |
-| `variants` | The saved what if variants, up to five: `id`, `name`, the requirement, the target, the scaled directions, the numbers and the full project of the variant. |
 | `hulls` | The hulls. |
+| `evacuation` | Settings of the evacuation data (C.5; schema 3), with the optional `hazards` (`id`, `type` fire or flood, `block`, `start` in s, `speed` in m/s), `doorHold` (seconds each door type holds each hazard, `null` for the whole run), `hazardEnter` (m/s inside a room it has entered) and `hazardStair` (speed factors up and down), kept as they are, and the summary of the last run in `evacuation.results` (written by the Simulation mode, 3.9). Present only when set. |
 | `blocks` | The blocks. |
 
 ### C.3 Groups
@@ -1083,7 +1129,7 @@ Each group has `id`, `name`, `color` (a hex colour), `parent` (the `id` of anoth
 
 ### C.4 Requirements
 
-Each requirement has `id`, `name`, `metric`, `sense`, `shall` and `should`. The metric is one of `volume`, `area`, `mass`, `length`, `beam`, `height`, `totalmass` and `gt`. The sense is `min` (at least) or `max` (at most). The targets are numbers, or `null` when not set. A block is linked to a requirement by the `reqs` list of the block.
+Each requirement has `id`, `name`, `metric`, `sense`, `shall` and `should`. The metric is one of `volume`, `area`, `mass`, `length`, `beam`, `height`, `totalmass`, `gt`, `pob` (persons on board) and `evactime` (95% evacuation time of the saved run). The sense is `min` (at least) or `max` (at most). The targets are numbers, or `null` when not set. A block is linked to a requirement by the `reqs` list of the block.
 
 ### C.5 Blocks
 
@@ -1102,6 +1148,7 @@ Each requirement has `id`, `name`, `metric`, `sense`, `shall` and `should`. The 
 | `freeSurface` | The block is taken as a tank with free surface (4.5). |
 | `deck` | The top of the block defines the main deck. |
 | `gt` | The block counts for the gross tonnage. |
+| `evac` | Evacuation data, only when the block has a role: `role` (`room`, `corridor`, `open`, `stair`, `muster`, `obstacle`), `space`, `capacity`, `occupants`, `population`, `muster`, `doors` (`face`, `offset`, `width`, `name`, and `type`: `open`, `closed` (default), `fire` or `watertight`) and `up`. Kept as written, and used by the walkable view (3.8). |
 | `computed` | Volume, area, density, mass and centre of gravity, for information only. |
 
 ### C.6 Hulls

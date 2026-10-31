@@ -1,6 +1,6 @@
 # Ship Design Building Block Editor: Manual
 
-**Version 1.1.0 · October 2026**
+**Version 1.3.0 · October 2026**
 Henrique M. Gaspar, NTNU · https://shiplab.github.io/dbb/
 
 > **Educational use only.** This tool is made for teaching and for early concept exploration. The hulls are illustrative, not real lines, and the weights, hydrostatics, stability and resistance are simplified estimates. The results must not be used for design approval, class or flag-state documentation, or any safety-critical decision. The software is provided as it is, without warranty.

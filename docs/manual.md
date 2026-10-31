@@ -98,13 +98,13 @@ A tool for teaching and early concept exploration. It is not for design approval
 
 This chapter walks through one design from start to finish. It uses the example the page opens on, a feeder container ship, so there is nothing to build first. Every step is described in more detail in chapter 3 and later.
 
-**Before starting.** Open https://shiplab.github.io/dbb/ in a current browser (Chrome, Edge, Firefox or Safari). The 3D view needs WebGL. Nothing is stored in the browser: use **Save** to keep the work.
+**Before starting.** Open https://shiplab.github.io/dbb/ in a current browser (Chrome, Edge, Firefox or Safari). The 3D view needs WebGL. Nothing is stored in the browser: use **Save** to keep the work. The fonts and the 3D library are in the `vendor` folder beside `index.html`, so a copy of the folder also runs without a network connection.
 
 ### 2.1 Look at the design
 
 1. The 3D view shows the blocks of the container ship. Drag the background to orbit, right-drag to pan and use the wheel to zoom. The buttons **3D**, **Top**, **Side**, **Front** and **Fit** give standard views. **Maximize** (the corner-brackets button, or M) gives the 3D view the whole window, and **Restore** or Esc goes back.
 2. The hierarchy on the left lists the blocks by group. Click a row to select the block, and the panel on the right shows its name, shape, group, size, position and density.
-3. The **Summary** tab under the 3D view is the assessment of the design. It shows the main results and lists problems and notes. Each item links to the tab or the block to look at.
+3. The **Summary** tab under the 3D view is the assessment of the design. It shows the main results and lists problems and notes. Each item links to the tab or the block to look at. Further down are the side, top and front views, which redraw by themselves at once after a one-off action such as opening an example, Undo or releasing a block, and a quarter of a second after the last of a series of edits (never while a block is dragged; **Draw again** redraws on request), and the general arrangement sheets, which are drawn only when **Draw sheets** is pressed (a click on a sheet opens it full size), the hull offsets and the assumptions and limits, and **Make PDF**.
 
 ![The window on opening: shape library and hierarchy on the left, the 3D view and its toolbar, the tabs and tables below, and the panel of the selected block on the right.](img/01-window.png)
 
@@ -130,7 +130,7 @@ Open the **Requirements** tab. Each requirement has a metric, a direction (at le
 
 ### 2.4 Float it and check the hull
 
-1. Press **Float** in the toolbar. The draught, trim and heel now follow the weight as blocks are moved.
+1. Press **Float** in the toolbar. The draught, trim and heel now follow the weight as blocks are moved. A box over the 3D view lists, in four columns, the draught and freeboard, the trim with the draught and freeboard aft and forward, the heel with the values at port and starboard, and the stability. The freeboard is the depth of the hull less the draught; with several hulls, the smallest depth is used.
 2. Open the **Hydrostatics** tab. It shows the floating condition, the weight balance (weight against displacement), the initial stability (KB, BM, KM and GM) and the righting lever (GZ).
 3. Open the **Resistance** tab. It draws the total resistance against speed by the Holtrop method, with the parts at the service speed.
 4. Open the **Seakeeping** tab. It gives the ship motions in regular waves, and then in a sea state, with significant and maximum values and the limiting wave height for chosen motion limits.
@@ -145,7 +145,7 @@ Open the **Requirements** tab. Each requirement has a metric, a direction (at le
 - **Save** writes a JSON file that can be opened again later.
 - **XLSX** writes the whole project as an Excel workbook.
 - **PDF** writes a report, with the general arrangement sheets at the end.
-- **GA drawing** writes the general arrangement as DXF or PDF.
+- **GA drawing** opens a window with the general arrangement sheets, drawn when the window opens, with buttons to save them as DXF or PDF.
 
 Every file name carries the date and time, so a new save does not replace an old one.
 
@@ -725,7 +725,7 @@ Everything the app calculates is available on screen, in the report, in the draw
 
 | Tab | Shows |
 |---|---|
-| Summary | An assessment of the design: chips for requirements, weight, hull fit, stability and trim, a list of issues with a link to where to look, and a list of what passes. The thresholds are guides: weight margin within 1% of the displacement, blocks outside the hulls up to 2% (amber) and 10% (red) of the block volume below the main deck, and the three basic stability checks of 4.5. |
+| Summary | An assessment of the design: chips for requirements, weight, hull fit, stability and trim, a list of issues with a link to where to look, and a list of what passes. The thresholds are guides: weight margin within 1% of the displacement, blocks outside the hulls up to 2% (amber) and 10% (red) of the block volume below the main deck, and the three basic stability checks of 4.5. Below the tables are the side, top and front views, which follow the design, and the sheets of the general arrangement, drawn when asked for, the hull offsets and the assumptions and limits, both folded, and a button for the PDF. |
 | Requirements | Each requirement with the achieved value, the status and the margin (4.2). |
 | Blocks | The table of blocks, with size, position, rotation, group, density, fill and mass. |
 | Hydrostatics | The floating condition, the hydrostatics of the hulls, the initial stability, the checks, and the GZ curve with its criteria. |
@@ -743,7 +743,7 @@ Everything the app calculates is available on screen, in the report, in the draw
 
 ### 6.3 General arrangement drawing
 
-**GA drawing** makes A3 sheets with the profile, a section, tables, the deck plans and, when there is a hull, the lines plan. It can be saved as a PDF, or as a DXF at full size in millimetres, to plot at the scale given on each sheet. The scale is chosen so that the length, the height and the beam fit the sheet, which also holds for wide multihulls.
+**GA drawing** opens a window that shows the A3 sheets before anything is saved. The sheets are drawn only when the window is opened, one tab for each sheet; the wheel zooms, dragging moves the sheet and a double-click fits it again. The sheets have the profile, a section, tables, the deck plans and, when there is a hull, the lines plan. It can be saved as a PDF, or as a DXF at full size in millimetres, to plot at the scale given on each sheet. The scale is chosen so that the length, the height and the beam fit the sheet, which also holds for wide multihulls.
 
 ![First sheet of the general arrangement drawing: profile, section and tables.](img/11-ga-sheet.png)
 

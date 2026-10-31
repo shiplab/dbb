@@ -53,6 +53,8 @@ The GA drawing, with sheet 1 of the cruise ship example and a deck-plan sheet of
 
 ## How to use it
 
+The fonts and the 3D library are in the `vendor` folder beside `index.html`. A copy of the folder opens from a disk and runs without a network connection.
+
 1. **Start from your systems.** Each system that needs volume or deck area becomes a block. Use **New**, or open an example from the **Examples** menu.
 2. **Set up groups** in the hierarchy on the left. Rename, recolour, add or delete them to match your own division.
 3. **Write requirements** in the **Requirements** tab: choose a metric, at least or at most, and the shall and should values. To link a block to several requirements, tick them in the block panel.

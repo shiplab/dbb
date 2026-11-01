@@ -11712,11 +11712,12 @@ var DBB_PERSON_FIG = { nv: 154, nt: 299, q: 8000, data: 'n/Nk8wsRnPOF/H0QDvAx9Po
     }
     $('#hydEnv').innerHTML = tiles;
     // weight by group
-    var s = C.summarize(m), rows = ['<thead><tr><th>System</th><th class="num">Blocks</th><th class="num" title="t/m³. Type a value to set it for the group; grey is inherited from the parent group or the default">Density t/m³</th><th class="num">Mass t</th><th class="num">LCG m</th><th class="num">TCG m</th><th class="num">VCG m</th></tr></thead><tbody>'];
+    var s = C.summarize(m), rows = ['<thead><tr><th>System</th><th class="num">Blocks</th><th class="num" title="t/m³. Type a value to set it for the group; grey is inherited from the parent group or the default">Density t/m³</th><th class="num" title="Fill of the tanks, in %. Type a value to set it in every block of the group and its subgroups">Fill %</th><th title="Make the blocks follow the group density again"></th><th class="num">Mass t</th><th class="num">LCG m</th><th class="num">TCG m</th><th class="num">VCG m</th></tr></thead><tbody>'];
     s.rows.forEach(function (r, i) {
       var wr = w.rows[i], g = r.group, cls = r.depth === 0 ? 'sub' : (r.total.n === 0 ? 'zero' : '');
       rows.push('<tr class="' + cls + '"><td style="padding-left:' + (8 + r.depth * 16) + 'px"><span class="sw" style="background:' + esc(g.color) + '"></span>' + esc(g.name) + '</td><td class="num">' + r.total.n + '</td>' +
         '<td class="num"><input type="number" step="0.05" min="0" data-gdens="' + esc(g.id) + '" value="' + (typeof g.density === 'number' ? g.density : '') + '" placeholder="' + fmt(wr.density.value, 2) + '" aria-label="Density of ' + esc(g.name) + '"></td>' +
+        gdFillCells(m, g) +
         '<td class="num">' + fmt(wr.total.mass, 1) + '</td><td class="num">' + fm2(wr.total.lcg) + '</td><td class="num">' + fm2(wr.total.tcg) + '</td><td class="num">' + fm2(wr.total.vcg) + '</td></tr>');
     });
     rows.push('</tbody>');
@@ -11729,6 +11730,14 @@ var DBB_PERSON_FIG = { nv: 154, nt: 299, q: 8000, data: 'n/Nk8wsRnPOF/H0QDvAx9Po
     if (S.tab === 'sea') renderSeakeeping();
     if (S.tab === 'str') renderStructure();
     if (S.tab === 'evac') renderEvacTab();
+  }
+
+  /* the Fill and Reset cells of a group row in the weight table */
+  function gdFillCells(m, g) {
+    var ids = C.descendantIds(m, g.id), bl = m.blocks.filter(function (b) { return ids.indexOf(b.group) >= 0; }), fl = bl.filter(function (b) { return typeof b.massOverride !== 'number'; }), vals = fl.map(function (b) { return C.blockMass(m, b).fill; });
+    var same = vals.length > 0 && vals.every(function (v) { return Math.abs(v - vals[0]) < 1e-9; }), own = bl.filter(function (b) { return typeof b.density === 'number'; }).length;
+    return '<td class="num"><input type="number" step="1" min="0" max="100" data-gfill="' + esc(g.id) + '" value="' + (same ? fin(vals[0]) : '') + '" placeholder="' + (vals.length ? 'mixed' : '-') + '"' + (vals.length ? '' : ' disabled') + ' aria-label="Fill of ' + esc(g.name) + '"></td>' +
+      '<td class="num">' + (own ? '<button class="btn sm" data-greset="' + esc(g.id) + '" title="' + own + (own === 1 ? ' block has' : ' blocks have') + ' a density of its own. Press to make ' + (own === 1 ? 'it follow' : 'them follow') + ' the group again">Reset ' + own + '</button>' : '') + '</td>';
   }
 
   /* Initial stability: kept until the model changes; while something is dragged the last result stays */
@@ -13255,7 +13264,7 @@ var DBB_PERSON_FIG = { nv: 154, nt: 299, q: 8000, data: 'n/Nk8wsRnPOF/H0QDvAx9Po
       '<li><b>Write requirements.</b> In the <i>Requirements</i> tab choose a metric (volume, area, weight, length, beam, height, total weight, gross tonnage), at least or at most, and the <i>shall</i> and <i>should</i> values. Pick the group and requirement for new blocks in the two menus under the shape library. To link a block to several requirements, tick them in the block panel, or press the block count in the Requirements tab to pick the blocks (<i>Add all</i> ticks a whole group). A block counts in full for each requirement it serves.</li>' +
       '<li><b>Add and shape blocks.</b> Click a shape, or drag it onto the workplane. Select a block and use <i>Move</i>, <i>Rotate</i> or <i>Scale</i>. <b>To resize, choose Scale and drag the small coloured cubes.</b> The opposite face stays fixed, so one drag stretches the block from the face you did not grab. You can also type exact values in the right panel, which appears when something is selected. Snap aligns block faces to the step you choose. The grid follows the Snap step (1 m when snap is off), with heavier lines every 10 m and numbered marks along x and y. A shape dragged from the library shows a pink footprint where it will land, with its x, y and z range, and a selected block shows its footprint and drop lines on the grid. <b>Import STL</b> (or drop an STL file on the workplane) adds your STL file as one block (use Duplicate for more copies). Units are guessed and can be changed. Large files (up to 500 MB) are reduced on import, and volume and centre of gravity come from the real mesh.</li>' +
       '<li><b>Add a hull (optional).</b> Press <i>+ Hull</i>. It is fitted around the blocks below the main deck, whose height is the hull <i>depth</i>. Tick <i>Defines main deck</i> on a block to set the deck at its top; otherwise the depth is a guess. Click the hull row, click the hull in the 3D view (where no block is), or press the <i>Hull</i> button (Shift+H) to edit it: move and scale it with the gizmo, set the <i>draught</i>, or open <i>Shape</i> for the sliders. A second <i>+ Hull</i> makes a catamaran and a third a trimaran, up to five hulls: each hull is fitted to its own group of blocks, so keep the blocks of each hull apart. The hulls are illustrative shapes, not real lines. Instead of a preset you can pick <i>Gunnerus-like (table)</i> as the hull type, or press <i>Hull from table\u2026</i> to add a hull from a table of offsets (a CSV file, or the table copied from <i>Offsets</i>): stations and heights in metres, half-breadths in the cells. For a table hull, <i>Fit to blocks</i> scales its length and beam to the blocks (not uniformly); the size fields scale the table.</li>' +
-      '<li><b>Add weight.</b> In the <i>Hydrostatics</i> tab set a density per group, and override it on a block if needed, with a fill % for tanks or a typed mass. Tick <i>Free surface</i> on a part-filled liquid tank. The structure share is set in the same tab.</li>' +
+      '<li><b>Add weight.</b> In the <i>Hydrostatics</i> tab set a density per group, and override it on a block if needed, with a fill % for tanks or a typed mass. The group row also has a <i>Fill %</i> for all its blocks, and <i>Reset</i> when blocks hold a density of their own, to make them follow the group again. Tick <i>Free surface</i> on a part-filled liquid tank. The structure share is set in the same tab.</li>' +
       '<li><b>Float it.</b> Press <i>Float</i> in the toolbar and the draught, trim and heel follow the weight as you move blocks. The <i>Hydrostatics</i> tab shows the floating condition, the weight balance, and the initial stability: KB, BM, KM and GM, with a few basic checks. Below it, the righting lever (GZ) is drawn with the standard criteria for guidance.</li>' +
       '<li><b>Shape the hull.</b> Press <i>Hull</i> (beside Float, or Shift+H) to edit the shape of the selected hull with curves; if there is no hull, one is added first: the sheer plan, the half-breadth plan and the body plan, with a live 3D hull, the blocks shown faintly inside it, and the hydrostatics. Pick a starting hull, move the shape sliders, add a bulbous bow, or drag the points. <i>Apply</i> replaces the hull; <i>Cancel</i> leaves it. A hull that has no curves starts as a close copy of its shape. The hull keeps its curves and slider values, so you can edit it again.</li>' +
       '<li><b>Check the resistance.</b> With a hull, the <i>Resistance</i> tab draws the total resistance against speed by the Holtrop method, with the parts at the service speed (the default is Froude number 0.2). Set the speed, the afterbody form and the transom. It is an estimate for comparing designs: no appendages, no propulsion, an optional assumed bulb, and a warning shows when the hull is outside the range of the method. The limits are listed in the tab.</li>' +
@@ -14149,7 +14158,21 @@ var DBB_PERSON_FIG = { nv: 154, nt: 299, q: 8000, data: 'n/Nk8wsRnPOF/H0QDvAx9Po
       S.model.structPct = isFinite(v) ? Math.min(100, Math.max(0, v)) : C.DEFAULT_STRUCT_PCT;
       renderAll(); pushHistory();
     });
+    $('#wgtTbl').addEventListener('click', function (e) {
+      var rb = e.target.closest('[data-greset]'); if (!rb) return;
+      var ids = C.descendantIds(S.model, rb.getAttribute('data-greset'));
+      S.model.blocks.forEach(function (b) { if (ids.indexOf(b.group) >= 0) b.density = null; });
+      renderAll(); pushHistory();
+    });
     $('#wgtTbl').addEventListener('change', function (e) {
+      var fid = e.target.getAttribute('data-gfill');
+      if (fid) {
+        var v = parseFloat(e.target.value); if (!isFinite(v)) return;
+        v = Math.min(100, Math.max(0, v));
+        var fi = C.descendantIds(S.model, fid);
+        S.model.blocks.forEach(function (b) { if (fi.indexOf(b.group) >= 0 && typeof b.massOverride !== 'number') b.fill = v; });
+        renderAll(); pushHistory(); return;
+      }
       var id = e.target.getAttribute('data-gdens');
       if (!id) return;
       var g = S.model.groups.filter(function (x) { return x.id === id; })[0];

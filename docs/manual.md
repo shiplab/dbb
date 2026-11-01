@@ -209,6 +209,8 @@ A hull is optional. It gives the design a displacement, a waterline and a stabil
 
 The weight of a block is its density × its volume × its fill percentage (100% unless changed). The density is the one set on the block, or else the one of its group (a sub-group follows its parent), or, if none is set, a default of 0.3 t/m³. Instead, a mass can be typed for the block, which replaces the calculation. The fill percentage is meant for tanks. A part-filled liquid tank can be marked **Free surface**, which is used in the stability (chapter 4).
 
+In the weight table of the Hydrostatics tab, each group row has three controls. **Density** sets the density of the group, which its blocks and sub-groups follow. **Fill %** sets the fill of every block in the group and its sub-groups at once; it shows the common value, or *mixed* when the blocks differ, and blocks with a typed mass are left as they are. When some blocks of a group have a density of their own, which would hide the group value, the row shows **Reset n**: it clears those densities so that the blocks follow the group again. Each change is one Undo step.
+
 The structure of the hull, with its piping and cabling, is taken as a share of the displacement (25% by default, set in the Hydrostatics tab) and spread over the hull volume. The weight balance compares the total weight with the displacement and gives the margin, the longitudinal, transverse and vertical centres of gravity (LCG, TCG, VCG) and LCG minus LCB.
 
 ### 3.7 Saving and loading

@@ -1,0 +1,673 @@
+{
+  "app": "dbb-block-editor",
+  "version": 2,
+  "name": "Two decks with a stair",
+  "groups": [
+    {
+      "id": "g_acc",
+      "name": "Accommodation",
+      "color": "#7da7d9",
+      "parent": null,
+      "visible": true,
+      "density": null
+    },
+    {
+      "id": "g_pub",
+      "name": "Public spaces",
+      "color": "#e0b25a",
+      "parent": null,
+      "visible": true,
+      "density": null
+    },
+    {
+      "id": "g_circ",
+      "name": "Circulation",
+      "color": "#b8c2cc",
+      "parent": null,
+      "visible": true,
+      "density": null
+    },
+    {
+      "id": "g_safe",
+      "name": "Safety",
+      "color": "#d9534f",
+      "parent": null,
+      "visible": true,
+      "density": null
+    },
+    {
+      "id": "g_serv",
+      "name": "Service and stores",
+      "color": "#8e9aa6",
+      "parent": null,
+      "visible": true,
+      "density": null
+    },
+    {
+      "id": "g_work",
+      "name": "Work spaces",
+      "color": "#a58bd1",
+      "parent": null,
+      "visible": true,
+      "density": null
+    },
+    {
+      "id": "g_tank",
+      "name": "Tanks and machinery",
+      "color": "#b08a5a",
+      "parent": null,
+      "visible": true,
+      "density": null
+    }
+  ],
+  "blocks": [
+    {
+      "id": "work",
+      "name": "Workshop and change room",
+      "shape": "box",
+      "group": "g_work",
+      "reqs": [],
+      "position": [27, 0, 8.8],
+      "size": [6, 9.2, 2.6],
+      "rotation": [0, 0, 0],
+      "areaOverride": null,
+      "hidden": false,
+      "density": null,
+      "fill": 100,
+      "massOverride": null,
+      "freeSurface": false,
+      "deck": false,
+      "gt": true,
+      "evac": {
+        "role": "room",
+        "space": "service",
+        "capacity": 16,
+        "occupants": 16,
+        "doors": [
+          {
+            "face": "+x",
+            "offset": 0,
+            "width": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "cL",
+      "name": "Corridor deck 2",
+      "shape": "box",
+      "group": "g_circ",
+      "reqs": [],
+      "position": [42, 0, 8.8],
+      "size": [24, 1.2, 2.6],
+      "rotation": [0, 0, 0],
+      "areaOverride": null,
+      "hidden": false,
+      "density": null,
+      "fill": 100,
+      "massOverride": null,
+      "freeSurface": false,
+      "deck": false,
+      "gt": true,
+      "evac": {
+        "role": "corridor"
+      }
+    },
+    {
+      "id": "c2P1",
+      "name": "Cabin 2-P1",
+      "shape": "box",
+      "group": "g_acc",
+      "reqs": [],
+      "position": [32, 2.6, 8.8],
+      "size": [4, 4, 2.6],
+      "rotation": [0, 0, 0],
+      "areaOverride": null,
+      "hidden": false,
+      "density": null,
+      "fill": 100,
+      "massOverride": null,
+      "freeSurface": false,
+      "deck": false,
+      "gt": true,
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 2,
+        "occupants": 2,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1.2,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2S1",
+      "name": "Cabin 2-S1",
+      "shape": "box",
+      "group": "g_acc",
+      "reqs": [],
+      "position": [32, -2.6, 8.8],
+      "size": [4, 4, 2.6],
+      "rotation": [0, 0, 0],
+      "areaOverride": null,
+      "hidden": false,
+      "density": null,
+      "fill": 100,
+      "massOverride": null,
+      "freeSurface": false,
+      "deck": false,
+      "gt": true,
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 2,
+        "occupants": 2,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1.2,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2P2",
+      "name": "Cabin 2-P2",
+      "shape": "box",
+      "group": "g_acc",
+      "reqs": [],
+      "position": [36, 2.6, 8.8],
+      "size": [4, 4, 2.6],
+      "rotation": [0, 0, 0],
+      "areaOverride": null,
+      "hidden": false,
+      "density": null,
+      "fill": 100,
+      "massOverride": null,
+      "freeSurface": false,
+      "deck": false,
+      "gt": true,
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 2,
+        "occupants": 2,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1.2,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2S2",
+      "name": "Cabin 2-S2",
+      "shape": "box",
+      "group": "g_acc",
+      "reqs": [],
+      "position": [36, -2.6, 8.8],
+      "size": [4, 4, 2.6],
+      "rotation": [0, 0, 0],
+      "areaOverride": null,
+      "hidden": false,
+      "density": null,
+      "fill": 100,
+      "massOverride": null,
+      "freeSurface": false,
+      "deck": false,
+      "gt": true,
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 2,
+        "occupants": 2,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1.2,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2P3",
+      "name": "Cabin 2-P3",
+      "shape": "box",
+      "group": "g_acc",
+      "reqs": [],
+      "position": [40, 2.6, 8.8],
+      "size": [4, 4, 2.6],
+      "rotation": [0, 0, 0],
+      "areaOverride": null,
+      "hidden": false,
+      "density": null,
+      "fill": 100,
+      "massOverride": null,
+      "freeSurface": false,
+      "deck": false,
+      "gt": true,
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 2,
+        "occupants": 2,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1.2,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2S3",
+      "name": "Cabin 2-S3",
+      "shape": "box",
+      "group": "g_acc",
+      "reqs": [],
+      "position": [40, -2.6, 8.8],
+      "size": [4, 4, 2.6],
+      "rotation": [0, 0, 0],
+      "areaOverride": null,
+      "hidden": false,
+      "density": null,
+      "fill": 100,
+      "massOverride": null,
+      "freeSurface": false,
+      "deck": false,
+      "gt": true,
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 2,
+        "occupants": 2,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1.2,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2P4",
+      "name": "Cabin 2-P4",
+      "shape": "box",
+      "group": "g_acc",
+      "reqs": [],
+      "position": [44, 2.6, 8.8],
+      "size": [4, 4, 2.6],
+      "rotation": [0, 0, 0],
+      "areaOverride": null,
+      "hidden": false,
+      "density": null,
+      "fill": 100,
+      "massOverride": null,
+      "freeSurface": false,
+      "deck": false,
+      "gt": true,
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 2,
+        "occupants": 2,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1.2,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2S4",
+      "name": "Cabin 2-S4",
+      "shape": "box",
+      "group": "g_acc",
+      "reqs": [],
+      "position": [44, -2.6, 8.8],
+      "size": [4, 4, 2.6],
+      "rotation": [0, 0, 0],
+      "areaOverride": null,
+      "hidden": false,
+      "density": null,
+      "fill": 100,
+      "massOverride": null,
+      "freeSurface": false,
+      "deck": false,
+      "gt": true,
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 2,
+        "occupants": 2,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1.2,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2P5",
+      "name": "Cabin 2-P5",
+      "shape": "box",
+      "group": "g_acc",
+      "reqs": [],
+      "position": [48, 2.6, 8.8],
+      "size": [4, 4, 2.6],
+      "rotation": [0, 0, 0],
+      "areaOverride": null,
+      "hidden": false,
+      "density": null,
+      "fill": 100,
+      "massOverride": null,
+      "freeSurface": false,
+      "deck": false,
+      "gt": true,
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 2,
+        "occupants": 2,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1.2,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2S5",
+      "name": "Cabin 2-S5",
+      "shape": "box",
+      "group": "g_acc",
+      "reqs": [],
+      "position": [48, -2.6, 8.8],
+      "size": [4, 4, 2.6],
+      "rotation": [0, 0, 0],
+      "areaOverride": null,
+      "hidden": false,
+      "density": null,
+      "fill": 100,
+      "massOverride": null,
+      "freeSurface": false,
+      "deck": false,
+      "gt": true,
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 2,
+        "occupants": 2,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1.2,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2P6",
+      "name": "Cabin 2-P6",
+      "shape": "box",
+      "group": "g_acc",
+      "reqs": [],
+      "position": [52, 2.6, 8.8],
+      "size": [4, 4, 2.6],
+      "rotation": [0, 0, 0],
+      "areaOverride": null,
+      "hidden": false,
+      "density": null,
+      "fill": 100,
+      "massOverride": null,
+      "freeSurface": false,
+      "deck": false,
+      "gt": true,
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 2,
+        "occupants": 2,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1.2,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2S6",
+      "name": "Cabin 2-S6",
+      "shape": "box",
+      "group": "g_acc",
+      "reqs": [],
+      "position": [52, -2.6, 8.8],
+      "size": [4, 4, 2.6],
+      "rotation": [0, 0, 0],
+      "areaOverride": null,
+      "hidden": false,
+      "density": null,
+      "fill": 100,
+      "massOverride": null,
+      "freeSurface": false,
+      "deck": false,
+      "gt": true,
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 2,
+        "occupants": 2,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1.2,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "lob",
+      "name": "Stair lobby deck 2",
+      "shape": "box",
+      "group": "g_circ",
+      "reqs": [],
+      "position": [55.5, 0, 8.8],
+      "size": [3, 4, 2.6],
+      "rotation": [0, 0, 0],
+      "areaOverride": null,
+      "hidden": false,
+      "density": null,
+      "fill": 100,
+      "massOverride": null,
+      "freeSurface": false,
+      "deck": false,
+      "gt": true,
+      "evac": {
+        "role": "corridor"
+      }
+    },
+    {
+      "id": "st",
+      "name": "Stair 2-3",
+      "shape": "box",
+      "group": "g_circ",
+      "reqs": [],
+      "position": [59, 0, 9],
+      "size": [4, 1.2, 3],
+      "rotation": [0, 0, 0],
+      "areaOverride": null,
+      "hidden": false,
+      "density": null,
+      "fill": 100,
+      "massOverride": null,
+      "freeSurface": false,
+      "deck": false,
+      "gt": true,
+      "evac": {
+        "role": "stair",
+        "up": "+x"
+      }
+    },
+    {
+      "id": "stX",
+      "name": "Stores deck 2",
+      "shape": "box",
+      "group": "g_serv",
+      "reqs": [],
+      "position": [59, -2.6, 8.8],
+      "size": [4, 4, 2.6],
+      "rotation": [0, 0, 0],
+      "areaOverride": null,
+      "hidden": false,
+      "density": null,
+      "fill": 100,
+      "massOverride": null,
+      "freeSurface": false,
+      "deck": false,
+      "gt": true
+    },
+    {
+      "id": "stY",
+      "name": "Tech space deck 2",
+      "shape": "box",
+      "group": "g_serv",
+      "reqs": [],
+      "position": [59, 2.6, 8.8],
+      "size": [4, 4, 2.6],
+      "rotation": [0, 0, 0],
+      "areaOverride": null,
+      "hidden": false,
+      "density": null,
+      "fill": 100,
+      "massOverride": null,
+      "freeSurface": false,
+      "deck": false,
+      "gt": true
+    },
+    {
+      "id": "land",
+      "name": "Stair landing deck 3",
+      "shape": "box",
+      "group": "g_circ",
+      "reqs": [],
+      "position": [62, 0, 11.8],
+      "size": [2, 4, 2.6],
+      "rotation": [0, 0, 0],
+      "areaOverride": null,
+      "hidden": false,
+      "density": null,
+      "fill": 100,
+      "massOverride": null,
+      "freeSurface": false,
+      "deck": false,
+      "gt": true,
+      "evac": {
+        "role": "corridor"
+      }
+    },
+    {
+      "id": "cU",
+      "name": "Corridor deck 3",
+      "shape": "box",
+      "group": "g_circ",
+      "reqs": [],
+      "position": [45.5, -1.4, 11.8],
+      "size": [31, 1.2, 2.6],
+      "rotation": [0, 0, 0],
+      "areaOverride": null,
+      "hidden": false,
+      "density": null,
+      "fill": 100,
+      "massOverride": null,
+      "freeSurface": false,
+      "deck": false,
+      "gt": true,
+      "evac": {
+        "role": "corridor"
+      }
+    },
+    {
+      "id": "off",
+      "name": "Offices",
+      "shape": "box",
+      "group": "g_work",
+      "reqs": [],
+      "position": [46, 1.9, 11.8],
+      "size": [12, 5.4, 2.6],
+      "rotation": [0, 0, 0],
+      "areaOverride": null,
+      "hidden": false,
+      "density": null,
+      "fill": 100,
+      "massOverride": null,
+      "freeSurface": false,
+      "deck": false,
+      "gt": true,
+      "evac": {
+        "role": "room",
+        "space": "service",
+        "capacity": 4,
+        "occupants": 4,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 0,
+            "width": 0.9
+          }
+        ]
+      }
+    },
+    {
+      "id": "mus2",
+      "name": "Muster station deck 3",
+      "shape": "box",
+      "group": "g_safe",
+      "reqs": [],
+      "position": [26, 0, 11.8],
+      "size": [8, 12, 2.6],
+      "rotation": [0, 0, 0],
+      "areaOverride": null,
+      "hidden": false,
+      "density": null,
+      "fill": 100,
+      "massOverride": null,
+      "freeSurface": false,
+      "deck": false,
+      "gt": true,
+      "evac": {
+        "role": "muster"
+      }
+    }
+  ],
+  "evacuation": {
+    "schema": 2,
+    "seed": 1,
+    "population": "crew",
+    "response": "none",
+    "occupancy": "fixed",
+    "grid": 0.1,
+    "dt": 0.05,
+    "autoDoors": true,
+    "tMax": 1800
+  }
+}

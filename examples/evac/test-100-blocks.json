@@ -1,0 +1,2033 @@
+{
+  "app": "dbb-block-editor",
+  "version": 2,
+  "name": "Test model, 100 blocks",
+  "groups": [
+    {
+      "id": "g_acc",
+      "name": "Accommodation",
+      "color": "#7da7d9",
+      "parent": null,
+      "visible": true,
+      "density": null
+    },
+    {
+      "id": "g_pub",
+      "name": "Public spaces",
+      "color": "#e0b25a",
+      "parent": null,
+      "visible": true,
+      "density": null
+    },
+    {
+      "id": "g_circ",
+      "name": "Circulation",
+      "color": "#b8c2cc",
+      "parent": null,
+      "visible": true,
+      "density": null
+    },
+    {
+      "id": "g_safe",
+      "name": "Safety",
+      "color": "#d9534f",
+      "parent": null,
+      "visible": true,
+      "density": null
+    },
+    {
+      "id": "g_serv",
+      "name": "Service and stores",
+      "color": "#8e9aa6",
+      "parent": null,
+      "visible": true,
+      "density": null
+    },
+    {
+      "id": "g_work",
+      "name": "Work spaces",
+      "color": "#a58bd1",
+      "parent": null,
+      "visible": true,
+      "density": null
+    },
+    {
+      "id": "g_tank",
+      "name": "Tanks and machinery",
+      "color": "#b08a5a",
+      "parent": null,
+      "visible": true,
+      "density": null
+    }
+  ],
+  "blocks": [
+    {
+      "id": "cor2",
+      "name": "Corridor deck 2",
+      "shape": "box",
+      "group": "g_circ",
+      "position": [46, 0, 8.8],
+      "size": [72, 1.2, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "corridor"
+      }
+    },
+    {
+      "id": "c2P0",
+      "name": "Cabin 2-P1",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [11.8, 2.5999999999999996, 8.8],
+      "size": [3.5999999999999996, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2S0",
+      "name": "Cabin 2-S1",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [11.8, -2.5999999999999996, 8.8],
+      "size": [3.5999999999999996, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2P1",
+      "name": "Cabin 2-P2",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [15.399999999999999, 2.5999999999999996, 8.8],
+      "size": [3.5999999999999996, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2S1",
+      "name": "Cabin 2-S2",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [15.399999999999999, -2.5999999999999996, 8.8],
+      "size": [3.5999999999999996, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2P2",
+      "name": "Cabin 2-P3",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [19, 2.5999999999999996, 8.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2S2",
+      "name": "Cabin 2-S3",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [19, -2.5999999999999996, 8.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2P3",
+      "name": "Cabin 2-P4",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [22.6, 2.5999999999999996, 8.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2S3",
+      "name": "Cabin 2-S4",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [22.6, -2.5999999999999996, 8.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2P4",
+      "name": "Cabin 2-P5",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [26.2, 2.5999999999999996, 8.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2S4",
+      "name": "Cabin 2-S5",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [26.2, -2.5999999999999996, 8.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2P5",
+      "name": "Cabin 2-P6",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [29.8, 2.5999999999999996, 8.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2S5",
+      "name": "Cabin 2-S6",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [29.8, -2.5999999999999996, 8.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2P6",
+      "name": "Cabin 2-P7",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [33.400000000000006, 2.5999999999999996, 8.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2S6",
+      "name": "Cabin 2-S7",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [33.400000000000006, -2.5999999999999996, 8.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2P7",
+      "name": "Cabin 2-P8",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [37, 2.5999999999999996, 8.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2S7",
+      "name": "Cabin 2-S8",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [37, -2.5999999999999996, 8.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2P8",
+      "name": "Cabin 2-P9",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [40.599999999999994, 2.5999999999999996, 8.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2S8",
+      "name": "Cabin 2-S9",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [40.599999999999994, -2.5999999999999996, 8.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2P9",
+      "name": "Cabin 2-P10",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [44.2, 2.5999999999999996, 8.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2S9",
+      "name": "Cabin 2-S10",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [44.2, -2.5999999999999996, 8.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2P10",
+      "name": "Cabin 2-P11",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [47.8, 2.5999999999999996, 8.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2S10",
+      "name": "Cabin 2-S11",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [47.8, -2.5999999999999996, 8.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2P11",
+      "name": "Cabin 2-P12",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [51.400000000000006, 2.5999999999999996, 8.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2S11",
+      "name": "Cabin 2-S12",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [51.400000000000006, -2.5999999999999996, 8.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2P12",
+      "name": "Cabin 2-P13",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [55, 2.5999999999999996, 8.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2S12",
+      "name": "Cabin 2-S13",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [55, -2.5999999999999996, 8.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2P13",
+      "name": "Cabin 2-P14",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [58.60000000000001, 2.5999999999999996, 8.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2S13",
+      "name": "Cabin 2-S14",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [58.60000000000001, -2.5999999999999996, 8.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2P14",
+      "name": "Cabin 2-P15",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [62.2, 2.5999999999999996, 8.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2S14",
+      "name": "Cabin 2-S15",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [62.2, -2.5999999999999996, 8.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2P15",
+      "name": "Cabin 2-P16",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [65.8, 2.5999999999999996, 8.8],
+      "size": [3.5999999999999943, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2S15",
+      "name": "Cabin 2-S16",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [65.8, -2.5999999999999996, 8.8],
+      "size": [3.5999999999999943, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2P16",
+      "name": "Cabin 2-P17",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [69.39999999999999, 2.5999999999999996, 8.8],
+      "size": [3.5999999999999943, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2S16",
+      "name": "Cabin 2-S17",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [69.39999999999999, -2.5999999999999996, 8.8],
+      "size": [3.5999999999999943, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2P17",
+      "name": "Cabin 2-P18",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [73, 2.5999999999999996, 8.8],
+      "size": [3.5999999999999943, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2S17",
+      "name": "Cabin 2-S18",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [73, -2.5999999999999996, 8.8],
+      "size": [3.5999999999999943, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2P18",
+      "name": "Cabin 2-P19",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [76.6, 2.5999999999999996, 8.8],
+      "size": [3.5999999999999943, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2S18",
+      "name": "Cabin 2-S19",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [76.6, -2.5999999999999996, 8.8],
+      "size": [3.5999999999999943, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2P19",
+      "name": "Cabin 2-P20",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [80.2, 2.5999999999999996, 8.8],
+      "size": [3.5999999999999943, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c2S19",
+      "name": "Cabin 2-S20",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [80.2, -2.5999999999999996, 8.8],
+      "size": [3.5999999999999943, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "cor3",
+      "name": "Corridor deck 3",
+      "shape": "box",
+      "group": "g_circ",
+      "position": [49.5, 0, 11.8],
+      "size": [79, 1.2, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "corridor"
+      }
+    },
+    {
+      "id": "c3P0",
+      "name": "Cabin 3-P1",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [11.8, 2.5999999999999996, 11.8],
+      "size": [3.5999999999999996, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3S0",
+      "name": "Cabin 3-S1",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [11.8, -2.5999999999999996, 11.8],
+      "size": [3.5999999999999996, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3P1",
+      "name": "Cabin 3-P2",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [15.399999999999999, 2.5999999999999996, 11.8],
+      "size": [3.5999999999999996, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3S1",
+      "name": "Cabin 3-S2",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [15.399999999999999, -2.5999999999999996, 11.8],
+      "size": [3.5999999999999996, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3P2",
+      "name": "Cabin 3-P3",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [19, 2.5999999999999996, 11.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3S2",
+      "name": "Cabin 3-S3",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [19, -2.5999999999999996, 11.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3P3",
+      "name": "Cabin 3-P4",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [22.6, 2.5999999999999996, 11.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3S3",
+      "name": "Cabin 3-S4",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [22.6, -2.5999999999999996, 11.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3P4",
+      "name": "Cabin 3-P5",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [26.2, 2.5999999999999996, 11.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3S4",
+      "name": "Cabin 3-S5",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [26.2, -2.5999999999999996, 11.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3P5",
+      "name": "Cabin 3-P6",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [29.8, 2.5999999999999996, 11.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3S5",
+      "name": "Cabin 3-S6",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [29.8, -2.5999999999999996, 11.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3P6",
+      "name": "Cabin 3-P7",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [33.400000000000006, 2.5999999999999996, 11.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3S6",
+      "name": "Cabin 3-S7",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [33.400000000000006, -2.5999999999999996, 11.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3P7",
+      "name": "Cabin 3-P8",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [37, 2.5999999999999996, 11.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3S7",
+      "name": "Cabin 3-S8",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [37, -2.5999999999999996, 11.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3P8",
+      "name": "Cabin 3-P9",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [40.599999999999994, 2.5999999999999996, 11.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3S8",
+      "name": "Cabin 3-S9",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [40.599999999999994, -2.5999999999999996, 11.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3P9",
+      "name": "Cabin 3-P10",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [44.2, 2.5999999999999996, 11.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3S9",
+      "name": "Cabin 3-S10",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [44.2, -2.5999999999999996, 11.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3P10",
+      "name": "Cabin 3-P11",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [47.8, 2.5999999999999996, 11.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3S10",
+      "name": "Cabin 3-S11",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [47.8, -2.5999999999999996, 11.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3P11",
+      "name": "Cabin 3-P12",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [51.400000000000006, 2.5999999999999996, 11.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3S11",
+      "name": "Cabin 3-S12",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [51.400000000000006, -2.5999999999999996, 11.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3P12",
+      "name": "Cabin 3-P13",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [55, 2.5999999999999996, 11.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3S12",
+      "name": "Cabin 3-S13",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [55, -2.5999999999999996, 11.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3P13",
+      "name": "Cabin 3-P14",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [58.60000000000001, 2.5999999999999996, 11.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3S13",
+      "name": "Cabin 3-S14",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [58.60000000000001, -2.5999999999999996, 11.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3P14",
+      "name": "Cabin 3-P15",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [62.2, 2.5999999999999996, 11.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3S14",
+      "name": "Cabin 3-S15",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [62.2, -2.5999999999999996, 11.8],
+      "size": [3.6000000000000014, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3P15",
+      "name": "Cabin 3-P16",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [65.8, 2.5999999999999996, 11.8],
+      "size": [3.5999999999999943, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3S15",
+      "name": "Cabin 3-S16",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [65.8, -2.5999999999999996, 11.8],
+      "size": [3.5999999999999943, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3P16",
+      "name": "Cabin 3-P17",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [69.39999999999999, 2.5999999999999996, 11.8],
+      "size": [3.5999999999999943, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3S16",
+      "name": "Cabin 3-S17",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [69.39999999999999, -2.5999999999999996, 11.8],
+      "size": [3.5999999999999943, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3P17",
+      "name": "Cabin 3-P18",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [73, 2.5999999999999996, 11.8],
+      "size": [3.5999999999999943, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3S17",
+      "name": "Cabin 3-S18",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [73, -2.5999999999999996, 11.8],
+      "size": [3.5999999999999943, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3P18",
+      "name": "Cabin 3-P19",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [76.6, 2.5999999999999996, 11.8],
+      "size": [3.5999999999999943, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3S18",
+      "name": "Cabin 3-S19",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [76.6, -2.5999999999999996, 11.8],
+      "size": [3.5999999999999943, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3P19",
+      "name": "Cabin 3-P20",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [80.2, 2.5999999999999996, 11.8],
+      "size": [3.5999999999999943, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "c3S19",
+      "name": "Cabin 3-S20",
+      "shape": "box",
+      "group": "g_acc",
+      "position": [80.2, -2.5999999999999996, 11.8],
+      "size": [3.5999999999999943, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 1,
+        "occupants": 1,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": 1,
+            "width": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "lob",
+      "name": "Stair lobby deck 2",
+      "shape": "box",
+      "group": "g_circ",
+      "position": [83.5, 0, 8.8],
+      "size": [3, 4, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "corridor"
+      }
+    },
+    {
+      "id": "st",
+      "name": "Stair 2-3",
+      "shape": "box",
+      "group": "g_circ",
+      "position": [87, 0, 9],
+      "size": [4, 1.2, 3],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "stair",
+        "up": "+x"
+      }
+    },
+    {
+      "id": "stoA",
+      "name": "Stores deck 2",
+      "shape": "box",
+      "group": "g_serv",
+      "position": [87, -2.5999999999999996, 8.8],
+      "size": [4, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0]
+    },
+    {
+      "id": "stoB",
+      "name": "Tech space deck 2",
+      "shape": "box",
+      "group": "g_serv",
+      "position": [87, 2.5999999999999996, 8.8],
+      "size": [4, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0]
+    },
+    {
+      "id": "land",
+      "name": "Stair landing deck 3",
+      "shape": "box",
+      "group": "g_circ",
+      "position": [90, 0, 11.8],
+      "size": [2, 4, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "corridor"
+      }
+    },
+    {
+      "id": "pas",
+      "name": "Passage beside the stair",
+      "shape": "box",
+      "group": "g_circ",
+      "position": [85.5, 1.2, 11.8],
+      "size": [7, 1.2000000000000002, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "corridor"
+      }
+    },
+    {
+      "id": "offP",
+      "name": "Office P",
+      "shape": "box",
+      "group": "g_work",
+      "position": [85.5, 3.1999999999999997, 11.8],
+      "size": [7, 2.8, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "service",
+        "capacity": 10,
+        "occupants": 10,
+        "doors": [
+          {
+            "face": "-y",
+            "offset": 0,
+            "width": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "offS",
+      "name": "Office S",
+      "shape": "box",
+      "group": "g_work",
+      "position": [85.5, -2.5999999999999996, 11.8],
+      "size": [7, 3.9999999999999996, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "room",
+        "space": "service",
+        "capacity": 10,
+        "occupants": 10,
+        "doors": [
+          {
+            "face": "+y",
+            "offset": -2,
+            "width": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "mus",
+      "name": "Muster station",
+      "shape": "box",
+      "group": "g_safe",
+      "position": [5, 0, 11.8],
+      "size": [10, 12, 2.6],
+      "rotation": [0, 0, 0],
+      "evac": {
+        "role": "muster"
+      }
+    },
+    {
+      "id": "col0",
+      "name": "Column 1",
+      "shape": "box",
+      "group": "g_struct",
+      "position": [2.2, -2.8, 11.8],
+      "size": [0.3999999999999999, 0.3999999999999999, 2.6],
+      "rotation": [0, 0, 0]
+    },
+    {
+      "id": "col1",
+      "name": "Column 2",
+      "shape": "box",
+      "group": "g_struct",
+      "position": [5.2, -2.8, 11.8],
+      "size": [0.40000000000000036, 0.3999999999999999, 2.6],
+      "rotation": [0, 0, 0]
+    },
+    {
+      "id": "col2",
+      "name": "Column 3",
+      "shape": "box",
+      "group": "g_struct",
+      "position": [8.2, -2.8, 11.8],
+      "size": [0.40000000000000036, 0.3999999999999999, 2.6],
+      "rotation": [0, 0, 0]
+    },
+    {
+      "id": "col3",
+      "name": "Column 4",
+      "shape": "box",
+      "group": "g_struct",
+      "position": [2.2, 3.2, 11.8],
+      "size": [0.3999999999999999, 0.3999999999999999, 2.6],
+      "rotation": [0, 0, 0]
+    },
+    {
+      "id": "col4",
+      "name": "Column 5",
+      "shape": "box",
+      "group": "g_struct",
+      "position": [5.2, 3.2, 11.8],
+      "size": [0.40000000000000036, 0.3999999999999999, 2.6],
+      "rotation": [0, 0, 0]
+    },
+    {
+      "id": "col5",
+      "name": "Column 6",
+      "shape": "box",
+      "group": "g_struct",
+      "position": [8.2, 3.2, 11.8],
+      "size": [0.40000000000000036, 0.3999999999999999, 2.6],
+      "rotation": [0, 0, 0]
+    }
+  ],
+  "evacuation": {
+    "population": "crew",
+    "response": "none",
+    "occupancy": "fixed",
+    "seed": 1,
+    "schema": 2
+  }
+}

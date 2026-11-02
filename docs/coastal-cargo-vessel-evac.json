@@ -1,0 +1,621 @@
+{
+  "app": "dbb-block-editor",
+  "version": 2,
+  "name": "Coastal cargo vessel, with deck arrangement",
+  "units": "m",
+  "axes": "x forward from the aft end, y to port from the centreline, z up from the baseline; positions are block centres; rotation is Euler XYZ in degrees",
+  "taxonomy": "Levander system based design (editable)",
+  "shapes": [
+    {
+      "id": "box",
+      "label": "Box",
+      "volumeFactor": 1,
+      "planFactor": 1
+    },
+    {
+      "id": "cylinder",
+      "label": "Cylinder",
+      "volumeFactor": 0.7854,
+      "planFactor": 0.7854
+    },
+    {
+      "id": "halfcyl",
+      "label": "Half cylinder",
+      "volumeFactor": 0.7854,
+      "planFactor": 1
+    },
+    {
+      "id": "cone",
+      "label": "Cone",
+      "volumeFactor": 0.2618,
+      "planFactor": 0.7854
+    },
+    {
+      "id": "pyramid",
+      "label": "Pyramid",
+      "volumeFactor": 0.3333,
+      "planFactor": 1
+    },
+    {
+      "id": "wedge",
+      "label": "Wedge",
+      "volumeFactor": 0.5,
+      "planFactor": 1
+    },
+    {
+      "id": "sphere",
+      "label": "Sphere",
+      "volumeFactor": 0.5236,
+      "planFactor": 0.7854
+    }
+  ],
+  "customShapes": [],
+  "groups": [
+    {
+      "id": "g_task",
+      "name": "Task related systems",
+      "color": "#9aa3b0",
+      "parent": null,
+      "visible": true,
+      "density": null
+    },
+    {
+      "id": "g_ship",
+      "name": "Ship systems",
+      "color": "#9aa3b0",
+      "parent": null,
+      "visible": true,
+      "density": null
+    },
+    {
+      "id": "g_struct",
+      "name": "Ship structure",
+      "color": "#8c97a8",
+      "parent": "g_ship",
+      "visible": true,
+      "density": 0.15
+    },
+    {
+      "id": "g_outfit",
+      "name": "Ship outfitting",
+      "color": "#2fa7b8",
+      "parent": "g_ship",
+      "visible": true,
+      "density": 0.15
+    },
+    {
+      "id": "g_acc",
+      "name": "Accommodation",
+      "color": "#4fae6a",
+      "parent": "g_ship",
+      "visible": true,
+      "density": 0.12
+    },
+    {
+      "id": "g_mach",
+      "name": "Machinery",
+      "color": "#e9cf3a",
+      "parent": "g_ship",
+      "visible": true,
+      "density": 0.4
+    },
+    {
+      "id": "g_tanks",
+      "name": "Tanks and voids",
+      "color": "#3f72d6",
+      "parent": "g_ship",
+      "visible": true,
+      "density": 0.85
+    },
+    {
+      "id": "g1",
+      "name": "Cargo spaces",
+      "color": "#5db0e8",
+      "parent": "g_task",
+      "visible": true,
+      "density": 0.6
+    }
+  ],
+  "requirements": [
+    {
+      "id": "r1",
+      "name": "Cargo volume",
+      "metric": "volume",
+      "sense": "min",
+      "shall": 400,
+      "should": 600
+    },
+    {
+      "id": "r2",
+      "name": "Accommodation area",
+      "metric": "area",
+      "sense": "min",
+      "shall": 70,
+      "should": 100
+    },
+    {
+      "id": "r3",
+      "name": "Overall length",
+      "metric": "length",
+      "sense": "max",
+      "shall": 32,
+      "should": 30
+    }
+  ],
+  "waterDensity": 1.025,
+  "draught": 2.301,
+  "waterline": true,
+  "float": true,
+  "resistance": {
+    "serviceSpeed": null,
+    "afterbody": 3,
+    "transom": true,
+    "bulb": false
+  },
+  "seakeeping": {
+    "heading": null,
+    "waveAmplitude": null,
+    "position": null,
+    "damping": null,
+    "prismaticLengthRatio": null,
+    "rollPeriod": null,
+    "gm": null,
+    "hs": null,
+    "period": null,
+    "periodType": "Tz",
+    "gamma": null,
+    "hours": null,
+    "limitAcceleration": null,
+    "limitRoll": null,
+    "limitPitch": null,
+    "limitMsdv": null,
+    "limitSet": null
+  },
+  "structure": null,
+  "structurePercent": 25,
+  "weight": {
+    "unit": "t",
+    "blocks": 417.104,
+    "structureAndOutfitting": 139.0891,
+    "total": 556.1931,
+    "lcg": 14.4704,
+    "tcg": 0,
+    "vcg": 2.2652,
+    "displacement": 556.3562,
+    "margin": 0.1632
+  },
+  "hulls": [
+    {
+      "id": "h1",
+      "name": "Offshore vessel",
+      "type": "osv",
+      "x": -0.3,
+      "y": 0,
+      "loa": 31.55,
+      "beam": 8.4,
+      "depth": 4,
+      "draught": 2.301,
+      "visible": true,
+      "computed": {
+        "volumeToDeck": 973.3999,
+        "displacedVolume": 542.7866,
+        "hydrostatics": {
+          "lwl": 31.148,
+          "bwl": 8.395,
+          "cb": 0.9021,
+          "cp": 0.9423,
+          "cm": 0.9574,
+          "cwp": 0.96,
+          "waterplaneArea": 251.0329,
+          "lcb": 14.4562,
+          "kb": 1.1876,
+          "lcf": 14.7457,
+          "tpc": 2.5731
+        }
+      }
+    }
+  ],
+  "blocks": [
+    {
+      "id": "b1",
+      "name": "Cargo hold",
+      "shape": "box",
+      "group": "g1",
+      "reqs": [
+        "r1"
+      ],
+      "position": [
+        21,
+        0,
+        1.75
+      ],
+      "size": [
+        18,
+        8,
+        3.5
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "areaOverride": null,
+      "hidden": false,
+      "density": null,
+      "fill": 55,
+      "massOverride": null,
+      "freeSurface": false,
+      "deck": false,
+      "gt": true,
+      "computed": {
+        "volume": 504,
+        "area": 144,
+        "density": 0.6,
+        "mass": 166.32,
+        "cg": [
+          21,
+          0,
+          1.75
+        ]
+      }
+    },
+    {
+      "id": "b2",
+      "name": "Machinery room",
+      "shape": "box",
+      "group": "g_mach",
+      "reqs": [],
+      "position": [
+        4,
+        0,
+        2
+      ],
+      "size": [
+        8,
+        8,
+        4
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "areaOverride": null,
+      "hidden": false,
+      "density": null,
+      "fill": 100,
+      "massOverride": null,
+      "freeSurface": false,
+      "deck": true,
+      "gt": true,
+      "computed": {
+        "volume": 256,
+        "area": 64,
+        "density": 0.4,
+        "mass": 102.4,
+        "cg": [
+          4,
+          0,
+          2
+        ]
+      }
+    },
+    {
+      "id": "b3",
+      "name": "Fuel oil tanks",
+      "shape": "box",
+      "group": "g_tanks",
+      "reqs": [],
+      "position": [
+        10,
+        0,
+        2
+      ],
+      "size": [
+        4,
+        8,
+        4
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "areaOverride": null,
+      "hidden": false,
+      "density": null,
+      "fill": 98,
+      "massOverride": null,
+      "freeSurface": false,
+      "deck": false,
+      "gt": true,
+      "computed": {
+        "volume": 128,
+        "area": 32,
+        "density": 0.85,
+        "mass": 106.624,
+        "cg": [
+          10,
+          0,
+          2
+        ]
+      }
+    },
+    {
+      "id": "b4",
+      "name": "Accommodation",
+      "shape": "box",
+      "group": "g_acc",
+      "reqs": [
+        "r2"
+      ],
+      "position": [
+        25,
+        0,
+        5.5
+      ],
+      "size": [
+        10,
+        8,
+        3
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "areaOverride": null,
+      "hidden": false,
+      "density": null,
+      "fill": 100,
+      "massOverride": null,
+      "freeSurface": false,
+      "deck": false,
+      "gt": true,
+      "computed": {
+        "volume": 240,
+        "area": 80,
+        "density": 0.12,
+        "mass": 28.8,
+        "cg": [
+          25,
+          0,
+          5.5
+        ]
+      },
+      "evac": {
+        "role": "room",
+        "space": "cabin",
+        "capacity": 6,
+        "occupants": 6,
+        "doors": [
+          {
+            "face": "-x",
+            "offset": 0.6,
+            "width": 0.9
+          }
+        ]
+      }
+    },
+    {
+      "id": "b5",
+      "name": "Wheelhouse",
+      "shape": "box",
+      "group": "g_outfit",
+      "reqs": [],
+      "position": [
+        25,
+        0,
+        8.2
+      ],
+      "size": [
+        6,
+        6,
+        2.4
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "areaOverride": null,
+      "hidden": false,
+      "density": null,
+      "fill": 100,
+      "massOverride": null,
+      "freeSurface": false,
+      "deck": false,
+      "gt": true,
+      "computed": {
+        "volume": 86.4,
+        "area": 36,
+        "density": 0.15,
+        "mass": 12.96,
+        "cg": [
+          25,
+          0,
+          8.2
+        ]
+      },
+      "evac": {
+        "role": "room",
+        "space": "service",
+        "capacity": 3,
+        "occupants": 2,
+        "doors": [
+          {
+            "face": "-x",
+            "offset": 0,
+            "width": 0.9
+          }
+        ]
+      }
+    },
+    {
+      "id": "e1",
+      "name": "Muster station",
+      "shape": "box",
+      "group": "g_outfit",
+      "reqs": [],
+      "position": [
+        2,
+        0,
+        5.2
+      ],
+      "size": [
+        4,
+        8,
+        2.4
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "areaOverride": null,
+      "hidden": false,
+      "density": null,
+      "fill": 100,
+      "massOverride": 0,
+      "freeSurface": false,
+      "deck": false,
+      "gt": false,
+      "evac": {
+        "role": "muster"
+      }
+    },
+    {
+      "id": "e2",
+      "name": "Open deck aft",
+      "shape": "box",
+      "group": "g_outfit",
+      "reqs": [],
+      "position": [
+        6,
+        0,
+        5.2
+      ],
+      "size": [
+        4,
+        8,
+        2.4
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "areaOverride": null,
+      "hidden": false,
+      "density": null,
+      "fill": 100,
+      "massOverride": 0,
+      "freeSurface": false,
+      "deck": false,
+      "gt": false,
+      "evac": {
+        "role": "open"
+      }
+    },
+    {
+      "id": "e3",
+      "name": "Corridor",
+      "shape": "box",
+      "group": "g_outfit",
+      "reqs": [],
+      "position": [
+        14,
+        0,
+        5.2
+      ],
+      "size": [
+        12,
+        2.4,
+        2.4
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "areaOverride": null,
+      "hidden": false,
+      "density": null,
+      "fill": 100,
+      "massOverride": 0,
+      "freeSurface": false,
+      "deck": false,
+      "gt": false,
+      "evac": {
+        "role": "corridor"
+      }
+    },
+    {
+      "id": "e4",
+      "name": "Stair to bridge deck",
+      "shape": "box",
+      "group": "g_outfit",
+      "reqs": [],
+      "position": [
+        18,
+        -0.6,
+        5.5
+      ],
+      "size": [
+        4,
+        1.2,
+        3
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "areaOverride": null,
+      "hidden": false,
+      "density": null,
+      "fill": 100,
+      "massOverride": 0,
+      "freeSurface": false,
+      "deck": false,
+      "gt": false,
+      "evac": {
+        "role": "stair",
+        "up": "+x"
+      }
+    },
+    {
+      "id": "e5",
+      "name": "Bridge deck walkway",
+      "shape": "box",
+      "group": "g_outfit",
+      "reqs": [],
+      "position": [
+        21,
+        0,
+        8.2
+      ],
+      "size": [
+        2,
+        2.4,
+        2.4
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "areaOverride": null,
+      "hidden": false,
+      "density": null,
+      "fill": 100,
+      "massOverride": 0,
+      "freeSurface": false,
+      "deck": false,
+      "gt": false,
+      "evac": {
+        "role": "corridor"
+      }
+    }
+  ]
+}

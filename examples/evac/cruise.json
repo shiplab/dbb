@@ -1,0 +1,6190 @@
+{
+ "app": "dbb-block-editor",
+ "version": 2,
+ "name": "Cruise ship with evacuation scenario",
+ "groups": [
+  {
+   "id": "g_acc",
+   "name": "Cabins",
+   "color": "#7da7d9",
+   "parent": null,
+   "visible": true,
+   "density": null
+  },
+  {
+   "id": "g_pub",
+   "name": "Public spaces",
+   "color": "#e0b25a",
+   "parent": null,
+   "visible": true,
+   "density": null
+  },
+  {
+   "id": "g_circ",
+   "name": "Corridors and stairs",
+   "color": "#b8c2cc",
+   "parent": null,
+   "visible": true,
+   "density": null
+  },
+  {
+   "id": "g_safe",
+   "name": "Safety",
+   "color": "#d9534f",
+   "parent": null,
+   "visible": true,
+   "density": null
+  },
+  {
+   "id": "g_serv",
+   "name": "Service and stores",
+   "color": "#8e9aa6",
+   "parent": null,
+   "visible": true,
+   "density": null
+  },
+  {
+   "id": "g_work",
+   "name": "Work spaces",
+   "color": "#a58bd1",
+   "parent": null,
+   "visible": true,
+   "density": null
+  },
+  {
+   "id": "g_tank",
+   "name": "Tanks and machinery",
+   "color": "#b08a5a",
+   "parent": null,
+   "visible": true,
+   "density": null
+  },
+  {
+   "id": "g_top",
+   "name": "Superstructure",
+   "color": "#6f9d78",
+   "parent": null,
+   "visible": true,
+   "density": null
+  }
+ ],
+ "requirements": [
+  {
+   "id": "r_pob",
+   "name": "Persons on board",
+   "metric": "pob",
+   "sense": "min",
+   "shall": 200,
+   "should": null
+  },
+  {
+   "id": "r_t95",
+   "name": "Evacuation time, 95%",
+   "metric": "evactime",
+   "sense": "max",
+   "shall": 3600,
+   "should": 2700
+  }
+ ],
+ "blocks": [
+  {
+   "id": "cor1",
+   "name": "Corridor deck 1",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    40,
+    0,
+    4.3
+   ],
+   "size": [
+    68,
+    2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "lanA1",
+   "name": "Stair landing aft deck 1",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    8,
+    0,
+    4.3
+   ],
+   "size": [
+    4,
+    7.2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "strA1",
+   "name": "Stair aft deck 1 to 2",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    12,
+    -2.2,
+    4.5
+   ],
+   "size": [
+    4,
+    2.4,
+    3
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "stair",
+    "up": "+x"
+   }
+  },
+  {
+   "id": "lanF1",
+   "name": "Stair landing forward deck 1",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    64,
+    0,
+    4.3
+   ],
+   "size": [
+    4,
+    7.2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "strF1",
+   "name": "Stair forward deck 1 to 2",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    68,
+    -2.2,
+    4.5
+   ],
+   "size": [
+    4,
+    2.4,
+    3
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "stair",
+    "up": "+x"
+   }
+  },
+  {
+   "id": "cor2",
+   "name": "Corridor deck 2",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    40,
+    0,
+    7.3
+   ],
+   "size": [
+    68,
+    2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "lanA2",
+   "name": "Stair landing aft deck 2",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    16,
+    0,
+    7.3
+   ],
+   "size": [
+    4,
+    7.2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "strA2",
+   "name": "Stair aft deck 2 to 3",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    12,
+    2.2,
+    7.5
+   ],
+   "size": [
+    4,
+    2.4,
+    3
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "stair",
+    "up": "-x"
+   }
+  },
+  {
+   "id": "lanF2",
+   "name": "Stair landing forward deck 2",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    72,
+    0,
+    7.3
+   ],
+   "size": [
+    4,
+    7.2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "strF2",
+   "name": "Stair forward deck 2 to 3",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    68,
+    2.2,
+    7.5
+   ],
+   "size": [
+    4,
+    2.4,
+    3
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "stair",
+    "up": "-x"
+   }
+  },
+  {
+   "id": "cor3",
+   "name": "Corridor deck 3",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    40,
+    0,
+    10.3
+   ],
+   "size": [
+    68,
+    2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "lanA3",
+   "name": "Stair landing aft deck 3",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    8,
+    0,
+    10.3
+   ],
+   "size": [
+    4,
+    7.2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "strA3",
+   "name": "Stair aft deck 3 to 4",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    12,
+    -2.2,
+    10.5
+   ],
+   "size": [
+    4,
+    2.4,
+    3
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "stair",
+    "up": "+x"
+   }
+  },
+  {
+   "id": "lanF3",
+   "name": "Stair landing forward deck 3",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    64,
+    0,
+    10.3
+   ],
+   "size": [
+    4,
+    7.2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "strF3",
+   "name": "Stair forward deck 3 to 4",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    68,
+    -2.2,
+    10.5
+   ],
+   "size": [
+    4,
+    2.4,
+    3
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "stair",
+    "up": "+x"
+   }
+  },
+  {
+   "id": "cor4",
+   "name": "Corridor deck 4",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    40,
+    0,
+    13.3
+   ],
+   "size": [
+    68,
+    2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "lanA4",
+   "name": "Stair landing aft deck 4",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    16,
+    0,
+    13.3
+   ],
+   "size": [
+    4,
+    7.2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "strA4",
+   "name": "Stair aft deck 4 to 5",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    12,
+    2.2,
+    13.5
+   ],
+   "size": [
+    4,
+    2.4,
+    3
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "stair",
+    "up": "-x"
+   }
+  },
+  {
+   "id": "lanF4",
+   "name": "Stair landing forward deck 4",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    72,
+    0,
+    13.3
+   ],
+   "size": [
+    4,
+    7.2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "strF4",
+   "name": "Stair forward deck 4 to 5",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    68,
+    2.2,
+    13.5
+   ],
+   "size": [
+    4,
+    2.4,
+    3
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "stair",
+    "up": "-x"
+   }
+  },
+  {
+   "id": "cor5",
+   "name": "Corridor deck 5",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    40,
+    0,
+    16.3
+   ],
+   "size": [
+    68,
+    2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "lanA5",
+   "name": "Stair landing aft deck 5",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    8,
+    0,
+    16.3
+   ],
+   "size": [
+    4,
+    7.2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "strA5",
+   "name": "Stair aft deck 5 to 6",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    12,
+    -2.2,
+    16.5
+   ],
+   "size": [
+    4,
+    2.4,
+    3
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "stair",
+    "up": "+x"
+   }
+  },
+  {
+   "id": "lanF5",
+   "name": "Stair landing forward deck 5",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    64,
+    0,
+    16.3
+   ],
+   "size": [
+    4,
+    7.2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "strF5",
+   "name": "Stair forward deck 5 to 6",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    68,
+    -2.2,
+    16.5
+   ],
+   "size": [
+    4,
+    2.4,
+    3
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "stair",
+    "up": "+x"
+   }
+  },
+  {
+   "id": "cor6",
+   "name": "Corridor deck 6",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    40,
+    0,
+    19.3
+   ],
+   "size": [
+    68,
+    2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "lanA6",
+   "name": "Stair landing aft deck 6",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    16,
+    0,
+    19.3
+   ],
+   "size": [
+    4,
+    7.2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "strA6",
+   "name": "Stair aft deck 6 to 7",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    12,
+    2.2,
+    19.5
+   ],
+   "size": [
+    4,
+    2.4,
+    3
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "stair",
+    "up": "-x"
+   }
+  },
+  {
+   "id": "lanF6",
+   "name": "Stair landing forward deck 6",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    72,
+    0,
+    19.3
+   ],
+   "size": [
+    4,
+    7.2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "strF6",
+   "name": "Stair forward deck 6 to 7",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    68,
+    2.2,
+    19.5
+   ],
+   "size": [
+    4,
+    2.4,
+    3
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "stair",
+    "up": "-x"
+   }
+  },
+  {
+   "id": "cor7",
+   "name": "Corridor deck 7",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    40,
+    0,
+    22.3
+   ],
+   "size": [
+    68,
+    2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "lanA7",
+   "name": "Stair landing aft deck 7",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    8,
+    0,
+    22.3
+   ],
+   "size": [
+    4,
+    7.2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "strA7",
+   "name": "Stair aft deck 7 to 8",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    12,
+    -2.2,
+    22.5
+   ],
+   "size": [
+    4,
+    2.4,
+    3
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "stair",
+    "up": "+x"
+   }
+  },
+  {
+   "id": "lanF7",
+   "name": "Stair landing forward deck 7",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    64,
+    0,
+    22.3
+   ],
+   "size": [
+    4,
+    7.2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "strF7",
+   "name": "Stair forward deck 7 to 8",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    68,
+    -2.2,
+    22.5
+   ],
+   "size": [
+    4,
+    2.4,
+    3
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "stair",
+    "up": "+x"
+   }
+  },
+  {
+   "id": "cor8",
+   "name": "Corridor deck 8",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    40,
+    0,
+    25.3
+   ],
+   "size": [
+    68,
+    2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "lanA8",
+   "name": "Stair landing aft deck 8",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    16,
+    0,
+    25.3
+   ],
+   "size": [
+    4,
+    7.2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "strA8",
+   "name": "Stair aft deck 8 to 9",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    12,
+    2.2,
+    25.5
+   ],
+   "size": [
+    4,
+    2.4,
+    3
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "stair",
+    "up": "-x"
+   }
+  },
+  {
+   "id": "lanF8",
+   "name": "Stair landing forward deck 8",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    72,
+    0,
+    25.3
+   ],
+   "size": [
+    4,
+    7.2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "strF8",
+   "name": "Stair forward deck 8 to 9",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    68,
+    2.2,
+    25.5
+   ],
+   "size": [
+    4,
+    2.4,
+    3
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "stair",
+    "up": "-x"
+   }
+  },
+  {
+   "id": "cor9",
+   "name": "Corridor deck 9",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    40,
+    0,
+    28.3
+   ],
+   "size": [
+    68,
+    2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "lanA9",
+   "name": "Stair landing aft deck 9",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    8,
+    0,
+    28.3
+   ],
+   "size": [
+    4,
+    7.2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "strA9",
+   "name": "Stair aft deck 9 to 10",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    12,
+    -2.2,
+    28.5
+   ],
+   "size": [
+    4,
+    2.4,
+    3
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "stair",
+    "up": "+x"
+   }
+  },
+  {
+   "id": "lanF9",
+   "name": "Stair landing forward deck 9",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    64,
+    0,
+    28.3
+   ],
+   "size": [
+    4,
+    7.2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "strF9",
+   "name": "Stair forward deck 9 to 10",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    68,
+    -2.2,
+    28.5
+   ],
+   "size": [
+    4,
+    2.4,
+    3
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "stair",
+    "up": "+x"
+   }
+  },
+  {
+   "id": "cor10",
+   "name": "Corridor deck 10",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    40,
+    0,
+    31.3
+   ],
+   "size": [
+    68,
+    2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "lanA10",
+   "name": "Stair landing aft deck 10",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    16,
+    0,
+    31.3
+   ],
+   "size": [
+    4,
+    7.2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "lanF10",
+   "name": "Stair landing forward deck 10",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    72,
+    0,
+    31.3
+   ],
+   "size": [
+    4,
+    7.2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "cab4p0",
+   "name": "Cabin 4001",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    22,
+    3.5,
+    13.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab4s0",
+   "name": "Cabin 4101",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    22,
+    -3.5,
+    13.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab4p1",
+   "name": "Cabin 4002",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    26,
+    3.5,
+    13.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab4s1",
+   "name": "Cabin 4102",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    26,
+    -3.5,
+    13.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab4p2",
+   "name": "Cabin 4003",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    30,
+    3.5,
+    13.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab4s2",
+   "name": "Cabin 4103",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    30,
+    -3.5,
+    13.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab4p3",
+   "name": "Cabin 4004",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    34,
+    3.5,
+    13.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab4s3",
+   "name": "Cabin 4104",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    34,
+    -3.5,
+    13.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab4p4",
+   "name": "Cabin 4005",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    38,
+    3.5,
+    13.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab4s4",
+   "name": "Cabin 4105",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    38,
+    -3.5,
+    13.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab4p5",
+   "name": "Cabin 4006",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    42,
+    3.5,
+    13.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab4s5",
+   "name": "Cabin 4106",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    42,
+    -3.5,
+    13.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab4p6",
+   "name": "Cabin 4007",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    46,
+    3.5,
+    13.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab4s6",
+   "name": "Cabin 4107",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    46,
+    -3.5,
+    13.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab4p7",
+   "name": "Cabin 4008",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    50,
+    3.5,
+    13.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab4s7",
+   "name": "Cabin 4108",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    50,
+    -3.5,
+    13.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab4p8",
+   "name": "Cabin 4009",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    54,
+    3.5,
+    13.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab4s8",
+   "name": "Cabin 4109",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    54,
+    -3.5,
+    13.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab4p9",
+   "name": "Cabin 4010",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    58,
+    3.5,
+    13.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab4s9",
+   "name": "Cabin 4110",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    58,
+    -3.5,
+    13.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab5p0",
+   "name": "Cabin 5001",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    22,
+    3.5,
+    16.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab5s0",
+   "name": "Cabin 5101",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    22,
+    -3.5,
+    16.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab5p1",
+   "name": "Cabin 5002",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    26,
+    3.5,
+    16.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab5s1",
+   "name": "Cabin 5102",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    26,
+    -3.5,
+    16.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab5p2",
+   "name": "Cabin 5003",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    30,
+    3.5,
+    16.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab5s2",
+   "name": "Cabin 5103",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    30,
+    -3.5,
+    16.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab5p3",
+   "name": "Cabin 5004",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    34,
+    3.5,
+    16.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab5s3",
+   "name": "Cabin 5104",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    34,
+    -3.5,
+    16.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab5p4",
+   "name": "Cabin 5005",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    38,
+    3.5,
+    16.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab5s4",
+   "name": "Cabin 5105",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    38,
+    -3.5,
+    16.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab5p5",
+   "name": "Cabin 5006",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    42,
+    3.5,
+    16.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab5s5",
+   "name": "Cabin 5106",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    42,
+    -3.5,
+    16.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab5p6",
+   "name": "Cabin 5007",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    46,
+    3.5,
+    16.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab5s6",
+   "name": "Cabin 5107",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    46,
+    -3.5,
+    16.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab5p7",
+   "name": "Cabin 5008",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    50,
+    3.5,
+    16.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab5s7",
+   "name": "Cabin 5108",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    50,
+    -3.5,
+    16.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab5p8",
+   "name": "Cabin 5009",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    54,
+    3.5,
+    16.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab5s8",
+   "name": "Cabin 5109",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    54,
+    -3.5,
+    16.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab5p9",
+   "name": "Cabin 5010",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    58,
+    3.5,
+    16.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab5s9",
+   "name": "Cabin 5110",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    58,
+    -3.5,
+    16.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab6p0",
+   "name": "Cabin 6001",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    22,
+    3.5,
+    19.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab6s0",
+   "name": "Cabin 6101",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    22,
+    -3.5,
+    19.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab6p1",
+   "name": "Cabin 6002",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    26,
+    3.5,
+    19.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab6s1",
+   "name": "Cabin 6102",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    26,
+    -3.5,
+    19.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab6p2",
+   "name": "Cabin 6003",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    30,
+    3.5,
+    19.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab6s2",
+   "name": "Cabin 6103",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    30,
+    -3.5,
+    19.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab6p3",
+   "name": "Cabin 6004",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    34,
+    3.5,
+    19.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab6s3",
+   "name": "Cabin 6104",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    34,
+    -3.5,
+    19.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab6p4",
+   "name": "Cabin 6005",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    38,
+    3.5,
+    19.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab6s4",
+   "name": "Cabin 6105",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    38,
+    -3.5,
+    19.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab6p5",
+   "name": "Cabin 6006",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    42,
+    3.5,
+    19.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab6s5",
+   "name": "Cabin 6106",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    42,
+    -3.5,
+    19.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab6p6",
+   "name": "Cabin 6007",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    46,
+    3.5,
+    19.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab6s6",
+   "name": "Cabin 6107",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    46,
+    -3.5,
+    19.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab6p7",
+   "name": "Cabin 6008",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    50,
+    3.5,
+    19.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab6s7",
+   "name": "Cabin 6108",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    50,
+    -3.5,
+    19.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab6p8",
+   "name": "Cabin 6009",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    54,
+    3.5,
+    19.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab6s8",
+   "name": "Cabin 6109",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    54,
+    -3.5,
+    19.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab6p9",
+   "name": "Cabin 6010",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    58,
+    3.5,
+    19.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab6s9",
+   "name": "Cabin 6110",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    58,
+    -3.5,
+    19.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab7p0",
+   "name": "Cabin 7001",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    22,
+    3.5,
+    22.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab7s0",
+   "name": "Cabin 7101",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    22,
+    -3.5,
+    22.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab7p1",
+   "name": "Cabin 7002",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    26,
+    3.5,
+    22.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab7s1",
+   "name": "Cabin 7102",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    26,
+    -3.5,
+    22.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab7p2",
+   "name": "Cabin 7003",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    30,
+    3.5,
+    22.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab7s2",
+   "name": "Cabin 7103",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    30,
+    -3.5,
+    22.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab7p3",
+   "name": "Cabin 7004",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    34,
+    3.5,
+    22.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab7s3",
+   "name": "Cabin 7104",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    34,
+    -3.5,
+    22.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab7p4",
+   "name": "Cabin 7005",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    38,
+    3.5,
+    22.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab7s4",
+   "name": "Cabin 7105",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    38,
+    -3.5,
+    22.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab7p5",
+   "name": "Cabin 7006",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    42,
+    3.5,
+    22.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab7s5",
+   "name": "Cabin 7106",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    42,
+    -3.5,
+    22.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab7p6",
+   "name": "Cabin 7007",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    46,
+    3.5,
+    22.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab7s6",
+   "name": "Cabin 7107",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    46,
+    -3.5,
+    22.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab7p7",
+   "name": "Cabin 7008",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    50,
+    3.5,
+    22.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab7s7",
+   "name": "Cabin 7108",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    50,
+    -3.5,
+    22.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab7p8",
+   "name": "Cabin 7009",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    54,
+    3.5,
+    22.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab7s8",
+   "name": "Cabin 7109",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    54,
+    -3.5,
+    22.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab7p9",
+   "name": "Cabin 7010",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    58,
+    3.5,
+    22.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab7s9",
+   "name": "Cabin 7110",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    58,
+    -3.5,
+    22.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab8p0",
+   "name": "Cabin 8001",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    22,
+    3.5,
+    25.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab8s0",
+   "name": "Cabin 8101",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    22,
+    -3.5,
+    25.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab8p1",
+   "name": "Cabin 8002",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    26,
+    3.5,
+    25.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab8s1",
+   "name": "Cabin 8102",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    26,
+    -3.5,
+    25.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab8p2",
+   "name": "Cabin 8003",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    30,
+    3.5,
+    25.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab8s2",
+   "name": "Cabin 8103",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    30,
+    -3.5,
+    25.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab8p3",
+   "name": "Cabin 8004",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    34,
+    3.5,
+    25.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab8s3",
+   "name": "Cabin 8104",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    34,
+    -3.5,
+    25.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab8p4",
+   "name": "Cabin 8005",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    38,
+    3.5,
+    25.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab8s4",
+   "name": "Cabin 8105",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    38,
+    -3.5,
+    25.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab8p5",
+   "name": "Cabin 8006",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    42,
+    3.5,
+    25.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab8s5",
+   "name": "Cabin 8106",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    42,
+    -3.5,
+    25.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab8p6",
+   "name": "Cabin 8007",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    46,
+    3.5,
+    25.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab8s6",
+   "name": "Cabin 8107",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    46,
+    -3.5,
+    25.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab8p7",
+   "name": "Cabin 8008",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    50,
+    3.5,
+    25.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab8s7",
+   "name": "Cabin 8108",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    50,
+    -3.5,
+    25.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab8p8",
+   "name": "Cabin 8009",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    54,
+    3.5,
+    25.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab8s8",
+   "name": "Cabin 8109",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    54,
+    -3.5,
+    25.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab8p9",
+   "name": "Cabin 8010",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    58,
+    3.5,
+    25.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "cab8s9",
+   "name": "Cabin 8110",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    58,
+    -3.5,
+    25.3
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "d1s0",
+   "name": "Galley (deck 1)",
+   "shape": "box",
+   "group": "g_work",
+   "reqs": [],
+   "position": [
+    28,
+    3.5,
+    4.3
+   ],
+   "size": [
+    24,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "service",
+    "capacity": 12
+   }
+  },
+  {
+   "id": "d1s1",
+   "name": "Provision store (deck 1)",
+   "shape": "box",
+   "group": "g_serv",
+   "reqs": [],
+   "position": [
+    52,
+    3.5,
+    4.3
+   ],
+   "size": [
+    24,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "service",
+    "capacity": 4
+   }
+  },
+  {
+   "id": "d1s2",
+   "name": "Crew mess (deck 1)",
+   "shape": "box",
+   "group": "g_pub",
+   "reqs": [],
+   "position": [
+    28,
+    -3.5,
+    4.3
+   ],
+   "size": [
+    24,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "service",
+    "capacity": 40
+   }
+  },
+  {
+   "id": "d1s3",
+   "name": "Laundry (deck 1)",
+   "shape": "box",
+   "group": "g_work",
+   "reqs": [],
+   "position": [
+    52,
+    -3.5,
+    4.3
+   ],
+   "size": [
+    24,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "service",
+    "capacity": 8
+   }
+  },
+  {
+   "id": "d2s0",
+   "name": "Theatre",
+   "shape": "box",
+   "group": "g_pub",
+   "reqs": [],
+   "position": [
+    28,
+    3.5,
+    7.3
+   ],
+   "size": [
+    24,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "public",
+    "capacity": 150
+   }
+  },
+  {
+   "id": "d2s1",
+   "name": "Casino",
+   "shape": "box",
+   "group": "g_pub",
+   "reqs": [],
+   "position": [
+    52,
+    3.5,
+    7.3
+   ],
+   "size": [
+    24,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "public",
+    "capacity": 60
+   }
+  },
+  {
+   "id": "d2s2",
+   "name": "Restaurant",
+   "shape": "box",
+   "group": "g_pub",
+   "reqs": [],
+   "position": [
+    28,
+    -3.5,
+    7.3
+   ],
+   "size": [
+    24,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "public",
+    "capacity": 120
+   }
+  },
+  {
+   "id": "d2s3",
+   "name": "Bar",
+   "shape": "box",
+   "group": "g_pub",
+   "reqs": [],
+   "position": [
+    52,
+    -3.5,
+    7.3
+   ],
+   "size": [
+    24,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "public",
+    "capacity": 60
+   }
+  },
+  {
+   "id": "d3s2",
+   "name": "Observation lounge",
+   "shape": "box",
+   "group": "g_pub",
+   "reqs": [],
+   "position": [
+    28,
+    3.5,
+    10.3
+   ],
+   "size": [
+    24,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "public",
+    "capacity": 40
+   }
+  },
+  {
+   "id": "d3s3",
+   "name": "Boutiques",
+   "shape": "box",
+   "group": "g_pub",
+   "reqs": [],
+   "position": [
+    52,
+    -3.5,
+    10.3
+   ],
+   "size": [
+    24,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "public",
+    "capacity": 40
+   }
+  },
+  {
+   "id": "d3s0",
+   "name": "Atrium and shops",
+   "shape": "box",
+   "group": "g_pub",
+   "reqs": [],
+   "position": [
+    28,
+    -3.5,
+    10.3
+   ],
+   "size": [
+    24,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "public",
+    "capacity": 60
+   }
+  },
+  {
+   "id": "d3s1",
+   "name": "Spa",
+   "shape": "box",
+   "group": "g_pub",
+   "reqs": [],
+   "position": [
+    52,
+    3.5,
+    10.3
+   ],
+   "size": [
+    24,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "public",
+    "capacity": 30
+   }
+  },
+  {
+   "id": "d9s0",
+   "name": "Buffet restaurant",
+   "shape": "box",
+   "group": "g_pub",
+   "reqs": [],
+   "position": [
+    40,
+    3.5,
+    28.3
+   ],
+   "size": [
+    48,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "public",
+    "capacity": 200
+   }
+  },
+  {
+   "id": "d9s1",
+   "name": "Pool deck",
+   "shape": "box",
+   "group": "g_pub",
+   "reqs": [],
+   "position": [
+    40,
+    -3.5,
+    28.3
+   ],
+   "size": [
+    48,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "open",
+    "space": "public",
+    "capacity": 60
+   }
+  },
+  {
+   "id": "musP",
+   "name": "Muster station 1 (deck 10)",
+   "shape": "box",
+   "group": "g_safe",
+   "reqs": [],
+   "position": [
+    28,
+    3.5,
+    31.3
+   ],
+   "size": [
+    24,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "muster"
+   }
+  },
+  {
+   "id": "musS",
+   "name": "Muster station 2 (deck 10)",
+   "shape": "box",
+   "group": "g_safe",
+   "reqs": [],
+   "position": [
+    52,
+    -3.5,
+    31.3
+   ],
+   "size": [
+    24,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "muster"
+   }
+  },
+  {
+   "id": "d10s1",
+   "name": "Gym",
+   "shape": "box",
+   "group": "g_pub",
+   "reqs": [],
+   "position": [
+    28,
+    -3.5,
+    31.3
+   ],
+   "size": [
+    24,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "public",
+    "capacity": 20
+   }
+  },
+  {
+   "id": "d10s2",
+   "name": "Bridge",
+   "shape": "box",
+   "group": "g_work",
+   "reqs": [],
+   "position": [
+    58,
+    3.5,
+    31.3
+   ],
+   "size": [
+    12,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "service",
+    "capacity": 6
+   }
+  },
+  {
+   "id": "eng",
+   "name": "Engine room",
+   "shape": "box",
+   "group": "g_tank",
+   "reqs": [],
+   "position": [
+    35,
+    0,
+    1.5
+   ],
+   "size": [
+    30,
+    6,
+    3
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": 0.35,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true
+  },
+  {
+   "id": "gen",
+   "name": "Generator room",
+   "shape": "box",
+   "group": "g_tank",
+   "reqs": [],
+   "position": [
+    58,
+    0,
+    1.5
+   ],
+   "size": [
+    14,
+    6,
+    3
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": 0.3,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true
+  },
+  {
+   "id": "bth",
+   "name": "Bow thruster room",
+   "shape": "box",
+   "group": "g_tank",
+   "reqs": [],
+   "position": [
+    74,
+    0,
+    1.5
+   ],
+   "size": [
+    8,
+    8,
+    3
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": 0.3,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true
+  },
+  {
+   "id": "stg",
+   "name": "Steering gear room",
+   "shape": "box",
+   "group": "g_tank",
+   "reqs": [],
+   "position": [
+    6,
+    0,
+    1.5
+   ],
+   "size": [
+    12,
+    8,
+    3
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": 0.25,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true
+  },
+  {
+   "id": "fo1",
+   "name": "Fuel tank PS",
+   "shape": "box",
+   "group": "g_tank",
+   "reqs": [],
+   "position": [
+    35,
+    4.5,
+    1.5
+   ],
+   "size": [
+    30,
+    3,
+    3
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": 0.85,
+   "fill": 95,
+   "massOverride": null,
+   "freeSurface": true,
+   "deck": false,
+   "gt": true
+  },
+  {
+   "id": "fw1",
+   "name": "Fresh water tank PS",
+   "shape": "box",
+   "group": "g_tank",
+   "reqs": [],
+   "position": [
+    58,
+    4.5,
+    1.5
+   ],
+   "size": [
+    14,
+    3,
+    3
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": 1,
+   "fill": 90,
+   "massOverride": null,
+   "freeSurface": true,
+   "deck": false,
+   "gt": true
+  },
+  {
+   "id": "bw1",
+   "name": "Ballast tank PS",
+   "shape": "box",
+   "group": "g_tank",
+   "reqs": [],
+   "position": [
+    14,
+    4.5,
+    1.5
+   ],
+   "size": [
+    16,
+    3,
+    3
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": 1.025,
+   "fill": 50,
+   "massOverride": null,
+   "freeSurface": true,
+   "deck": false,
+   "gt": true
+  },
+  {
+   "id": "fo-1",
+   "name": "Fuel tank SB",
+   "shape": "box",
+   "group": "g_tank",
+   "reqs": [],
+   "position": [
+    35,
+    -4.5,
+    1.5
+   ],
+   "size": [
+    30,
+    3,
+    3
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": 0.85,
+   "fill": 95,
+   "massOverride": null,
+   "freeSurface": true,
+   "deck": false,
+   "gt": true
+  },
+  {
+   "id": "fw-1",
+   "name": "Fresh water tank SB",
+   "shape": "box",
+   "group": "g_tank",
+   "reqs": [],
+   "position": [
+    58,
+    -4.5,
+    1.5
+   ],
+   "size": [
+    14,
+    3,
+    3
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": 1,
+   "fill": 90,
+   "massOverride": null,
+   "freeSurface": true,
+   "deck": false,
+   "gt": true
+  },
+  {
+   "id": "bw-1",
+   "name": "Ballast tank SB",
+   "shape": "box",
+   "group": "g_tank",
+   "reqs": [],
+   "position": [
+    14,
+    -4.5,
+    1.5
+   ],
+   "size": [
+    16,
+    3,
+    3
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": 1.025,
+   "fill": 50,
+   "massOverride": null,
+   "freeSurface": true,
+   "deck": false,
+   "gt": true
+  },
+  {
+   "id": "fun",
+   "name": "Funnel",
+   "shape": "box",
+   "group": "g_top",
+   "reqs": [],
+   "position": [
+    30,
+    0,
+    35.5
+   ],
+   "size": [
+    8,
+    6,
+    5
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": 0.1,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": false
+  },
+  {
+   "id": "mast",
+   "name": "Mast",
+   "shape": "box",
+   "group": "g_top",
+   "reqs": [],
+   "position": [
+    58,
+    0,
+    36
+   ],
+   "size": [
+    2,
+    2,
+    6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": 0.1,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": false
+  }
+ ],
+ "evacuation": {
+  "schema": 2,
+  "seed": 1,
+  "population": "passengers",
+  "response": "none",
+  "occupancy": "night",
+  "grid": 0.1,
+  "dt": 0.05,
+  "autoDoors": true,
+  "tMax": 3600
+ }
+}

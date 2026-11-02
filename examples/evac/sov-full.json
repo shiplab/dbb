@@ -1,0 +1,3418 @@
+{
+ "app": "dbb-block-editor",
+ "version": 2,
+ "name": "SOV with evacuation scenario",
+ "groups": [
+  {
+   "id": "g_acc",
+   "name": "Accommodation",
+   "color": "#7da7d9",
+   "parent": null,
+   "visible": true,
+   "density": null
+  },
+  {
+   "id": "g_pub",
+   "name": "Public spaces",
+   "color": "#e0b25a",
+   "parent": null,
+   "visible": true,
+   "density": null
+  },
+  {
+   "id": "g_circ",
+   "name": "Circulation",
+   "color": "#b8c2cc",
+   "parent": null,
+   "visible": true,
+   "density": null
+  },
+  {
+   "id": "g_safe",
+   "name": "Safety",
+   "color": "#d9534f",
+   "parent": null,
+   "visible": true,
+   "density": null
+  },
+  {
+   "id": "g_serv",
+   "name": "Service and stores",
+   "color": "#8e9aa6",
+   "parent": null,
+   "visible": true,
+   "density": null
+  },
+  {
+   "id": "g_work",
+   "name": "Work spaces",
+   "color": "#a58bd1",
+   "parent": null,
+   "visible": true,
+   "density": null
+  },
+  {
+   "id": "g_tank",
+   "name": "Tanks and machinery",
+   "color": "#b08a5a",
+   "parent": null,
+   "visible": true,
+   "density": null
+  },
+  {
+   "id": "g_top",
+   "name": "Superstructure and deck equipment",
+   "color": "#6f9d78",
+   "parent": null,
+   "visible": true,
+   "density": null
+  }
+ ],
+ "requirements": [
+  {
+   "id": "r_pob",
+   "name": "Persons on board",
+   "metric": "pob",
+   "sense": "min",
+   "shall": 60,
+   "should": null
+  },
+  {
+   "id": "r_t95",
+   "name": "Evacuation time, 95%",
+   "metric": "evactime",
+   "sense": "max",
+   "shall": 1500,
+   "should": 1200
+  },
+  {
+   "id": "r_len",
+   "name": "Overall length",
+   "metric": "length",
+   "sense": "max",
+   "shall": 75,
+   "should": null
+  }
+ ],
+ "blocks": [
+  {
+   "id": "d1xa",
+   "name": "Aft cross corridor deck 1",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    13,
+    0,
+    5.8
+   ],
+   "size": [
+    2,
+    14,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "d1xf",
+   "name": "Forward cross corridor deck 1",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    58,
+    0,
+    5.8
+   ],
+   "size": [
+    2,
+    14,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "d1cp",
+   "name": "Corridor PS deck 1",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    35.5,
+    3,
+    5.8
+   ],
+   "size": [
+    43,
+    1.2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "d1cs",
+   "name": "Corridor SB deck 1",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    35.5,
+    -3,
+    5.8
+   ],
+   "size": [
+    43,
+    1.2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "d2xa",
+   "name": "Aft cross corridor deck 2",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    13,
+    0,
+    8.8
+   ],
+   "size": [
+    2,
+    14,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "d2xf",
+   "name": "Forward cross corridor deck 2",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    58,
+    0,
+    8.8
+   ],
+   "size": [
+    2,
+    14,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "d2cp",
+   "name": "Corridor PS deck 2",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    35.5,
+    3,
+    8.8
+   ],
+   "size": [
+    43,
+    1.2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "d2cs",
+   "name": "Corridor SB deck 2",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    35.5,
+    -3,
+    8.8
+   ],
+   "size": [
+    43,
+    1.2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "d3xa",
+   "name": "Aft cross corridor deck 3",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    13,
+    0,
+    11.8
+   ],
+   "size": [
+    2,
+    14,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "d3xf",
+   "name": "Forward cross corridor deck 3",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    58,
+    0,
+    11.8
+   ],
+   "size": [
+    2,
+    14,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "d3cp",
+   "name": "Corridor PS deck 3",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    35.5,
+    3,
+    11.8
+   ],
+   "size": [
+    43,
+    1.2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "d3cs",
+   "name": "Corridor SB deck 3",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    35.5,
+    -3,
+    11.8
+   ],
+   "size": [
+    43,
+    1.2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "musA",
+   "name": "Muster station aft",
+   "shape": "box",
+   "group": "g_safe",
+   "reqs": [],
+   "position": [
+    7,
+    0,
+    5.8
+   ],
+   "size": [
+    10,
+    14,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "muster"
+   }
+  },
+  {
+   "id": "musF",
+   "name": "Muster station forward",
+   "shape": "box",
+   "group": "g_safe",
+   "reqs": [],
+   "position": [
+    64,
+    0,
+    5.8
+   ],
+   "size": [
+    10,
+    14,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "muster"
+   }
+  },
+  {
+   "id": "d1rp0",
+   "name": "Workshop PS",
+   "shape": "box",
+   "group": "g_work",
+   "reqs": [],
+   "position": [
+    16,
+    5.3,
+    5.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "service",
+    "capacity": 6
+   }
+  },
+  {
+   "id": "d1rs0",
+   "name": "Galley SB",
+   "shape": "box",
+   "group": "g_work",
+   "reqs": [],
+   "position": [
+    16,
+    -5.3,
+    5.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "service",
+    "capacity": 4
+   }
+  },
+  {
+   "id": "d1rp1",
+   "name": "Electrical workshop PS",
+   "shape": "box",
+   "group": "g_work",
+   "reqs": [],
+   "position": [
+    20,
+    5.3,
+    5.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "service",
+    "capacity": 4
+   }
+  },
+  {
+   "id": "d1rs1",
+   "name": "Cold store SB",
+   "shape": "box",
+   "group": "g_serv",
+   "reqs": [],
+   "position": [
+    20,
+    -5.3,
+    5.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "service"
+   }
+  },
+  {
+   "id": "d1rp2",
+   "name": "Change room PS",
+   "shape": "box",
+   "group": "g_work",
+   "reqs": [],
+   "position": [
+    24,
+    5.3,
+    5.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "service",
+    "capacity": 6
+   }
+  },
+  {
+   "id": "d1rs2",
+   "name": "Dry store SB",
+   "shape": "box",
+   "group": "g_serv",
+   "reqs": [],
+   "position": [
+    24,
+    -5.3,
+    5.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "service"
+   }
+  },
+  {
+   "id": "d1rp3",
+   "name": "Store PS",
+   "shape": "box",
+   "group": "g_serv",
+   "reqs": [],
+   "position": [
+    28,
+    5.3,
+    5.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "service"
+   }
+  },
+  {
+   "id": "d1rs3",
+   "name": "Garbage room SB",
+   "shape": "box",
+   "group": "g_serv",
+   "reqs": [],
+   "position": [
+    28,
+    -5.3,
+    5.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "service"
+   }
+  },
+  {
+   "id": "d1rp4",
+   "name": "Laundry PS",
+   "shape": "box",
+   "group": "g_work",
+   "reqs": [],
+   "position": [
+    32,
+    5.3,
+    5.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "service",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "d1rs4",
+   "name": "Cleaning store SB",
+   "shape": "box",
+   "group": "g_serv",
+   "reqs": [],
+   "position": [
+    32,
+    -5.3,
+    5.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "service"
+   }
+  },
+  {
+   "id": "d1rp5",
+   "name": "Provision store PS",
+   "shape": "box",
+   "group": "g_serv",
+   "reqs": [],
+   "position": [
+    36,
+    5.3,
+    5.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "service"
+   }
+  },
+  {
+   "id": "d1rs5",
+   "name": "Gym SB",
+   "shape": "box",
+   "group": "g_pub",
+   "reqs": [],
+   "position": [
+    36,
+    -5.3,
+    5.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "public",
+    "capacity": 8
+   }
+  },
+  {
+   "id": "d1rp6",
+   "name": "Hospital PS",
+   "shape": "box",
+   "group": "g_work",
+   "reqs": [],
+   "position": [
+    40,
+    5.3,
+    5.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "service",
+    "capacity": 3
+   }
+  },
+  {
+   "id": "d1rs6",
+   "name": "Sauna SB",
+   "shape": "box",
+   "group": "g_work",
+   "reqs": [],
+   "position": [
+    40,
+    -5.3,
+    5.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "service"
+   }
+  },
+  {
+   "id": "d1rp7",
+   "name": "Office PS",
+   "shape": "box",
+   "group": "g_work",
+   "reqs": [],
+   "position": [
+    44,
+    5.3,
+    5.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "service",
+    "capacity": 4
+   }
+  },
+  {
+   "id": "d1rs7",
+   "name": "Tool store SB",
+   "shape": "box",
+   "group": "g_serv",
+   "reqs": [],
+   "position": [
+    44,
+    -5.3,
+    5.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "service"
+   }
+  },
+  {
+   "id": "d1rp8",
+   "name": "Locker room PS",
+   "shape": "box",
+   "group": "g_work",
+   "reqs": [],
+   "position": [
+    48,
+    5.3,
+    5.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "service",
+    "capacity": 6
+   }
+  },
+  {
+   "id": "d1rs8",
+   "name": "Spare parts store SB",
+   "shape": "box",
+   "group": "g_serv",
+   "reqs": [],
+   "position": [
+    48,
+    -5.3,
+    5.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "service"
+   }
+  },
+  {
+   "id": "d1rp9",
+   "name": "Drying room PS",
+   "shape": "box",
+   "group": "g_serv",
+   "reqs": [],
+   "position": [
+    52,
+    5.3,
+    5.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "service"
+   }
+  },
+  {
+   "id": "d1rs9",
+   "name": "Paint store SB",
+   "shape": "box",
+   "group": "g_serv",
+   "reqs": [],
+   "position": [
+    52,
+    -5.3,
+    5.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "service"
+   }
+  },
+  {
+   "id": "d1cas",
+   "name": "Engine casing",
+   "shape": "box",
+   "group": "g_tank",
+   "reqs": [],
+   "position": [
+    27,
+    0,
+    5.8
+   ],
+   "size": [
+    26,
+    4.8,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true
+  },
+  {
+   "id": "d1lob",
+   "name": "Stair lobby deck 1",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    42.5,
+    0,
+    5.8
+   ],
+   "size": [
+    3,
+    4.8,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "st12",
+   "name": "Stair 1-2",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    46,
+    0,
+    6
+   ],
+   "size": [
+    4,
+    1.5,
+    3
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "stair",
+    "up": "+x"
+   }
+  },
+  {
+   "id": "d2cp0",
+   "name": "Cabin P1 deck 2",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    16,
+    5.3,
+    8.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "d2cs0",
+   "name": "Cabin S1 deck 2",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    16,
+    -5.3,
+    8.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "d2cp1",
+   "name": "Cabin P2 deck 2",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    20,
+    5.3,
+    8.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "d2cs1",
+   "name": "Cabin S2 deck 2",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    20,
+    -5.3,
+    8.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "d2cp2",
+   "name": "Cabin P3 deck 2",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    24,
+    5.3,
+    8.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "d2cs2",
+   "name": "Cabin S3 deck 2",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    24,
+    -5.3,
+    8.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "d2cp3",
+   "name": "Cabin P4 deck 2",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    28,
+    5.3,
+    8.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "d2cs3",
+   "name": "Cabin S4 deck 2",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    28,
+    -5.3,
+    8.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "d2cp4",
+   "name": "Cabin P5 deck 2",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    32,
+    5.3,
+    8.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "d2cs4",
+   "name": "Cabin S5 deck 2",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    32,
+    -5.3,
+    8.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "d2cp5",
+   "name": "Cabin P6 deck 2",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    36,
+    5.3,
+    8.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "d2cs5",
+   "name": "Cabin S6 deck 2",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    36,
+    -5.3,
+    8.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "d2cp6",
+   "name": "Cabin P7 deck 2",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    40,
+    5.3,
+    8.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "d2cs6",
+   "name": "Cabin S7 deck 2",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    40,
+    -5.3,
+    8.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "d2cp7",
+   "name": "Cabin P8 deck 2",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    44,
+    5.3,
+    8.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "d2cs7",
+   "name": "Cabin S8 deck 2",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    44,
+    -5.3,
+    8.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "d2cp8",
+   "name": "Cabin P9 deck 2",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    48,
+    5.3,
+    8.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "d2cs8",
+   "name": "Cabin S9 deck 2",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    48,
+    -5.3,
+    8.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "d2cp9",
+   "name": "Cabin P10 deck 2",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    52,
+    5.3,
+    8.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "d2cs9",
+   "name": "Cabin S10 deck 2",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    52,
+    -5.3,
+    8.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "d2mess",
+   "name": "Mess",
+   "shape": "box",
+   "group": "g_pub",
+   "reqs": [],
+   "position": [
+    24,
+    0,
+    8.8
+   ],
+   "size": [
+    20,
+    4.8,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "public",
+    "capacity": 40
+   }
+  },
+  {
+   "id": "d2day",
+   "name": "Day room",
+   "shape": "box",
+   "group": "g_pub",
+   "reqs": [],
+   "position": [
+    39,
+    0,
+    8.8
+   ],
+   "size": [
+    10,
+    4.8,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "public",
+    "capacity": 16
+   }
+  },
+  {
+   "id": "d2lan",
+   "name": "Stair landing deck 2",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    49,
+    0,
+    8.8
+   ],
+   "size": [
+    2,
+    4.8,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "st23",
+   "name": "Stair 2-3",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    52,
+    0,
+    9
+   ],
+   "size": [
+    4,
+    1.5,
+    3
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "stair",
+    "up": "+x"
+   }
+  },
+  {
+   "id": "d3cp0",
+   "name": "Cabin P1 deck 3",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    16,
+    5.3,
+    11.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "d3cp1",
+   "name": "Cabin P2 deck 3",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    20,
+    5.3,
+    11.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "d3cp2",
+   "name": "Cabin P3 deck 3",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    24,
+    5.3,
+    11.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "d3cp3",
+   "name": "Cabin P4 deck 3",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    28,
+    5.3,
+    11.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "d3cp4",
+   "name": "Cabin P5 deck 3",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    32,
+    5.3,
+    11.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "d3cp5",
+   "name": "Cabin P6 deck 3",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    36,
+    5.3,
+    11.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "d3cp6",
+   "name": "Cabin P7 deck 3",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    40,
+    5.3,
+    11.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "d3cp7",
+   "name": "Cabin P8 deck 3",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    44,
+    5.3,
+    11.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "d3cp8",
+   "name": "Cabin P9 deck 3",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    48,
+    5.3,
+    11.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "d3cp9",
+   "name": "Cabin P10 deck 3",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    52,
+    5.3,
+    11.8
+   ],
+   "size": [
+    4,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "d3s0",
+   "name": "Conference room",
+   "shape": "box",
+   "group": "g_pub",
+   "reqs": [],
+   "position": [
+    18,
+    -5.3,
+    11.8
+   ],
+   "size": [
+    8,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "public",
+    "capacity": 12
+   }
+  },
+  {
+   "id": "d3s1",
+   "name": "Control room",
+   "shape": "box",
+   "group": "g_work",
+   "reqs": [],
+   "position": [
+    26,
+    -5.3,
+    11.8
+   ],
+   "size": [
+    8,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "service",
+    "capacity": 4
+   }
+  },
+  {
+   "id": "d3s2",
+   "name": "Navigation bridge",
+   "shape": "box",
+   "group": "g_work",
+   "reqs": [],
+   "position": [
+    34,
+    -5.3,
+    11.8
+   ],
+   "size": [
+    8,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "service",
+    "capacity": 4
+   }
+  },
+  {
+   "id": "d3s3",
+   "name": "Radio and chart room",
+   "shape": "box",
+   "group": "g_work",
+   "reqs": [],
+   "position": [
+    42,
+    -5.3,
+    11.8
+   ],
+   "size": [
+    8,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "service",
+    "capacity": 2
+   }
+  },
+  {
+   "id": "d3s4",
+   "name": "Offices",
+   "shape": "box",
+   "group": "g_work",
+   "reqs": [],
+   "position": [
+    50,
+    -5.3,
+    11.8
+   ],
+   "size": [
+    8,
+    3.4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "service",
+    "capacity": 6
+   }
+  },
+  {
+   "id": "d3lou",
+   "name": "Lounge",
+   "shape": "box",
+   "group": "g_pub",
+   "reqs": [],
+   "position": [
+    24,
+    0,
+    11.8
+   ],
+   "size": [
+    20,
+    4.8,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "public",
+    "capacity": 24
+   }
+  },
+  {
+   "id": "d3lan",
+   "name": "Stair landing deck 3",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    55,
+    0,
+    11.8
+   ],
+   "size": [
+    2,
+    4.8,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "eng",
+   "name": "Engine room",
+   "shape": "box",
+   "group": "g_tank",
+   "reqs": [],
+   "position": [
+    24,
+    0,
+    2.25
+   ],
+   "size": [
+    20,
+    6,
+    4.5
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": 0.35,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true
+  },
+  {
+   "id": "aux",
+   "name": "Auxiliary machinery",
+   "shape": "box",
+   "group": "g_tank",
+   "reqs": [],
+   "position": [
+    38,
+    0,
+    2.25
+   ],
+   "size": [
+    8,
+    6,
+    4.5
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": 0.3,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true
+  },
+  {
+   "id": "stg",
+   "name": "Steering gear room",
+   "shape": "box",
+   "group": "g_tank",
+   "reqs": [],
+   "position": [
+    7,
+    0,
+    2.25
+   ],
+   "size": [
+    10,
+    8,
+    4.5
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": 0.25,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true
+  },
+  {
+   "id": "thf",
+   "name": "Bow thruster room",
+   "shape": "box",
+   "group": "g_tank",
+   "reqs": [],
+   "position": [
+    64,
+    0,
+    2.25
+   ],
+   "size": [
+    10,
+    8,
+    4.5
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": 0.3,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true
+  },
+  {
+   "id": "fop",
+   "name": "Fuel tank PS",
+   "shape": "box",
+   "group": "g_tank",
+   "reqs": [],
+   "position": [
+    24,
+    4.75,
+    2.25
+   ],
+   "size": [
+    20,
+    3.5,
+    4.5
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": 0.85,
+   "fill": 95,
+   "massOverride": null,
+   "freeSurface": true,
+   "deck": false,
+   "gt": true
+  },
+  {
+   "id": "fos",
+   "name": "Fuel tank SB",
+   "shape": "box",
+   "group": "g_tank",
+   "reqs": [],
+   "position": [
+    24,
+    -4.75,
+    2.25
+   ],
+   "size": [
+    20,
+    3.5,
+    4.5
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": 0.85,
+   "fill": 95,
+   "massOverride": null,
+   "freeSurface": true,
+   "deck": false,
+   "gt": true
+  },
+  {
+   "id": "fwp",
+   "name": "Fresh water tank PS",
+   "shape": "box",
+   "group": "g_tank",
+   "reqs": [],
+   "position": [
+    38,
+    4.75,
+    2.25
+   ],
+   "size": [
+    8,
+    3.5,
+    4.5
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": 1,
+   "fill": 90,
+   "massOverride": null,
+   "freeSurface": true,
+   "deck": false,
+   "gt": true
+  },
+  {
+   "id": "fws",
+   "name": "Fresh water tank SB",
+   "shape": "box",
+   "group": "g_tank",
+   "reqs": [],
+   "position": [
+    38,
+    -4.75,
+    2.25
+   ],
+   "size": [
+    8,
+    3.5,
+    4.5
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": 1,
+   "fill": 90,
+   "massOverride": null,
+   "freeSurface": true,
+   "deck": false,
+   "gt": true
+  },
+  {
+   "id": "balp0",
+   "name": "Ballast tank PS 1",
+   "shape": "box",
+   "group": "g_tank",
+   "reqs": [],
+   "position": [
+    46.75,
+    3.5,
+    2.25
+   ],
+   "size": [
+    3.5,
+    7,
+    4.5
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": 1.025,
+   "fill": 50,
+   "massOverride": null,
+   "freeSurface": true,
+   "deck": false,
+   "gt": true
+  },
+  {
+   "id": "bals0",
+   "name": "Ballast tank SB 1",
+   "shape": "box",
+   "group": "g_tank",
+   "reqs": [],
+   "position": [
+    46.75,
+    -3.5,
+    2.25
+   ],
+   "size": [
+    3.5,
+    7,
+    4.5
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": 1.025,
+   "fill": 50,
+   "massOverride": null,
+   "freeSurface": true,
+   "deck": false,
+   "gt": true
+  },
+  {
+   "id": "balp1",
+   "name": "Ballast tank PS 2",
+   "shape": "box",
+   "group": "g_tank",
+   "reqs": [],
+   "position": [
+    50.25,
+    3.5,
+    2.25
+   ],
+   "size": [
+    3.5,
+    7,
+    4.5
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": 1.025,
+   "fill": 50,
+   "massOverride": null,
+   "freeSurface": true,
+   "deck": false,
+   "gt": true
+  },
+  {
+   "id": "bals1",
+   "name": "Ballast tank SB 2",
+   "shape": "box",
+   "group": "g_tank",
+   "reqs": [],
+   "position": [
+    50.25,
+    -3.5,
+    2.25
+   ],
+   "size": [
+    3.5,
+    7,
+    4.5
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": 1.025,
+   "fill": 50,
+   "massOverride": null,
+   "freeSurface": true,
+   "deck": false,
+   "gt": true
+  },
+  {
+   "id": "balp2",
+   "name": "Ballast tank PS 3",
+   "shape": "box",
+   "group": "g_tank",
+   "reqs": [],
+   "position": [
+    53.75,
+    3.5,
+    2.25
+   ],
+   "size": [
+    3.5,
+    7,
+    4.5
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": 1.025,
+   "fill": 50,
+   "massOverride": null,
+   "freeSurface": true,
+   "deck": false,
+   "gt": true
+  },
+  {
+   "id": "bals2",
+   "name": "Ballast tank SB 3",
+   "shape": "box",
+   "group": "g_tank",
+   "reqs": [],
+   "position": [
+    53.75,
+    -3.5,
+    2.25
+   ],
+   "size": [
+    3.5,
+    7,
+    4.5
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": 1.025,
+   "fill": 50,
+   "massOverride": null,
+   "freeSurface": true,
+   "deck": false,
+   "gt": true
+  },
+  {
+   "id": "balp3",
+   "name": "Ballast tank PS 4",
+   "shape": "box",
+   "group": "g_tank",
+   "reqs": [],
+   "position": [
+    57.25,
+    3.5,
+    2.25
+   ],
+   "size": [
+    3.5,
+    7,
+    4.5
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": 1.025,
+   "fill": 50,
+   "massOverride": null,
+   "freeSurface": true,
+   "deck": false,
+   "gt": true
+  },
+  {
+   "id": "bals3",
+   "name": "Ballast tank SB 4",
+   "shape": "box",
+   "group": "g_tank",
+   "reqs": [],
+   "position": [
+    57.25,
+    -3.5,
+    2.25
+   ],
+   "size": [
+    3.5,
+    7,
+    4.5
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": 1.025,
+   "fill": 50,
+   "massOverride": null,
+   "freeSurface": true,
+   "deck": false,
+   "gt": true
+  },
+  {
+   "id": "cof",
+   "name": "Cofferdam",
+   "shape": "box",
+   "group": "g_tank",
+   "reqs": [],
+   "position": [
+    59,
+    0,
+    2.25
+   ],
+   "size": [
+    2,
+    14,
+    4.5
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": 0.1,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true
+  },
+  {
+   "id": "whl",
+   "name": "Wheelhouse roof",
+   "shape": "box",
+   "group": "g_top",
+   "reqs": [],
+   "position": [
+    20,
+    0,
+    14.6
+   ],
+   "size": [
+    10,
+    8,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": 0.15,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true
+  },
+  {
+   "id": "fun",
+   "name": "Funnel",
+   "shape": "box",
+   "group": "g_top",
+   "reqs": [],
+   "position": [
+    32,
+    0,
+    14.6
+   ],
+   "size": [
+    4,
+    5,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": 0.1,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": false
+  },
+  {
+   "id": "crn",
+   "name": "Crane",
+   "shape": "box",
+   "group": "g_top",
+   "reqs": [],
+   "position": [
+    61,
+    4,
+    14
+   ],
+   "size": [
+    3,
+    3,
+    7
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": 0.2,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": false
+  },
+  {
+   "id": "gwy",
+   "name": "Motion compensated gangway",
+   "shape": "box",
+   "group": "g_top",
+   "reqs": [],
+   "position": [
+    62,
+    -3.5,
+    14
+   ],
+   "size": [
+    4,
+    2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": 0.2,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": false
+  }
+ ],
+ "evacuation": {
+  "schema": 2,
+  "seed": 1,
+  "population": "crew",
+  "response": "none",
+  "occupancy": "night",
+  "grid": 0.1,
+  "dt": 0.05,
+  "autoDoors": true,
+  "tMax": 1800
+ }
+}

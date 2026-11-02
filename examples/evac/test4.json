@@ -1,0 +1,127 @@
+{
+  "app": "dbb-block-editor",
+  "version": 2,
+  "name": "IMO Test 4: exit flow rate",
+  "groups": [
+    {
+      "id": "g_acc",
+      "name": "Accommodation",
+      "color": "#7da7d9",
+      "parent": null,
+      "visible": true,
+      "density": null
+    },
+    {
+      "id": "g_pub",
+      "name": "Public spaces",
+      "color": "#e0b25a",
+      "parent": null,
+      "visible": true,
+      "density": null
+    },
+    {
+      "id": "g_circ",
+      "name": "Circulation",
+      "color": "#b8c2cc",
+      "parent": null,
+      "visible": true,
+      "density": null
+    },
+    {
+      "id": "g_safe",
+      "name": "Safety",
+      "color": "#d9534f",
+      "parent": null,
+      "visible": true,
+      "density": null
+    },
+    {
+      "id": "g_serv",
+      "name": "Service and stores",
+      "color": "#8e9aa6",
+      "parent": null,
+      "visible": true,
+      "density": null
+    },
+    {
+      "id": "g_work",
+      "name": "Work spaces",
+      "color": "#a58bd1",
+      "parent": null,
+      "visible": true,
+      "density": null
+    },
+    {
+      "id": "g_tank",
+      "name": "Tanks and machinery",
+      "color": "#b08a5a",
+      "parent": null,
+      "visible": true,
+      "density": null
+    }
+  ],
+  "blocks": [
+    {
+      "id": "room",
+      "name": "Room 8 m x 5 m",
+      "shape": "box",
+      "group": "g_pub",
+      "reqs": [],
+      "position": [4, 0, 1.25],
+      "size": [8, 5, 2.5],
+      "rotation": [0, 0, 0],
+      "areaOverride": null,
+      "hidden": false,
+      "density": null,
+      "fill": 100,
+      "massOverride": null,
+      "freeSurface": false,
+      "deck": false,
+      "gt": true,
+      "evac": {
+        "role": "room",
+        "occupants": 100,
+        "population": "pm3050",
+        "doors": [
+          {
+            "face": "+x",
+            "offset": 0,
+            "width": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "out",
+      "name": "Outside (muster)",
+      "shape": "box",
+      "group": "g_safe",
+      "reqs": [],
+      "position": [11, 0, 1.25],
+      "size": [6, 8, 2.5],
+      "rotation": [0, 0, 0],
+      "areaOverride": null,
+      "hidden": false,
+      "density": null,
+      "fill": 100,
+      "massOverride": null,
+      "freeSurface": false,
+      "deck": false,
+      "gt": true,
+      "evac": {
+        "role": "muster"
+      }
+    }
+  ],
+  "evacuation": {
+    "schema": 2,
+    "seed": 1,
+    "population": "pm3050",
+    "response": "none",
+    "occupancy": "fixed",
+    "grid": 0.1,
+    "dt": 0.05,
+    "autoDoors": true,
+    "tMax": 1800
+  }
+}

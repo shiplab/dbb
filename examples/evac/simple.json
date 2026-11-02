@@ -1,0 +1,370 @@
+{
+ "app": "dbb-block-editor",
+ "version": 2,
+ "name": "Simple evacuation: engine room to wheelhouse",
+ "groups": [
+  {
+   "id": "g_work",
+   "name": "Work spaces",
+   "color": "#a58bd1",
+   "parent": null,
+   "visible": true,
+   "density": null
+  },
+  {
+   "id": "g_acc",
+   "name": "Accommodation",
+   "color": "#7da7d9",
+   "parent": null,
+   "visible": true,
+   "density": null
+  },
+  {
+   "id": "g_circ",
+   "name": "Circulation",
+   "color": "#b8c2cc",
+   "parent": null,
+   "visible": true,
+   "density": null
+  },
+  {
+   "id": "g_safe",
+   "name": "Safety",
+   "color": "#d9534f",
+   "parent": null,
+   "visible": true,
+   "density": null
+  },
+  {
+   "id": "g_tank",
+   "name": "Tanks and machinery",
+   "color": "#b08a5a",
+   "parent": null,
+   "visible": true,
+   "density": null
+  }
+ ],
+ "requirements": [],
+ "blocks": [
+  {
+   "id": "eng",
+   "name": "Engine room",
+   "shape": "box",
+   "group": "g_work",
+   "reqs": [],
+   "position": [
+    3,
+    0,
+    4.3
+   ],
+   "size": [
+    6,
+    6,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "service",
+    "capacity": 3,
+    "occupants": 3,
+    "doors": [
+     {
+      "face": "+x",
+      "offset": 0,
+      "width": 1
+     }
+    ]
+   }
+  },
+  {
+   "id": "gen",
+   "name": "Generator",
+   "shape": "box",
+   "group": "g_tank",
+   "reqs": [],
+   "position": [
+    2.5,
+    0,
+    4.3
+   ],
+   "size": [
+    2,
+    2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "obstacle"
+   }
+  },
+  {
+   "id": "tank",
+   "name": "Fuel tank (below the deck)",
+   "shape": "box",
+   "group": "g_tank",
+   "reqs": [],
+   "position": [
+    3,
+    0,
+    1.5
+   ],
+   "size": [
+    6,
+    6,
+    3
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true
+  },
+  {
+   "id": "c1",
+   "name": "Corridor deck 1",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    8,
+    0,
+    4.3
+   ],
+   "size": [
+    4,
+    2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "s1",
+   "name": "Stair 1 (deck 1 to deck 2)",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    12,
+    0,
+    4.5
+   ],
+   "size": [
+    4,
+    1.2,
+    3
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "stair",
+    "up": "+x"
+   }
+  },
+  {
+   "id": "l2",
+   "name": "Landing deck 2",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    15.5,
+    0,
+    7.3
+   ],
+   "size": [
+    3,
+    2,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "corridor"
+   }
+  },
+  {
+   "id": "cab",
+   "name": "Cabin",
+   "shape": "box",
+   "group": "g_acc",
+   "reqs": [],
+   "position": [
+    15.5,
+    3,
+    7.3
+   ],
+   "size": [
+    3,
+    4,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "room",
+    "space": "cabin",
+    "capacity": 2,
+    "occupants": 2
+   }
+  },
+  {
+   "id": "s2",
+   "name": "Stair 2 (deck 2 to deck 3)",
+   "shape": "box",
+   "group": "g_circ",
+   "reqs": [],
+   "position": [
+    19,
+    0,
+    7.5
+   ],
+   "size": [
+    4,
+    1.2,
+    3
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "stair",
+    "up": "+x"
+   }
+  },
+  {
+   "id": "wh",
+   "name": "Wheelhouse (muster station)",
+   "shape": "box",
+   "group": "g_safe",
+   "reqs": [],
+   "position": [
+    24,
+    0,
+    10.3
+   ],
+   "size": [
+    6,
+    6,
+    2.6
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "areaOverride": null,
+   "hidden": false,
+   "density": null,
+   "fill": 100,
+   "massOverride": null,
+   "freeSurface": false,
+   "deck": false,
+   "gt": true,
+   "evac": {
+    "role": "muster"
+   }
+  }
+ ],
+ "evacuation": {
+  "schema": 2,
+  "seed": 1,
+  "population": "crew",
+  "response": "none",
+  "occupancy": "fixed",
+  "grid": 0.1,
+  "dt": 0.05,
+  "autoDoors": true,
+  "tMax": 600
+ }
+}
